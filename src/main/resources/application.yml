@@ -1,0 +1,17 @@
+auth:
+  mode: PERMISSIVE # o STRICT
+  issuer: "https://auth.simulador.local"
+  audience: "rbm.googleapis.com"
+  tokenTtlSeconds: 3600
+  acceptAnyClientInPermissive: true
+  acceptedClients:
+    - clientId: test-client
+      clientSecret: secret
+  allowedScopes: [ "rbm.bots", "rbm.messages" ]
+  key:
+    generateOnStartup: true
+    keyId: "sim-key-1"
+    privateKeyPem: "" # opcional si no generas
+    publicKeyPem: ""  # opcional si no generas
+server:
+  port: 8080
