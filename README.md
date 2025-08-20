@@ -39,9 +39,15 @@ src/
 La aplicación quedará disponible en `http://localhost:8080`.
 
 ## Pruebas
-Ejecuta los tests de JUnit con:
+Ejecuta solo los tests unitarios (se omiten los de integración que dependen de
+Testcontainers) con:
 ```bash
 ./mvnw test
+```
+
+Para lanzar todos los tests, incluidos los de integración, utiliza:
+```bash
+./mvnw verify
 ```
 
 ## Peticiones de ejemplo
