@@ -1,4 +1,4 @@
-package win.agus4the.google_rbm_simulator.logging;
+package com.example.rbm.simulator.logging;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,4 +55,3 @@ public class RequestLoggingFilter implements WebFilter {
             });
     }
 }
-
