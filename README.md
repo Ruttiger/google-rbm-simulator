@@ -5,22 +5,24 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 ## Arquitectura
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
-- Filtro `RequestLoggingFilter` que registra método, URL, cabeceras y cuerpo de cada petición.
-- Controlador `AgentMessagesSimulatorController` que emula el envío de mensajes de agente.
+- Controlador `TokenController` que emite tokens JWT de prueba.
 
 ## Estructura del proyecto
 
 ```text
 src/
  ├─ main/
- │  ├─ java/com/example/rbm/simulator/
- │  │  ├─ GoogleRbmSimulatorApplication.java
- │  │  ├─ controller/AgentMessagesSimulatorController.java
- │  │  ├─ dto/...
- │  │  ├─ error/...
- │  │  └─ logging/RequestLoggingFilter.java
+ │  ├─ java/com/messi/rbm/authsim/
+ │  │  ├─ AuthSimApplication.java
+ │  │  ├─ config/
+ │  │  │  ├─ AuthProperties.java
+ │  │  │  └─ SecurityConfig.java
+ │  │  ├─ controller/
+ │  │  │  └─ TokenController.java
+ │  │  └─ service/
+ │  │     └─ JwtService.java
  │  └─ resources/application.properties
- └─ test/java/com/example/rbm/simulator/...
+ └─ test/...
 ```
 
 ## Requisitos previos
@@ -52,12 +54,24 @@ Para lanzar todos los tests, incluidos los de integración, utiliza:
 ./mvnw verify
 ```
 
+## Autenticación
+
+Todos los endpoints protegidos requieren un token **Bearer**. Puedes obtenerlo mediante el endpoint `/token`:
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:8080/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&client_id=test&client_secret=test" | jq -r .access_token)
+```
+
+El valor de `TOKEN` se emplea en las peticiones posteriores.
+
 ## Peticiones de ejemplo
 
 ### Texto simple
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages" \
-  -H "Authorization: Bearer test-token" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "messageId":"msg-12345",
@@ -69,7 +83,7 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages" \
 ### Rich card + echo + estado forzado
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?forceState=SENT&echo=true" \
-  -H "Authorization: Bearer test-token" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "messageId":"msg-67890",
