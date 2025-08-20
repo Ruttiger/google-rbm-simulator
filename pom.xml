@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
         <groupId>com.messi.rbm</groupId>
-        <artifactId>auth-sim</artifactId>
+        <artifactId>google-rbm-simulator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>google-rbm-simulator</name>
 	<description>Google RBM Platform Simulator</description>
