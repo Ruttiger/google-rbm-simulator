@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class AuthSimApplication {
+public class GoogleRbmSimApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AuthSimApplication.class, args);
+        SpringApplication.run(GoogleRbmSimApplication.class, args);
     }
 }

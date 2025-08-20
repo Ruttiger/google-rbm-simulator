@@ -13,7 +13,7 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 src/
  ├─ main/
  │  ├─ java/com/messi/rbm/authsim/
- │  │  ├─ AuthSimApplication.java
+  │  │  ├─ GoogleRbmSimApplication.java
  │  │  ├─ config/
  │  │  │  ├─ AuthProperties.java
  │  │  │  └─ SecurityConfig.java
@@ -35,7 +35,7 @@ src/
 ### Desde IntelliJ IDEA
 1. *File > New > Project from Existing Sources* y selecciona el fichero `pom.xml`.
 2. Espera a que el IDE importe las dependencias de Maven.
-3. Ejecuta la clase `GoogleRbmSimulatorApplication` o usa la configuración automática de Spring Boot.
+3. Ejecuta la clase `GoogleRbmSimApplication` o usa la configuración automática de Spring Boot.
 
 ### Desde línea de comandos
 ```bash
