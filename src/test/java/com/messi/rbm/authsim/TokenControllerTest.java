@@ -1,5 +1,6 @@
 package com.messi.rbm.authsim;
 
+import com.example.rbm.simulator.GoogleRbmSimulatorApplication;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -16,7 +17,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.Base64;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = GoogleRbmSimulatorApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 class TokenControllerTest {
 
