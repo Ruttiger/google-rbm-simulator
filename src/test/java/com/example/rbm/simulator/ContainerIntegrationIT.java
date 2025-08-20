@@ -1,4 +1,4 @@
-package win.agus4the.google_rbm_simulator;
+package com.example.rbm.simulator;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
