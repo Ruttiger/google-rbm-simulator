@@ -68,9 +68,11 @@ El valor de `TOKEN` se emplea en las peticiones posteriores.
 
 ## Peticiones de ejemplo
 
+Todas las peticiones requieren el parámetro de query `agentId` que identifica al agente remitente.
+
 ### Texto simple
 ```bash
-curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages" \
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -82,7 +84,7 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages" \
 
 ### Rich card + echo + estado forzado
 ```bash
-curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?forceState=SENT&echo=true" \
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&forceState=SENT&echo=true" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

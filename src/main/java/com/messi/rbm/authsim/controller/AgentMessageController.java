@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
@@ -14,13 +15,16 @@ import java.util.Map;
 @RestController
 public class AgentMessageController {
 
-    @PostMapping("/agent/messages/{messageId}")
+    @PostMapping("/v1/phones/{msisdn}/agentMessages")
     public Mono<ResponseEntity<Map<String, Object>>> receiveMessage(
-            @PathVariable String messageId,
+            @PathVariable String msisdn,
+            @RequestParam String agentId,
             @RequestBody Message message) {
         Map<String, Object> response = Map.of(
                 "status", "received",
-                "messageId", messageId,
+                "msisdn", msisdn,
+                "agentId", agentId,
+                "messageId", message.messageId(),
                 "originalText", message.text(),
                 "timestamp", Instant.now().toString()
         );
