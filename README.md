@@ -1,11 +1,11 @@
 # Google RBM Simulator
 
-Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone un endpoint de simulación compatible con la API de Google RBM.
+Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone endpoints de simulación compatibles con la API de Google RBM.
 
 ## Arquitectura
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
-- Controlador `TokenController` que emite tokens JWT de prueba.
+- Controladores `TokenController`, `AgentMessageController` y `UserMessageController` para simular el envío y recepción de mensajes.
 
 ## Estructura del proyecto
 
@@ -18,7 +18,9 @@ src/
  │  │  │  ├─ AuthProperties.java
  │  │  │  └─ SecurityConfig.java
  │  │  ├─ controller/
- │  │  │  └─ TokenController.java
+ │  │  │  ├─ AgentMessageController.java
+ │  │  │  ├─ TokenController.java
+ │  │  │  └─ UserMessageController.java
  │  │  └─ service/
  │  │     └─ JwtService.java
  │  └─ resources/application.properties
@@ -70,7 +72,7 @@ El valor de `TOKEN` se emplea en las peticiones posteriores.
 
 Todas las peticiones requieren el parámetro de query `agentId` que identifica al agente remitente.
 
-### Texto simple
+### Envío de mensaje del agente (texto simple)
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
   -H "Authorization: Bearer $TOKEN" \
@@ -82,7 +84,7 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
   }'
 ```
 
-### Rich card + echo + estado forzado
+### Envío de rich card con eco y estado forzado
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&forceState=SENT&echo=true" \
   -H "Authorization: Bearer $TOKEN" \
@@ -107,6 +109,18 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
         }
       }
     }
+  }'
+```
+
+### Mensaje de usuario hacia el agente
+```bash
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/userMessages?agentId=AGENT_ID" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageId":"msg-99999",
+    "representative":{"representativeType":"HUMAN"},
+    "text":"Respuesta del usuario"
   }'
 ```
 

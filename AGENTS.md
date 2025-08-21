@@ -163,7 +163,7 @@ app/
 - **Integration tests** con WireMock/Testcontainers para HTTP.
 - **Mutation testing** opcional (Pitest) para módulos críticos.
 - **Static analysis**: SpotBugs/Checkstyle/PMD + `errorprone` si aplica.
-- **CI**: build limpia, tests, lints, cobertura, análisis estático, SBOM (CycloneDX).
+- **CI**: build limpia, tests, lints, cobertura, análisis estático, SBOM (CycloneDX). Se ejecuta en `pull_request` y en `push` solo sobre `main` para evitar duplicidades.
 
 Checklist de PR (auto):
 - [ ] Build OK + tests pasan.

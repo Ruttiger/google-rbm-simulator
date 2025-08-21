@@ -9,27 +9,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
+import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Simulates the reception of a user message by the agent.
+ */
 @RestController
-public class AgentMessageController {
+public class UserMessageController {
 
-    @PostMapping("/v1/phones/{msisdn}/agentMessages")
-    public Mono<ResponseEntity<Map<String, Object>>> receiveMessage(
+    @PostMapping("/v1/phones/{msisdn}/userMessages")
+    public Mono<ResponseEntity<Map<String, Object>>> receiveUserMessage(
             @PathVariable String msisdn,
             @RequestParam String agentId,
-            @RequestParam(required = false) String forceState,
-            @RequestParam(defaultValue = "false") boolean echo,
             @RequestBody Message message) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("state", forceState != null ? forceState : "DELIVERED");
-        response.put("msisdn", msisdn);
-        response.put("agentId", agentId);
-        response.put("messageId", message.messageId());
-        if (echo) {
-            response.put("echo", message);
-        }
+        Map<String, Object> response = Map.of(
+                "status", "received",
+                "msisdn", msisdn,
+                "agentId", agentId,
+                "messageId", message.messageId(),
+                "timestamp", Instant.now().toString()
+        );
         return Mono.just(ResponseEntity.ok(response));
     }
 }
