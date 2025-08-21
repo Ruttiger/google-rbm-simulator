@@ -18,5 +18,7 @@ para el entorno local de desarrollo.
   tests compilan y pasan.
 - Usa variables de entorno (`.env.local`) para las credenciales requeridas por
   la aplicación.
+- Para actualizar el documento de discovery, exporta `google_api_key_json_envvar`
+  con un JSON `{ "apiKey": "<tu_api_key>" }` y ejecuta `./tools/update-discovery.sh`.
 - Configura formateo automático con `google-java-format` o `spotless` según lo
   definido en el proyecto.

@@ -48,6 +48,7 @@ Este agente debe:
 - **Variables de entorno** (ejemplo):
     - `RBM_PROJECT_ID`, `RBM_BRAND_ID`, `RBM_AUTH_SCOPES`, `RBM_BASE_URL`
     - `GOOGLE_APPLICATION_CREDENTIALS` (si se usa SA)
+    - `google_api_key_json_envvar` (JSON con `apiKey` para Discovery)
 
 > Nunca comprometas credenciales. Usa `.env.local` (gitignored) o secret manager.
 
@@ -74,6 +75,7 @@ Este agente debe:
     - Generar clientes/POJOs,
     - Confirmar rutas y query params,
     - Verificar esquemas de request/response.
+    - Puede descargarse con `./tools/update-discovery.sh` (usa `google_api_key_json_envvar`)
 - Antes de codificar endpoints, **bloquea el contrato** (interfaces + DTOs) y añade **tests de contrato** (JSON de ejemplo validado con el discovery).
 
 ### 5.2 Cliente HTTP
