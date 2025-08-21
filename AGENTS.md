@@ -81,6 +81,55 @@ Este agente debe:
 - **Headers**: `Authorization: Bearer <token>`, `Content-Type: application/json`, `Accept: application/json`.
 - **Telemetry**: log de request id, latencia, tamaño payload, status.
 
+#### Snippet con WebClient y TokenProvider
+```java
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+interface TokenProvider {
+    Mono<String> getToken();
+}
+
+TokenProvider tokenProvider = /* implementation */;
+
+WebClient rbmClient = WebClient.builder()
+    .baseUrl("https://rcsbusinessmessaging.googleapis.com/v1")
+    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+    .filter((request, next) ->
+        tokenProvider.getToken().flatMap(token ->
+            next.exchange(
+                ClientRequest.from(request)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .build()
+            )
+        )
+    )
+    .build();
+```
+
+#### Ejemplo: `POST /v1/phones/{phone}/messages`
+Request:
+```http
+POST /v1/phones/{phone}/messages
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "message": { "text": "Hola desde RBM" }
+}
+```
+
+Response:
+```json
+{
+  "name": "phones/{phone}/messages/MSG_ID",
+  "sendTime": "2023-01-01T00:00:00Z"
+}
+```
+
 ### 5.3 Errores y resiliencia
 - Mapear errores RBM a excepciones propias con códigos de dominio.
 - Retries solo en transitorios (`5xx`, `429`) respetando `Retry-After`.
