@@ -36,6 +36,7 @@ Este agente debe:
 ---
 
 ## 3) Setup del entorno
+- **Requisitos mínimos**: Java 17, Maven ≥3.8
 - **Java**: 17 (Temurin/Zulu)
 - **Build**: Maven o Gradle (consistente con el repo)
 - **Spring Boot**: versión LTS alineada con Java 17
@@ -49,6 +50,11 @@ Este agente debe:
     - `GOOGLE_APPLICATION_CREDENTIALS` (si se usa SA)
 
 > Nunca comprometas credenciales. Usa `.env.local` (gitignored) o secret manager.
+
+### Pasos iniciales
+1. `git clone` del repositorio.
+2. `./mvnw clean verify` para compilar y ejecutar tests.
+3. `./mvnw spring-boot:run` indicando variables de entorno requeridas.
 
 ---
 
