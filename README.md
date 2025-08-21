@@ -125,6 +125,30 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
   }'
 ```
 
+### Evento de agente
+```bash
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentEvents?agentId=AGENT_ID" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "eventId":"evt-12345",
+    "eventType":"READ",
+    "messageId":"msg-12345"
+  }'
+```
+
+### Mensaje de usuario
+```bash
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/messages?agentId=AGENT_ID" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageId":"msg-54321",
+    "representative":{"representativeType":"USER"},
+    "text":"Mensaje enviado desde el dispositivo"
+  }'
+```
+
 ## Próximos pasos
 - Añadir más endpoints de simulación.
 - Construir imágenes Docker y despliegues.
