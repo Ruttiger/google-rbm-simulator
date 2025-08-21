@@ -1,4 +1,4 @@
-package com.messi.rbm.authsim.model;
+package com.messi.rbm.simulator.model;
 
 public record Message(
         String name,

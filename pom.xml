@@ -12,7 +12,7 @@
         <artifactId>google-rbm-simulator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>google-rbm-simulator</name>
-	<description>Google RBM Platform Simulator</description>
+        <description>Simulador de la plataforma Google RBM</description>
 	<url/>
 	<licenses>
 		<license/>

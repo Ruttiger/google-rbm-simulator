@@ -1,6 +1,6 @@
-package com.messi.rbm.authsim.controller;
+package com.messi.rbm.simulator.controller;
 
-import com.messi.rbm.authsim.model.Message;
+import com.messi.rbm.simulator.model.Message;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
