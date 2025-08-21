@@ -29,6 +29,7 @@ src/
 
 - JDK 17
 - Maven o el wrapper `mvnw`
+- `jq` (para scripts en `tools/`)
 
 ## Arrancar la aplicación
 
@@ -53,6 +54,20 @@ Para lanzar todos los tests, incluidos los de integración, utiliza:
 ```bash
 ./mvnw verify
 ```
+
+## Discovery API
+
+Para obtener el documento de *discovery* de RBM utiliza el script `tools/update-discovery.sh`.
+Requiere que la variable de entorno `google_api_key_json_envvar` contenga un JSON con el
+campo `apiKey`:
+
+```bash
+export google_api_key_json_envvar='{ "apiKey": "TU_API_KEY" }'
+./tools/update-discovery.sh
+```
+
+El script extrae `apiKey` y la envía como parámetro `key` a la API de Discovery,
+guardando el resultado en `docs/discovery/rbm-v1.json`.
 
 ## Autenticación
 
