@@ -1,6 +1,6 @@
-package com.messi.rbm.authsim.service;
+package com.messi.rbm.simulator.service;
 
-import com.messi.rbm.authsim.config.AuthProperties;
+import com.messi.rbm.simulator.config.AuthProperties;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;

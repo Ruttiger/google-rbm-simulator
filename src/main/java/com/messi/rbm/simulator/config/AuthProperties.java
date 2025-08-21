@@ -1,4 +1,4 @@
-package com.messi.rbm.authsim.config;
+package com.messi.rbm.simulator.config;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

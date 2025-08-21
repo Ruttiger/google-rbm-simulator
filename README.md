@@ -1,24 +1,27 @@
 # Google RBM Simulator
 
-Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone un endpoint de simulación compatible con la API de Google RBM.
+Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone endpoints de simulación compatibles con la API de Google RBM.
 
 ## Arquitectura
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
-- Controlador `TokenController` que emite tokens JWT de prueba.
+- Controladores `TokenController` y `AgentMessageController` para tokens y mensajes de ejemplo.
 
 ## Estructura del proyecto
 
 ```text
 src/
  ├─ main/
- │  ├─ java/com/messi/rbm/authsim/
-  │  │  ├─ GoogleRbmSimApplication.java
+ │  ├─ java/com/messi/rbm/simulator/
+  │  │  ├─ GoogleRbmSimulatorApplication.java
  │  │  ├─ config/
  │  │  │  ├─ AuthProperties.java
  │  │  │  └─ SecurityConfig.java
  │  │  ├─ controller/
+ │  │  │  ├─ AgentMessageController.java
  │  │  │  └─ TokenController.java
+ │  │  ├─ model/
+ │  │  │  └─ Message.java
  │  │  └─ service/
  │  │     └─ JwtService.java
  │  └─ resources/application.properties
@@ -36,7 +39,7 @@ src/
 ### Desde IntelliJ IDEA
 1. *File > New > Project from Existing Sources* y selecciona el fichero `pom.xml`.
 2. Espera a que el IDE importe las dependencias de Maven.
-3. Ejecuta la clase `GoogleRbmSimApplication` o usa la configuración automática de Spring Boot.
+3. Ejecuta la clase `GoogleRbmSimulatorApplication` o usa la configuración automática de Spring Boot.
 
 ### Desde línea de comandos
 ```bash

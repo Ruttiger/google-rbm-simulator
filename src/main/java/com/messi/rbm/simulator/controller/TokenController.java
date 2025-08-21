@@ -1,7 +1,7 @@
-package com.messi.rbm.authsim.controller;
+package com.messi.rbm.simulator.controller;
 
-import com.messi.rbm.authsim.config.AuthProperties;
-import com.messi.rbm.authsim.service.JwtService;
+import com.messi.rbm.simulator.config.AuthProperties;
+import com.messi.rbm.simulator.service.JwtService;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

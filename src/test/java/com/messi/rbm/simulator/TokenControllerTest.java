@@ -1,4 +1,4 @@
-package com.messi.rbm.authsim;
+package com.messi.rbm.simulator;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;

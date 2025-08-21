@@ -1,4 +1,4 @@
-package com.messi.rbm.authsim;
+package com.messi.rbm.simulator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class GoogleRbmSimApplication {
+public class GoogleRbmSimulatorApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GoogleRbmSimApplication.class, args);
+        SpringApplication.run(GoogleRbmSimulatorApplication.class, args);
     }
 }

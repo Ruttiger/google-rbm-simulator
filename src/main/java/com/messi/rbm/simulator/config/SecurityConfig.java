@@ -1,4 +1,4 @@
-package com.messi.rbm.authsim.config;
+package com.messi.rbm.simulator.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
