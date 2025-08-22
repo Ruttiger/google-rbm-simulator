@@ -98,6 +98,11 @@ El valor de `TOKEN` se emplea en las peticiones posteriores.
 
 Todas las peticiones requieren el parámetro de query `agentId` que identifica al agente remitente.
 
+### Parámetros opcionales
+
+- `forceState`: fuerza el estado del mensaje que se reporta en la respuesta. Valores aceptados: `SENT`, `DELIVERED`, `READ` o `FAILED`.
+- `echo`: si se establece en `true`, el simulador devuelve el mensaje recibido bajo el campo `echo` para facilitar la depuración.
+
 ### Texto simple
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
@@ -136,6 +141,19 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
       }
     }
   }'
+```
+La respuesta incluye los campos `forceState` y `echo`:
+
+```json
+{
+  "status": "received",
+  "forceState": "SENT",
+  "echo": {
+    "messageId": "msg-67890",
+    "text": "Aquí tienes una imagen:",
+    "representative": { "representativeType": "BOT" }
+  }
+}
 ```
 
 ### Evento de agente
