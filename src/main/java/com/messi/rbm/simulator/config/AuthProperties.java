@@ -111,7 +111,7 @@ public class AuthProperties {
 
     public List<String> filterScopes(List<String> requested) {
         if (requested == null || requested.isEmpty()) {
-            return allowedScopes;
+            return List.copyOf(allowedScopes);
         }
         return requested.stream().filter(allowedScopes::contains).toList();
     }
