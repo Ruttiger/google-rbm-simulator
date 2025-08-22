@@ -272,3 +272,17 @@ Plantilla sugerida:
 - Esqueleto de simulador (endpoints locales que emulan RBM).
 - Pipeline CI con lints, tests, cobertura y SBOM.
 
+---
+
+## 17) Nuevos tests
+- Pruebas unitarias para `TokenController` y `AgentMessageController`. Ejecuta la suite básica con `./mvnw test`.
+- Para validar también las pruebas de integración utiliza `./mvnw verify`.
+
+## 18) Pipeline
+- Workflow de GitHub Actions en `.github/workflows/ci.yml` que compila y ejecuta la suite de tests.
+- Los trabajos cancelan ejecuciones previas sobre la misma referencia para evitar duplicados.
+
+## 19) Buenas prácticas detectadas
+- Documentar instrucciones de arranque, ejemplos de mensajes y comandos de prueba en el `README`.
+- Estructurar los ejemplos por tipo de mensaje para facilitar las pruebas manuales.
+
