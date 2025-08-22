@@ -83,6 +83,7 @@ Para validar el código localmente:
 ### Pruebas de carga
 
 Se incluye una simulación de carga con [Gatling](https://gatling.io) que envía mensajes al simulador. Estas pruebas no se ejecutan por defecto.
+Antes de lanzarlas, asegúrate de que el simulador esté corriendo (por ejemplo, con `./mvnw spring-boot:run`).
 Para ejecutarlas manualmente:
 
 ```bash
