@@ -18,6 +18,12 @@ import java.util.Base64;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
+@org.springframework.test.context.TestPropertySource(properties = {
+        "auth.mode=STRICT",
+        "auth.accepted-clients[0].client-id=test-client",
+        "auth.accepted-clients[0].client-secret=secret",
+        "auth.allowed-scopes=rbm.bots,rbm.messages"
+})
 class TokenControllerTest {
 
     @Autowired
@@ -34,6 +40,16 @@ class TokenControllerTest {
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.access_token").exists();
+    }
+
+    @Test
+    void clientCredentialsGrantRejectsInvalidClient() {
+        webTestClient.post().uri("/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header(HttpHeaders.AUTHORIZATION, basic("bad", "wrong"))
+                .body(BodyInserters.fromFormData("grant_type", "client_credentials"))
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 
     @Test
