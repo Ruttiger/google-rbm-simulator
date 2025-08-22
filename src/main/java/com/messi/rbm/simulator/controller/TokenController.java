@@ -58,18 +58,16 @@ public class TokenController {
     }
 
     private Mono<ResponseEntity<Map<String, Object>>> generateResponse(String subject, List<String> scopes) {
-        try {
-            String token = jwtService.generateToken(subject, scopes);
-            Map<String, Object> resp = Map.of(
-                    "access_token", token,
-                    "token_type", "Bearer",
-                    "expires_in", properties.getTokenTtlSeconds(),
-                    "scope", String.join(" ", scopes)
-            );
-            return Mono.just(ResponseEntity.ok(resp));
-        } catch (Exception e) {
-            return Mono.error(e);
-        }
+        return Mono.fromCallable(() -> jwtService.generateToken(subject, scopes))
+                .map(token -> {
+                    Map<String, Object> resp = Map.of(
+                            "access_token", token,
+                            "token_type", "Bearer",
+                            "expires_in", properties.getTokenTtlSeconds(),
+                            "scope", String.join(" ", scopes)
+                    );
+                    return ResponseEntity.ok(resp);
+                });
     }
 
     private List<String> parseScope(String scope) {
