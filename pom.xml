@@ -164,15 +164,6 @@
                                         <simulationClass>com.messi.rbm.simulator.gatling.AgentMessagesSimulation</simulationClass>
                                         <sourcesDirectory>src/gatling/java</sourcesDirectory>
                                 </configuration>
-                                <executions>
-                                        <execution>
-                                                <id>load-tests</id>
-                                                <phase>verify</phase>
-                                                <goals>
-                                                        <goal>test</goal>
-                                                </goals>
-                                        </execution>
-                                </executions>
                         </plugin>
                 </plugins>
         </build>

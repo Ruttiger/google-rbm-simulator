@@ -82,11 +82,11 @@ Para validar el código localmente:
 
 ### Pruebas de carga
 
-Se incluye una simulación de carga con [Gatling](https://gatling.io) que envía mensajes al simulador.
-Para ejecutarla localmente:
+Se incluye una simulación de carga con [Gatling](https://gatling.io) que envía mensajes al simulador. Estas pruebas no se ejecutan por defecto.
+Para ejecutarlas manualmente:
 
 ```bash
-./mvnw -PloadTests gatling:test
+./mvnw gatling:test
 ```
 
 Al finalizar se genera un informe HTML en `target/gatling/agentmessagesloadtest-<timestamp>/index.html`.
