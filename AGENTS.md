@@ -32,6 +32,7 @@ Este agente debe:
 4. **PRs atómicas**: una PR = un objetivo claro (máx. ~300 LOC efectivos). Si superas, divide.
 5. **Automatiza**: añade tests y tareas Gradle/Maven; configura CI para validar.
 6. **Idempotencia y resiliencia** para integraciones RBM: reintentos con backoff, timeouts, circuit breaker, logs estructurados, correlación.
+7. **Documentación siempre al día**: modifica README, AGENTS, ADRs y demás documentos cuando sea necesario para reflejar el estado actual del proyecto.
 
 ---
 
