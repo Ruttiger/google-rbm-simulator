@@ -33,7 +33,11 @@ class AgentMessageControllerIntegrationTest {
                 .jsonPath("$.name").isEqualTo("phones/12345/agentMessages/msg-text")
                 .jsonPath("$.sendTime").exists()
                 .jsonPath("$.agentId").isEqualTo("test")
-                .jsonPath("$.contentMessage.text").isEqualTo("Hola desde RBM");
+                .jsonPath("$.contentMessage.text").isEqualTo("Hola desde RBM")
+                .jsonPath("$.contentMessage.richCard").doesNotExist()
+                .jsonPath("$.contentMessage.uploadedRbmFile").doesNotExist()
+                .jsonPath("$.contentMessage.contentInfo").doesNotExist()
+                .jsonPath("$.contentMessage.suggestions").doesNotExist();
     }
 
     @Test
