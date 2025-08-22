@@ -1,6 +1,7 @@
 package com.messi.rbm.authsim.controller;
 
 import com.messi.rbm.authsim.model.Message;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class UserMessageController {
     public Mono<ResponseEntity<Map<String, Object>>> receiveUserMessage(
             @PathVariable String msisdn,
             @RequestParam String agentId,
-            @RequestBody Message message) {
+            @Valid @RequestBody Message message) {
         Map<String, Object> response = Map.of(
                 "status", "received",
                 "msisdn", msisdn,
