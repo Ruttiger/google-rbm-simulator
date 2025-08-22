@@ -30,8 +30,9 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.messageType").isEqualTo("TEXT")
-                .jsonPath("$.originalText").isEqualTo("Hola desde RBM");
+                .jsonPath("$.name").isEqualTo("phones/12345/agentMessages/msg-text")
+                .jsonPath("$.sendTime").exists()
+                .jsonPath("$.contentMessage.text").isEqualTo("Hola desde RBM");
     }
 
     @Test
@@ -43,7 +44,7 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.messageType").isEqualTo("RICH_CARD");
+                .jsonPath("$.contentMessage.richCard.standaloneCard.cardContent.title").isEqualTo("Ejemplo");
     }
 
     @Test
@@ -55,7 +56,7 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.messageType").isEqualTo("MEDIA");
+                .jsonPath("$.contentMessage.contentInfo.fileUrl").isEqualTo("https://example.com/media.png");
     }
 
     @Test
@@ -67,7 +68,7 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.messageType").isEqualTo("TEXT")
-                .jsonPath("$.suggestions[0].action.text").isEqualTo("Sí");
+                .jsonPath("$.contentMessage.text").isEqualTo("¿Deseas continuar?")
+                .jsonPath("$.contentMessage.suggestions[0].action.text").isEqualTo("Sí");
     }
 }
