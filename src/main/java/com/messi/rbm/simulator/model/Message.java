@@ -12,6 +12,10 @@ import java.util.List;
  * {@code richCard}, which deviated from the specification. This record now
  * mirrors the schema defined in the RBM reference where the content is grouped
  * under {@code contentMessage}.
+ *
+ * @param name          RBM resource name of the message.
+ * @param sendTime      ISO 8601 timestamp when the message was sent.
+ * @param contentMessage wrapper containing the actual message payload.
  */
 public record Message(
         String name,
@@ -21,6 +25,12 @@ public record Message(
 
     /**
      * Content of the agent message as defined by the RBM API.
+     *
+     * @param text            plain text message.
+     * @param richCard        rich card content for rich interactions.
+     * @param uploadedRbmFile reference to an uploaded RBM file.
+     * @param contentInfo     additional content information metadata.
+     * @param suggestions     list of suggested replies or actions.
      */
     public record AgentContentMessage(
             String text,
@@ -28,5 +38,6 @@ public record Message(
             JsonNode uploadedRbmFile,
             JsonNode contentInfo,
             List<JsonNode> suggestions
-    ) {}
+    ) {
+    }
 }

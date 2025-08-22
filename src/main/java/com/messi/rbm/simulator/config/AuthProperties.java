@@ -10,6 +10,9 @@ import java.util.List;
 
 @ConfigurationProperties(prefix = "auth")
 @Validated
+/**
+ * Configuration properties governing authentication behaviour of the simulator.
+ */
 public class AuthProperties {
 
     public enum Mode { PERMISSIVE, STRICT }

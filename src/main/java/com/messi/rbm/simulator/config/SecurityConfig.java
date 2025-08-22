@@ -8,6 +8,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebFluxSecurity
+/**
+ * Basic WebFlux security configuration used by the simulator.
+ */
 public class SecurityConfig {
 
     @Bean

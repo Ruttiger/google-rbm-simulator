@@ -165,7 +165,7 @@ app/
 - **Contract tests** (schemas RBM vs. ejemplos reales).
 - **Integration tests** con WireMock/Testcontainers para HTTP.
 - **Mutation testing** opcional (Pitest) para módulos críticos.
-- **Static analysis / Linter**: tras cada cambio ejecuta `./mvnw spotbugs:check pmd:check checkstyle:check` para detectar bugs, vulnerabilidades y *code smells*. Revisa y corrige los hallazgos antes de commitear.
+- **Static analysis / Linter**: tras cada cambio ejecuta `./mvnw spotbugs:check pmd:check checkstyle:check` para detectar bugs, vulnerabilidades y *code smells*. El plugin `spotbugs-maven-plugin` ya está configurado; si falla o no está disponible, usa una alternativa como SonarQube. Revisa y corrige los hallazgos antes de commitear.
 - **CI**: build limpia, tests, lints, cobertura, análisis estático, SBOM (CycloneDX).
 
 Checklist de PR (auto):
