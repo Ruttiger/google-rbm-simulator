@@ -11,14 +11,15 @@ import org.springframework.stereotype.Component;
 public class MessageTypeDetector {
 
     public MessageType detect(final Message message) {
-        if (message.contentMessage() != null) {
-            if (message.contentMessage().richCard() != null) {
-                return MessageType.RICH_CARD;
-            }
-            if (message.contentMessage().uploadedRbmFile() != null
-                    || message.contentMessage().contentInfo() != null) {
-                return MessageType.MEDIA;
-            }
+        if (message == null || message.contentMessage() == null) {
+            return MessageType.TEXT;
+        }
+        if (message.contentMessage().richCard() != null) {
+            return MessageType.RICH_CARD;
+        }
+        if (message.contentMessage().uploadedRbmFile() != null
+                || message.contentMessage().contentInfo() != null) {
+            return MessageType.MEDIA;
         }
         return MessageType.TEXT;
     }

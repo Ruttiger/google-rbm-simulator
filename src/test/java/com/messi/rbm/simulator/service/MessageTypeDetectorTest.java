@@ -45,4 +45,15 @@ class MessageTypeDetectorTest {
         assertEquals(MessageType.MEDIA, detector.detect(message));
     }
 
+    @Test
+    void detectsTextMessageWhenMessageIsNull() {
+        assertEquals(MessageType.TEXT, detector.detect(null));
+    }
+
+    @Test
+    void detectsTextMessageWhenContentIsNull() {
+        Message message = new Message(null, null, null);
+        assertEquals(MessageType.TEXT, detector.detect(message));
+    }
+
 }
