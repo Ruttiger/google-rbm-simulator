@@ -1,5 +1,6 @@
 package com.messi.rbm.authsim;
 
+import com.messi.rbm.simulator.GoogleRbmSimulatorApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -8,7 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = GoogleRbmSimulatorApplication.class)
 @AutoConfigureWebTestClient
 class AgentMessageControllerTest {
 
