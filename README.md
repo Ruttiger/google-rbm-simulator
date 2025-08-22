@@ -80,6 +80,17 @@ Para validar el código localmente:
   ./mvnw verify
   ```
 
+### Pruebas de carga
+
+Se incluye una simulación de carga con [Gatling](https://gatling.io) que envía mensajes al simulador.
+Para ejecutarla localmente:
+
+```bash
+./mvnw -PloadTests gatling:test
+```
+
+Al finalizar se genera un informe HTML en `target/gatling/agentmessagesloadtest-<timestamp>/index.html`.
+
 ## Análisis estático
 
 Ejecuta linters y análisis estático para detectar posibles bugs y problemas de estilo:
