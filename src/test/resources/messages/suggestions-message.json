@@ -1,0 +1,9 @@
+{
+  "messageId": "msg-suggestions",
+  "representative": {"representativeType": "BOT"},
+  "text": "¿Deseas continuar?",
+  "suggestions": [
+    {"action": {"text": "Sí"}},
+    {"action": {"text": "No"}}
+  ]
+}

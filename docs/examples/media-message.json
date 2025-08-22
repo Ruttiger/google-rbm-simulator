@@ -1,0 +1,7 @@
+{
+  "messageId": "msg-media",
+  "representative": {"representativeType": "BOT"},
+  "media": {
+    "fileUrl": "https://example.com/media.png"
+  }
+}
