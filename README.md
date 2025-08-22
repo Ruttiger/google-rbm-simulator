@@ -84,12 +84,14 @@ Para validar el código localmente:
 
 Se incluye una simulación de carga con [Gatling](https://gatling.io) que envía mensajes al simulador. Estas pruebas no se ejecutan por defecto.
 Antes de lanzarlas, asegúrate de que el simulador esté corriendo (por ejemplo, con `./mvnw spring-boot:run`).
+La simulación obtiene un token de autenticación **una sola vez** y lo reutiliza en todas las peticiones durante la prueba.
 Para ejecutarlas manualmente:
 
 ```bash
-./mvnw gatling:test
+./mvnw gatling:test -Dthreads=<hilos> -Dmessages=<mensajes>
 ```
 
+Donde `threads` indica los hilos (usuarios concurrentes) y `messages` la cantidad total de mensajes a enviar.
 Al finalizar se genera un informe HTML en `target/gatling/agentmessagesloadtest-<timestamp>/index.html`.
 
 ### Ajustar recursos del simulador
