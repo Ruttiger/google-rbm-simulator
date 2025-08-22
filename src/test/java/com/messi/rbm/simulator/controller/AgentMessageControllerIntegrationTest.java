@@ -32,6 +32,7 @@ class AgentMessageControllerIntegrationTest {
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("phones/12345/agentMessages/msg-text")
                 .jsonPath("$.sendTime").exists()
+                .jsonPath("$.agentId").isEqualTo("test")
                 .jsonPath("$.contentMessage.text").isEqualTo("Hola desde RBM");
     }
 
@@ -44,6 +45,7 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
+                .jsonPath("$.agentId").isEqualTo("test")
                 .jsonPath("$.contentMessage.richCard.standaloneCard.cardContent.title").isEqualTo("Ejemplo");
     }
 
@@ -56,6 +58,7 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
+                .jsonPath("$.agentId").isEqualTo("test")
                 .jsonPath("$.contentMessage.contentInfo.fileUrl").isEqualTo("https://example.com/media.png");
     }
 
@@ -68,7 +71,18 @@ class AgentMessageControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
+                .jsonPath("$.agentId").isEqualTo("test")
                 .jsonPath("$.contentMessage.text").isEqualTo("¿Deseas continuar?")
                 .jsonPath("$.contentMessage.suggestions[0].action.text").isEqualTo("Sí");
+    }
+
+    @Test
+    void rejectsInvalidMessage() throws Exception {
+        webTestClient.post()
+                .uri("/v1/phones/12345/agentMessages?agentId=test&messageId=msg-invalid")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(read("invalid-message.json"))
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 }

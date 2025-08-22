@@ -1,6 +1,9 @@
 package com.messi.rbm.simulator.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ import java.util.List;
 public record Message(
         String name,
         String sendTime,
-        AgentContentMessage contentMessage
+        @Valid @NotNull AgentContentMessage contentMessage
 ) {
 
     /**
@@ -39,5 +42,14 @@ public record Message(
             JsonNode contentInfo,
             List<JsonNode> suggestions
     ) {
+
+        @AssertTrue(message = "contentMessage must contain at least one non-empty field")
+        public boolean hasContent() {
+            return (text != null && !text.isBlank())
+                    || richCard != null
+                    || uploadedRbmFile != null
+                    || contentInfo != null
+                    || (suggestions != null && !suggestions.isEmpty());
+        }
     }
 }

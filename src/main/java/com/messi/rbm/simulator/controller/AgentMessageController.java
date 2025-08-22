@@ -1,6 +1,7 @@
 package com.messi.rbm.simulator.controller;
 
 import com.messi.rbm.simulator.model.Message;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,10 +25,11 @@ public class AgentMessageController {
             @PathVariable String msisdn,
             @RequestParam String agentId,
             @RequestParam String messageId,
-            @RequestBody Message message) {
+            @Valid @RequestBody Message message) {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("name", "phones/" + msisdn + "/agentMessages/" + messageId);
         response.put("sendTime", Instant.now().toString());
+        response.put("agentId", agentId);
         if (message.contentMessage() != null) {
             response.put("contentMessage", message.contentMessage());
         }
