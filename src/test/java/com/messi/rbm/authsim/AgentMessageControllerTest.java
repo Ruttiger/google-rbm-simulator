@@ -25,61 +25,9 @@ class AgentMessageControllerTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.status").isEqualTo("received")
-                .jsonPath("$.forceState").doesNotExist()
-                .jsonPath("$.echo").doesNotExist();
-    }
-
-    @Test
-    void agentMessageEndpointEchoesMessage() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&echo=true")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.echo.contentMessage.text").isEqualTo("hi");
-    }
-
-    @Test
-    void agentMessageEndpointForcesState() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&forceState=SENT")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.forceState").isEqualTo("SENT");
-    }
-
-    @Test
-    void agentMessageEndpointForcesStateAndEchoes() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&forceState=SENT&echo=true")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.forceState").isEqualTo("SENT")
-                .jsonPath("$.echo.contentMessage.text").isEqualTo("hi");
-    }
-
-    @Test
-    void agentMessageEndpointRejectsInvalidForceState() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&forceState=BAD")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
-                .exchange()
-                .expectStatus().isBadRequest();
-    }
-
-    @Test
-    void agentMessageEndpointRejectsInvalidEcho() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&echo=notbool")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
-                .exchange()
-                .expectStatus().isBadRequest();
+                .jsonPath("$.name").isEqualTo("phones/12345/agentMessages/1")
+                .jsonPath("$.sendTime").exists()
+                .jsonPath("$.contentMessage.text").isEqualTo("hi");
     }
 
     @Test

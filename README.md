@@ -140,11 +140,6 @@ El valor de `TOKEN` se emplea en las peticiones posteriores.
 Todas las peticiones requieren el parámetro de query `agentId` que identifica al agente remitente.
 Para `agentMessages` también es obligatorio incluir el parámetro `messageId`.
 
-### Parámetros opcionales
-
-- `forceState`: fuerza el estado del mensaje que se reporta en la respuesta. Valores aceptados: `SENT`, `DELIVERED`, `READ` o `FAILED`.
-- `echo`: si se establece en `true`, el simulador devuelve el mensaje recibido bajo el campo `echo` para facilitar la depuración.
-
 ### Mensajes de agente
 
 #### Texto simple
@@ -159,9 +154,21 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
   }'
 ```
 
-#### Rich card + echo + estado forzado
+La respuesta del simulador imita a RBM:
+
+```json
+{
+  "name": "phones/+5215512345678/agentMessages/msg-12345",
+  "sendTime": "2025-08-22T10:26:33.509997Z",
+  "contentMessage": {
+    "text": "¡Hola! Este es un mensaje de prueba desde el simulador."
+  }
+}
+```
+
+#### Rich card
 ```bash
-curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&messageId=msg-67890&forceState=SENT&echo=true" \
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&messageId=msg-67890" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -185,35 +192,6 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
       }
     }
   }'
-```
-La respuesta incluye los campos `forceState` y `echo`:
-
-```json
-{
-  "status": "received",
-  "forceState": "SENT",
-  "echo": {
-    "contentMessage": {
-      "text": "Aquí tienes una imagen:",
-      "richCard": {
-        "standaloneCard": {
-          "cardContent": {
-            "title": "Ejemplo RBM",
-            "description": "Imagen enviada con la API",
-            "media": {
-              "height": "MEDIUM",
-              "contentInfo": {
-                "fileUrl": "https://example.com/imagen.png",
-                "thumbnailUrl": "https://example.com/thumb.png",
-                "forceRefresh": false
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
 ```
 
 #### Texto con sugerencias

@@ -1,8 +1,6 @@
 package com.messi.rbm.simulator.controller;
 
-import com.messi.rbm.simulator.model.ForceState;
 import com.messi.rbm.simulator.model.Message;
-import com.messi.rbm.simulator.service.MessageTypeDetector;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,38 +19,17 @@ import java.util.Map;
 @RestController
 public class AgentMessageController {
 
-    private final MessageTypeDetector messageTypeDetector;
-
-    public AgentMessageController(MessageTypeDetector messageTypeDetector) {
-        this.messageTypeDetector = messageTypeDetector;
-    }
-
     @PostMapping("/v1/phones/{msisdn}/agentMessages")
     public Mono<ResponseEntity<Map<String, Object>>> receiveMessage(
             @PathVariable String msisdn,
             @RequestParam String agentId,
             @RequestParam String messageId,
-            @RequestParam(required = false) ForceState forceState,
-            @RequestParam(required = false, defaultValue = "false") boolean echo,
             @RequestBody Message message) {
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", "received");
-        response.put("msisdn", msisdn);
-        response.put("agentId", agentId);
-        response.put("messageId", messageId);
+        response.put("name", "phones/" + msisdn + "/agentMessages/" + messageId);
+        response.put("sendTime", Instant.now().toString());
         if (message.contentMessage() != null) {
-            response.put("originalText", message.contentMessage().text());
-        }
-        response.put("messageType", messageTypeDetector.detect(message).name());
-        response.put("timestamp", Instant.now().toString());
-        if (message.contentMessage() != null && message.contentMessage().suggestions() != null) {
-            response.put("suggestions", message.contentMessage().suggestions());
-        }
-        if (forceState != null) {
-            response.put("forceState", forceState.name());
-        }
-        if (echo) {
-            response.put("echo", message);
+            response.put("contentMessage", message.contentMessage());
         }
         return Mono.just(ResponseEntity.ok(response));
     }
