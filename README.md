@@ -2,6 +2,19 @@
 
 Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone endpoints de simulación compatibles con la API de Google RBM.
 
+## Inicio rápido
+
+```bash
+# compila y ejecuta pruebas unitarias
+./mvnw test
+
+# ejecuta la suite completa (incluye integración)
+./mvnw verify
+
+# levanta la aplicación en http://localhost:8080
+./mvnw spring-boot:run
+```
+
 ## Arquitectura
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
@@ -48,15 +61,16 @@ src/
 La aplicación quedará disponible en `http://localhost:8080`.
 
 ## Pruebas
-Ejecuta solo los tests unitarios (se omiten los de integración que dependen de Testcontainers) con:
-```bash
-./mvnw test
-```
+Para validar el código localmente:
 
-Para lanzar todos los tests, incluidos los de integración, utiliza:
-```bash
-./mvnw verify
-```
+- Tests unitarios:
+  ```bash
+  ./mvnw test
+  ```
+- Todos los tests (incluye integración):
+  ```bash
+  ./mvnw verify
+  ```
 
 ## Integración continua
 
@@ -103,7 +117,9 @@ Todas las peticiones requieren el parámetro de query `agentId` que identifica a
 - `forceState`: fuerza el estado del mensaje que se reporta en la respuesta. Valores aceptados: `SENT`, `DELIVERED`, `READ` o `FAILED`.
 - `echo`: si se establece en `true`, el simulador devuelve el mensaje recibido bajo el campo `echo` para facilitar la depuración.
 
-### Texto simple
+### Mensajes de agente
+
+#### Texto simple
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
   -H "Authorization: Bearer $TOKEN" \
@@ -115,7 +131,7 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
   }'
 ```
 
-### Rich card + echo + estado forzado
+#### Rich card + echo + estado forzado
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&forceState=SENT&echo=true" \
   -H "Authorization: Bearer $TOKEN" \
@@ -156,7 +172,7 @@ La respuesta incluye los campos `forceState` y `echo`:
 }
 ```
 
-### Texto con sugerencias
+#### Texto con sugerencias
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
   -H "Authorization: Bearer $TOKEN" \
@@ -169,7 +185,7 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?ag
   }'
 ```
 
-### Evento de agente
+### Eventos de agente
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentEvents?agentId=AGENT_ID" \
   -H "Authorization: Bearer $TOKEN" \
@@ -181,7 +197,7 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentEvents?agen
   }'
 ```
 
-### Mensaje de usuario
+### Mensajes de usuario
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/messages?agentId=AGENT_ID" \
   -H "Authorization: Bearer $TOKEN" \
