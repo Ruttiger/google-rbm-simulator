@@ -164,11 +164,12 @@ app/
 - **Contract tests** (schemas RBM vs. ejemplos reales).
 - **Integration tests** con WireMock/Testcontainers para HTTP.
 - **Mutation testing** opcional (Pitest) para módulos críticos.
-- **Static analysis**: SpotBugs/Checkstyle/PMD + `errorprone` si aplica.
+- **Static analysis / Linter**: tras cada cambio ejecuta `./mvnw spotbugs:check pmd:check checkstyle:check` para detectar bugs, vulnerabilidades y *code smells*. Revisa y corrige los hallazgos antes de commitear.
 - **CI**: build limpia, tests, lints, cobertura, análisis estático, SBOM (CycloneDX).
 
 Checklist de PR (auto):
 - [ ] Build OK + tests pasan.
+- [ ] Linter (SpotBugs/Checkstyle/PMD) ejecutado sin errores.
 - [ ] Nuevos endpoints/POJOs documentados.
 - [ ] Manejo de errores probado (feliz y no feliz).
 - [ ] Logs/telemetría adecuados.
