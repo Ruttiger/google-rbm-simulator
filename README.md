@@ -91,6 +91,41 @@ Para ejecutarlas manualmente:
 
 Al finalizar se genera un informe HTML en `target/gatling/agentmessagesloadtest-<timestamp>/index.html`.
 
+### Ajustar recursos del simulador
+
+Para pruebas masivas es posible asignar más memoria y tunear hilos y conexiones de Netty:
+
+```bash
+# empaqueta el proyecto
+./mvnw clean package
+
+# ejecuta el JAR con parámetros de rendimiento
+java -Xms512m -Xmx2g \
+  -jar target/google-rbm-simulator-0.0.1-SNAPSHOT.jar \
+  --reactor.netty.ioWorkerCount=32 \
+  --reactor.netty.pool.maxConnections=10000 \
+  --server.netty.connection-timeout=30s \
+  --spring.codec.max-in-memory-size=10MB
+```
+
+- `-Xms` / `-Xmx`: tamaño inicial y máximo del heap.
+- `ioWorkerCount`: hilos de I/O de Netty.
+- `maxConnections`: conexiones simultáneas permitidas.
+- `connection-timeout` y `max-in-memory-size`: límites de tiempo y buffer.
+
+Los mismos parámetros pueden usarse con `spring-boot:run`:
+
+```bash
+JAVA_OPTS="-Xms512m -Xmx2g" \
+./mvnw spring-boot:run \
+  -Dreactor.netty.ioWorkerCount=32 \
+  -Dreactor.netty.pool.maxConnections=10000 \
+  -Dserver.netty.connection-timeout=30s \
+  -Dspring.codec.max-in-memory-size=10MB
+```
+
+Modifica los valores según la carga que desees simular.
+
 ## Análisis estático
 
 Ejecuta linters y análisis estático para detectar posibles bugs y problemas de estilo:
