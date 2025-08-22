@@ -1,5 +1,6 @@
 package com.messi.rbm.simulator.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -20,6 +21,7 @@ import java.util.List;
  * @param sendTime      ISO 8601 timestamp when the message was sent.
  * @param contentMessage wrapper containing the actual message payload.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record Message(
         String name,
         String sendTime,
@@ -35,6 +37,7 @@ public record Message(
      * @param contentInfo     additional content information metadata.
      * @param suggestions     list of suggested replies or actions.
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public record AgentContentMessage(
             String text,
             JsonNode richCard,
