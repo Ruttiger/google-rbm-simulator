@@ -12,14 +12,17 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Handles callbacks of agent events received in the auth simulator.
+ */
 @RestController
 public class AgentEventController {
 
     @PostMapping("/v1/phones/{msisdn}/agentEvents")
     public Mono<ResponseEntity<Map<String, Object>>> receiveEvent(
-            @PathVariable String msisdn,
-            @RequestParam String agentId,
-            @RequestBody AgentEvent event) {
+            @PathVariable final String msisdn,
+            @RequestParam final String agentId,
+            @RequestBody final AgentEvent event) {
         Map<String, Object> response = Map.of(
                 "status", "received",
                 "msisdn", msisdn,

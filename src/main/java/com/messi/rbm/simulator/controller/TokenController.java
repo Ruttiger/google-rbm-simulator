@@ -17,6 +17,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Issues OAuth tokens for clients interacting with the simulator.
+ */
 @RestController
 public class TokenController {
 

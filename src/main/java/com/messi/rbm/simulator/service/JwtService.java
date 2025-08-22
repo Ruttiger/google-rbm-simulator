@@ -23,6 +23,9 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service responsible for generating JWT tokens used by the simulator.
+ */
 @Service
 public class JwtService {
 
@@ -30,7 +33,12 @@ public class JwtService {
     private RSASSASigner signer;
     private RSAKey rsaKey;
 
-    public JwtService(AuthProperties properties) {
+    /**
+     * Creates a JWT service with the given configuration properties.
+     *
+     * @param properties authentication configuration.
+     */
+    public JwtService(final AuthProperties properties) {
         this.properties = properties;
     }
 
@@ -53,7 +61,7 @@ public class JwtService {
         signer = new RSASSASigner(rsaKey);
     }
 
-    private RSAPrivateKey loadPrivateKey(String pem) throws Exception {
+    private RSAPrivateKey loadPrivateKey(final String pem) throws Exception {
         String content = pem.replaceAll("-----BEGIN (.*)-----", "")
                 .replaceAll("-----END (.*)-----(\\r?\\n)?", "")
                 .replaceAll("\\s", "");
@@ -62,7 +70,7 @@ public class JwtService {
         return (RSAPrivateKey) kf.generatePrivate(new PKCS8EncodedKeySpec(decoded));
     }
 
-    private RSAPublicKey loadPublicKey(String pem) throws Exception {
+    private RSAPublicKey loadPublicKey(final String pem) throws Exception {
         String content = pem.replaceAll("-----BEGIN (.*)-----", "")
                 .replaceAll("-----END (.*)-----(\\r?\\n)?", "")
                 .replaceAll("\\s", "");
@@ -71,7 +79,7 @@ public class JwtService {
         return (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(decoded));
     }
 
-    public String generateToken(String subject, List<String> scopes) throws JOSEException {
+    public String generateToken(final String subject, final List<String> scopes) throws JOSEException {
         Instant now = Instant.now();
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .issuer(properties.getIssuer())

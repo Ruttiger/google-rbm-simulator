@@ -13,14 +13,17 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Receives user messages sent to the auth simulator.
+ */
 @RestController
 public class UserMessageController {
 
     @PostMapping("/v1/phones/{msisdn}/messages")
     public Mono<ResponseEntity<Map<String, Object>>> receiveUserMessage(
-            @PathVariable String msisdn,
-            @RequestParam String agentId,
-            @Valid @RequestBody Message message) {
+            @PathVariable final String msisdn,
+            @RequestParam final String agentId,
+            @Valid @RequestBody final Message message) {
         Map<String, Object> response = Map.of(
                 "status", "received",
                 "msisdn", msisdn,

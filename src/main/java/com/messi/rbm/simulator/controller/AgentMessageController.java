@@ -15,6 +15,9 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Endpoint for sending agent messages to user phones in the simulator.
+ */
 @RestController
 public class AgentMessageController {
 

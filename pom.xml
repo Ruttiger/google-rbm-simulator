@@ -118,6 +118,25 @@
                                         </execution>
                                 </executions>
                         </plugin>
+                        <plugin>
+                                <groupId>com.github.spotbugs</groupId>
+                                <artifactId>spotbugs-maven-plugin</artifactId>
+                                <version>4.7.3.4</version>
+                                <configuration>
+                                        <effort>Max</effort>
+                                        <threshold>Low</threshold>
+                                </configuration>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-checkstyle-plugin</artifactId>
+                                <version>3.6.0</version>
+                                <configuration>
+                                        <configLocation>checkstyle.xml</configLocation>
+                                        <consoleOutput>true</consoleOutput>
+                                        <failsOnError>true</failsOnError>
+                                </configuration>
+                        </plugin>
                 </plugins>
         </build>
 

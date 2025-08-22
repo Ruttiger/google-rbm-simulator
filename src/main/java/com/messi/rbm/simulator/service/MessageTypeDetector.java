@@ -4,10 +4,13 @@ import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.model.MessageType;
 import org.springframework.stereotype.Component;
 
+/**
+ * Utility component that determines the message type based on its content.
+ */
 @Component
 public class MessageTypeDetector {
 
-    public MessageType detect(Message message) {
+    public MessageType detect(final Message message) {
         if (message.contentMessage() != null) {
             if (message.contentMessage().richCard() != null) {
                 return MessageType.RICH_CARD;
