@@ -68,6 +68,22 @@ La aplicación utiliza variables para interactuar con la API de RBM y los script
 ```
 La aplicación quedará disponible en `http://localhost:8080`.
 
+### Ejecutar JAR empaquetado
+
+Puedes compilar el artefacto y lanzarlo directamente con `java -jar`. Es
+posible especificar el puerto de escucha u otras propiedades de Spring:
+
+```bash
+# genera el JAR
+./mvnw clean package
+
+# ejecuta el JAR indicando el puerto (por defecto 8080)
+java -jar target/google-rbm-simulator-0.0.1-SNAPSHOT.jar --server.port=8080
+```
+
+Reemplaza `8080` por el puerto deseado y ajusta variables de entorno si es
+necesario.
+
 ## Pruebas
 Para validar el código localmente:
 
