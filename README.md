@@ -58,6 +58,16 @@ Para lanzar todos los tests, incluidos los de integración, utiliza:
 ./mvnw verify
 ```
 
+## Integración continua
+
+La CI se ejecuta mediante [GitHub Actions](.github/workflows/ci.yml). El flujo se dispara al hacer `push` sobre la rama `main` y
+al abrir o actualizar cualquier `pull_request`. Los trabajos cancelan ejecuciones previas sobre la misma referencia para evitar
+duplicados. Para reproducir la validación localmente utiliza:
+
+```bash
+./mvnw verify
+```
+
 ## Discovery API
 
 Para obtener el documento de *discovery* de RBM utiliza el script `tools/update-discovery.sh`.
