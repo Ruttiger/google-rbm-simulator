@@ -127,6 +127,7 @@ El valor de `TOKEN` se emplea en las peticiones posteriores.
 ## Peticiones de ejemplo
 
 Todas las peticiones requieren el parámetro de query `agentId` que identifica al agente remitente.
+Para `agentMessages` también es obligatorio incluir el parámetro `messageId`.
 
 ### Parámetros opcionales
 
@@ -137,36 +138,36 @@ Todas las peticiones requieren el parámetro de query `agentId` que identifica a
 
 #### Texto simple
 ```bash
-curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&messageId=msg-12345" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "messageId":"msg-12345",
-    "representative":{"representativeType":"BOT"},
-    "text":"¡Hola! Este es un mensaje de prueba desde el simulador."
+    "contentMessage": {
+      "text": "¡Hola! Este es un mensaje de prueba desde el simulador."
+    }
   }'
 ```
 
 #### Rich card + echo + estado forzado
 ```bash
-curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&forceState=SENT&echo=true" \
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&messageId=msg-67890&forceState=SENT&echo=true" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "messageId":"msg-67890",
-    "representative":{"representativeType":"BOT"},
-    "text":"Aquí tienes una imagen:",
-    "richCard":{
-      "standaloneCard":{
-        "cardContent":{
-          "title":"Ejemplo RBM",
-          "description":"Imagen enviada con la API",
-          "media":{
-            "height":"MEDIUM",
-            "contentInfo":{
-              "fileUrl":"https://example.com/imagen.png",
-              "thumbnailUrl":"https://example.com/thumb.png",
-              "forceRefresh":false
+    "contentMessage": {
+      "text": "Aquí tienes una imagen:",
+      "richCard": {
+        "standaloneCard": {
+          "cardContent": {
+            "title": "Ejemplo RBM",
+            "description": "Imagen enviada con la API",
+            "media": {
+              "height": "MEDIUM",
+              "contentInfo": {
+                "fileUrl": "https://example.com/imagen.png",
+                "thumbnailUrl": "https://example.com/thumb.png",
+                "forceRefresh": false
+              }
             }
           }
         }
@@ -181,23 +182,42 @@ La respuesta incluye los campos `forceState` y `echo`:
   "status": "received",
   "forceState": "SENT",
   "echo": {
-    "messageId": "msg-67890",
-    "text": "Aquí tienes una imagen:",
-    "representative": { "representativeType": "BOT" }
+    "contentMessage": {
+      "text": "Aquí tienes una imagen:",
+      "richCard": {
+        "standaloneCard": {
+          "cardContent": {
+            "title": "Ejemplo RBM",
+            "description": "Imagen enviada con la API",
+            "media": {
+              "height": "MEDIUM",
+              "contentInfo": {
+                "fileUrl": "https://example.com/imagen.png",
+                "thumbnailUrl": "https://example.com/thumb.png",
+                "forceRefresh": false
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 ```
 
 #### Texto con sugerencias
 ```bash
-curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&messageId=msg-13579" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "messageId":"msg-13579",
-    "representative":{"representativeType":"BOT"},
-    "text":"¿Continuar?",
-    "suggestions":[{"action":{"text":"Sí"}},{"action":{"text":"No"}}]
+    "contentMessage": {
+      "text": "¿Continuar?",
+      "suggestions": [
+        {"action": {"text": "Sí"}},
+        {"action": {"text": "No"}}
+      ]
+    }
   }'
 ```
 
