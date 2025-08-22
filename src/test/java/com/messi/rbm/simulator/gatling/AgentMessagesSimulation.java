@@ -14,14 +14,13 @@ import io.gatling.javaapi.http.HttpProtocolBuilder;
 public class AgentMessagesSimulation extends Simulation {
 
   private final HttpProtocolBuilder httpProtocol =
-      http.baseUrl("http://localhost:8080")
-          .acceptHeader("application/json")
-          .contentTypeHeader("application/json");
+      http.baseUrl("http://localhost:8080").acceptHeader("application/json");
 
   private final ChainBuilder getToken =
       exec(
           http("get-token")
               .post("/token")
+              .header("Content-Type", "application/x-www-form-urlencoded")
               .formParam("grant_type", "client_credentials")
               .formParam("client_id", "test")
               .formParam("client_secret", "test")
@@ -33,6 +32,7 @@ public class AgentMessagesSimulation extends Simulation {
               .post(
                   "/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID&messageId=#{randomUuid()}")
               .header("Authorization", "Bearer #{token}")
+              .header("Content-Type", "application/json")
               .body(StringBody("{\"contentMessage\":{\"text\":\"Hola desde Gatling\"}}"))
               .check(status().is(200)));
 
