@@ -30,6 +30,17 @@
                 <java.version>17</java.version>
                 <gatling.version>3.14.3</gatling.version>
         </properties>
+        <dependencyManagement>
+                <dependencies>
+                        <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-bom</artifactId>
+                                <version>4.2.1.Final</version>
+                                <type>pom</type>
+                                <scope>import</scope>
+                        </dependency>
+                </dependencies>
+        </dependencyManagement>
         <dependencies>
                 <dependency>
                         <groupId>org.springframework.boot</groupId>
@@ -162,7 +173,9 @@
                                 <version>4.20.1</version>
                                 <configuration>
                                         <simulationClass>com.messi.rbm.simulator.gatling.AgentMessagesSimulation</simulationClass>
-                                        <sourcesDirectory>src/gatling/java</sourcesDirectory>
+                                        <jvmArgs>
+                                                <jvmArg>-Dgatling.netty.useNativeTransport=false</jvmArg>
+                                        </jvmArgs>
                                 </configuration>
                         </plugin>
                 </plugins>
