@@ -24,7 +24,7 @@ class AgentMessageControllerIntegrationTest {
     @Test
     void handlesTextMessage() throws Exception {
         webTestClient.post()
-                .uri("/v1/phones/12345/agentMessages?agentId=test")
+                .uri("/v1/phones/12345/agentMessages?agentId=test&messageId=msg-text")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(read("text-message.json"))
                 .exchange()
@@ -37,7 +37,7 @@ class AgentMessageControllerIntegrationTest {
     @Test
     void handlesRichCardMessage() throws Exception {
         webTestClient.post()
-                .uri("/v1/phones/12345/agentMessages?agentId=test")
+                .uri("/v1/phones/12345/agentMessages?agentId=test&messageId=msg-richcard")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(read("rich-card-message.json"))
                 .exchange()
@@ -49,7 +49,7 @@ class AgentMessageControllerIntegrationTest {
     @Test
     void handlesMediaMessage() throws Exception {
         webTestClient.post()
-                .uri("/v1/phones/12345/agentMessages?agentId=test")
+                .uri("/v1/phones/12345/agentMessages?agentId=test&messageId=msg-media")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(read("media-message.json"))
                 .exchange()
@@ -61,7 +61,7 @@ class AgentMessageControllerIntegrationTest {
     @Test
     void handlesSuggestionsMessage() throws Exception {
         webTestClient.post()
-                .uri("/v1/phones/12345/agentMessages?agentId=test")
+                .uri("/v1/phones/12345/agentMessages?agentId=test&messageId=msg-suggestions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(read("suggestions-message.json"))
                 .exchange()

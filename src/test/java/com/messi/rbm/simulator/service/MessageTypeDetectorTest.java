@@ -24,21 +24,24 @@ class MessageTypeDetectorTest {
 
     @Test
     void detectsTextMessage() {
-        Message message = new Message(null, "id1", "hola", new Message.Representative("BOT"), null, null, null, null);
+        Message.AgentContentMessage content = new Message.AgentContentMessage("hola", null, null, null, null);
+        Message message = new Message(null, null, content);
         assertEquals(MessageType.TEXT, detector.detect(message));
     }
 
     @Test
     void detectsRichCardMessage() throws IOException {
         JsonNode richCard = mapper.readTree("{\"standaloneCard\":{}}" );
-        Message message = new Message(null, "id2", null, new Message.Representative("BOT"), null, richCard, null, null);
+        Message.AgentContentMessage content = new Message.AgentContentMessage(null, richCard, null, null, null);
+        Message message = new Message(null, null, content);
         assertEquals(MessageType.RICH_CARD, detector.detect(message));
     }
 
     @Test
     void detectsMediaMessage() throws IOException {
         JsonNode media = mapper.readTree("{\"fileUrl\":\"https://example.com\"}" );
-        Message message = new Message(null, "id3", null, new Message.Representative("BOT"), null, null, media, null);
+        Message.AgentContentMessage content = new Message.AgentContentMessage(null, null, null, media, null);
+        Message message = new Message(null, null, content);
         assertEquals(MessageType.MEDIA, detector.detect(message));
     }
 

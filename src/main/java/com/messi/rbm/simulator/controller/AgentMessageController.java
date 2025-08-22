@@ -28,6 +28,7 @@ public class AgentMessageController {
     public Mono<ResponseEntity<Map<String, Object>>> receiveMessage(
             @PathVariable String msisdn,
             @RequestParam String agentId,
+            @RequestParam String messageId,
             @RequestParam(required = false) ForceState forceState,
             @RequestParam(required = false, defaultValue = "false") boolean echo,
             @RequestBody Message message) {
@@ -35,12 +36,14 @@ public class AgentMessageController {
         response.put("status", "received");
         response.put("msisdn", msisdn);
         response.put("agentId", agentId);
-        response.put("messageId", message.messageId());
-        response.put("originalText", message.text());
+        response.put("messageId", messageId);
+        if (message.contentMessage() != null) {
+            response.put("originalText", message.contentMessage().text());
+        }
         response.put("messageType", messageTypeDetector.detect(message).name());
         response.put("timestamp", Instant.now().toString());
-        if (message.suggestions() != null) {
-            response.put("suggestions", message.suggestions());
+        if (message.contentMessage() != null && message.contentMessage().suggestions() != null) {
+            response.put("suggestions", message.contentMessage().suggestions());
         }
         if (forceState != null) {
             response.put("forceState", forceState.name());
