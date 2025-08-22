@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.List;
@@ -40,7 +41,7 @@ public class TokenController {
             String grantType = form.getFirst("grant_type");
             if ("client_credentials".equals(grantType)) {
                 ClientCredentials creds = extractClient(auth, form);
-                if (!properties.isClientAccepted(creds.clientId(), creds.clientSecret())) {
+                if (creds == null || !properties.isClientAccepted(creds.clientId(), creds.clientSecret())) {
                     return Mono.just(ResponseEntity.status(401).build());
                 }
                 List<String> scopes = properties.filterScopes(parseScope(form.getFirst("scope")));
@@ -80,9 +81,14 @@ public class TokenController {
 
     private ClientCredentials extractClient(String auth, MultiValueMap<String, String> form) {
         if (auth != null && auth.startsWith("Basic ")) {
-            String decoded = new String(Base64.getDecoder().decode(auth.substring(6)));
-            String[] parts = decoded.split(":", 2);
-            return new ClientCredentials(parts[0], parts.length > 1 ? parts[1] : "");
+            try {
+                byte[] decoded = Base64.getDecoder().decode(auth.substring(6));
+                String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+                String[] parts = decodedStr.split(":", 2);
+                return new ClientCredentials(parts[0], parts.length > 1 ? parts[1] : "");
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
         }
         return new ClientCredentials(form.getFirst("client_id"), form.getFirst("client_secret"));
     }

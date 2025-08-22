@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,6 +48,27 @@ class TokenControllerTest {
         webTestClient.post().uri("/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .header(HttpHeaders.AUTHORIZATION, basic("bad", "wrong"))
+                .body(BodyInserters.fromFormData("grant_type", "client_credentials"))
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void clientCredentialsGrantRejectsMalformedHeader() {
+        webTestClient.post().uri("/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header(HttpHeaders.AUTHORIZATION, "Basic !!!")
+                .body(BodyInserters.fromFormData("grant_type", "client_credentials"))
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void clientCredentialsGrantRejectsHeaderWithoutColon() {
+        String malformed = Base64.getEncoder().encodeToString("nocolon".getBytes(StandardCharsets.UTF_8));
+        webTestClient.post().uri("/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + malformed)
                 .body(BodyInserters.fromFormData("grant_type", "client_credentials"))
                 .exchange()
                 .expectStatus().isUnauthorized();
