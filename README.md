@@ -47,6 +47,14 @@ src/
 - Maven o el wrapper `mvnw`
 - `jq` (para scripts en `tools/`)
 
+## Variables de entorno
+
+La aplicación utiliza variables para interactuar con la API de RBM y los scripts auxiliares:
+
+- `RBM_PROJECT_ID`, `RBM_BRAND_ID`, `RBM_AUTH_SCOPES`, `RBM_BASE_URL`
+- `GOOGLE_APPLICATION_CREDENTIALS` (para cuentas de servicio)
+- `google_api_key_json_envvar` (JSON con `apiKey` para scripts de *Discovery*)
+
 ## Arrancar la aplicación
 
 ### Desde IntelliJ IDEA
@@ -71,6 +79,14 @@ Para validar el código localmente:
   ```bash
   ./mvnw verify
   ```
+
+## Análisis estático
+
+Ejecuta linters y análisis estático para detectar posibles bugs y problemas de estilo:
+
+```bash
+./mvnw spotbugs:check pmd:check checkstyle:check
+```
 
 ## Integración continua
 
