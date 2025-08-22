@@ -19,9 +19,9 @@ class AgentMessageControllerTest {
 
     @Test
     void agentMessageEndpointReceivesMessage() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT")
+        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"messageId\":\"1\",\"text\":\"hi\",\"representative\":{\"representativeType\":\"BOT\"}}"))
+                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -32,20 +32,20 @@ class AgentMessageControllerTest {
 
     @Test
     void agentMessageEndpointEchoesMessage() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&echo=true")
+        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&echo=true")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"messageId\":\"1\",\"text\":\"hi\",\"representative\":{\"representativeType\":\"BOT\"}}"))
+                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.echo.text").isEqualTo("hi");
+                .jsonPath("$.echo.contentMessage.text").isEqualTo("hi");
     }
 
     @Test
     void agentMessageEndpointForcesState() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&forceState=SENT")
+        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&forceState=SENT")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"messageId\":\"1\",\"text\":\"hi\",\"representative\":{\"representativeType\":\"BOT\"}}"))
+                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -54,30 +54,30 @@ class AgentMessageControllerTest {
 
     @Test
     void agentMessageEndpointForcesStateAndEchoes() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&forceState=SENT&echo=true")
+        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&forceState=SENT&echo=true")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"messageId\":\"1\",\"text\":\"hi\",\"representative\":{\"representativeType\":\"BOT\"}}"))
+                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.forceState").isEqualTo("SENT")
-                .jsonPath("$.echo.text").isEqualTo("hi");
+                .jsonPath("$.echo.contentMessage.text").isEqualTo("hi");
     }
 
     @Test
     void agentMessageEndpointRejectsInvalidForceState() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&forceState=BAD")
+        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&forceState=BAD")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"messageId\":\"1\",\"text\":\"hi\",\"representative\":{\"representativeType\":\"BOT\"}}"))
+                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
                 .exchange()
                 .expectStatus().isBadRequest();
     }
 
     @Test
     void agentMessageEndpointRejectsInvalidEcho() {
-        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&echo=notbool")
+        webTestClient.post().uri("/v1/phones/12345/agentMessages?agentId=AGENT&messageId=1&echo=notbool")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("{\"messageId\":\"1\",\"text\":\"hi\",\"representative\":{\"representativeType\":\"BOT\"}}"))
+                .body(BodyInserters.fromValue("{\"contentMessage\":{\"text\":\"hi\"}}"))
                 .exchange()
                 .expectStatus().isBadRequest();
     }

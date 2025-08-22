@@ -8,11 +8,14 @@ import org.springframework.stereotype.Component;
 public class MessageTypeDetector {
 
     public MessageType detect(Message message) {
-        if (message.richCard() != null) {
-            return MessageType.RICH_CARD;
-        }
-        if (message.media() != null) {
-            return MessageType.MEDIA;
+        if (message.contentMessage() != null) {
+            if (message.contentMessage().richCard() != null) {
+                return MessageType.RICH_CARD;
+            }
+            if (message.contentMessage().uploadedRbmFile() != null
+                    || message.contentMessage().contentInfo() != null) {
+                return MessageType.MEDIA;
+            }
         }
         return MessageType.TEXT;
     }

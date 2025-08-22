@@ -1,11 +1,11 @@
 {
-  "messageId": "msg-richcard",
-  "representative": {"representativeType": "BOT"},
-  "richCard": {
-    "standaloneCard": {
-      "cardContent": {
-        "title": "Ejemplo",
-        "description": "Descripción"
+  "contentMessage": {
+    "richCard": {
+      "standaloneCard": {
+        "cardContent": {
+          "title": "Ejemplo",
+          "description": "Descripción"
+        }
       }
     }
   }
