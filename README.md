@@ -156,6 +156,19 @@ La respuesta incluye los campos `forceState` y `echo`:
 }
 ```
 
+### Texto con sugerencias
+```bash
+curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentMessages?agentId=AGENT_ID" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageId":"msg-13579",
+    "representative":{"representativeType":"BOT"},
+    "text":"¿Continuar?",
+    "suggestions":[{"action":{"text":"Sí"}},{"action":{"text":"No"}}]
+  }'
+```
+
 ### Evento de agente
 ```bash
 curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/agentEvents?agentId=AGENT_ID" \
