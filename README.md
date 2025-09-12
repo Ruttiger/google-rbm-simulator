@@ -288,6 +288,26 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/messages?agentId
   }'
 ```
 
+### Brands, Agents e Integrations
+
+Además de los mensajes, el simulador expone recursos CRUD para **brands**, **agents**, **integrations** y la consulta de **regions**. Algunos ejemplos:
+
+```bash
+# obtener token
+TOKEN=$(curl -s -X POST http://localhost:8080/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&client_id=test-client&client_secret=secret" | jq -r .access_token)
+
+# crear brand
+curl -X POST http://localhost:8080/v1/brands \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"displayName":"Mi Empresa S.A."}'
+
+# listar regions
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/regions
+```
+
 ## Próximos pasos
 - Añadir más endpoints de simulación.
 - Construir imágenes Docker y despliegues.

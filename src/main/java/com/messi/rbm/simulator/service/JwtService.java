@@ -5,6 +5,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -22,6 +23,8 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import com.nimbusds.jose.JWSVerifier;
+import java.text.ParseException;
 
 /**
  * Service responsible for generating JWT tokens used by the simulator.
@@ -99,5 +102,25 @@ public class JwtService {
 
     public RSAKey getRsaKey() {
         return rsaKey.toPublicJWK();
+    }
+
+    /**
+     * Validates the provided JWT token.
+     *
+     * @param token jwt token
+     * @return true if valid and not expired
+     */
+    public boolean isValid(String token) {
+        try {
+            SignedJWT jwt = SignedJWT.parse(token);
+            JWSVerifier verifier = new RSASSAVerifier(rsaKey.toRSAPublicKey());
+            if (!jwt.verify(verifier)) {
+                return false;
+            }
+            Date exp = jwt.getJWTClaimsSet().getExpirationTime();
+            return exp != null && exp.toInstant().isAfter(Instant.now());
+        } catch (ParseException | JOSEException e) {
+            return false;
+        }
     }
 }
