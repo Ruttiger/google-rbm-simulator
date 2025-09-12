@@ -20,3 +20,12 @@ para el entorno local de desarrollo.
   la aplicación.
 - Configura formateo automático con `google-java-format` o `spotless` según lo
   definido en el proyecto.
+
+## Colección Postman
+Para probar manualmente los endpoints se incluye una colección y un entorno de Postman en `docs/postman/`.
+
+1. Importa la colección `RBM-Simulator.postman_collection.json`.
+2. Importa el entorno `RBM-Simulator.postman_environment.json` y actívalo.
+3. Ajusta la variable `baseUrl` si es necesario y envía las solicitudes.
+
+Consulta [postman/README.md](postman/README.md) para más detalles.
