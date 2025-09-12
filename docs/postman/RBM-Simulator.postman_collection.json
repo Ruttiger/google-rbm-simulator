@@ -26,6 +26,11 @@
       "key": "INTEGRATION_ID",
       "value": "",
       "enabled": true
+    },
+    {
+      "key": "WEBHOOK_URL",
+      "value": "http://localhost:8081/callback",
+      "enabled": true
     }
   ],
   "_postman_variable_scope": "environment",
