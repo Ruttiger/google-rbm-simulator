@@ -53,7 +53,6 @@ La aplicación utiliza variables para interactuar con la API de RBM y los script
 
 - `RBM_PROJECT_ID`, `RBM_BRAND_ID`, `RBM_AUTH_SCOPES`, `RBM_BASE_URL`
 - `GOOGLE_APPLICATION_CREDENTIALS` (para cuentas de servicio)
-- `google_api_key_json_envvar` (JSON con `apiKey` para scripts de *Discovery*)
 
 ## Arrancar la aplicación
 
@@ -162,20 +161,6 @@ duplicados. Para reproducir la validación localmente utiliza:
 ```bash
 ./mvnw verify
 ```
-
-## Discovery API
-
-Para obtener el documento de *discovery* de RBM utiliza el script `tools/update-discovery.sh`.
-Requiere que la variable de entorno `google_api_key_json_envvar` contenga un JSON con el
-campo `apiKey`:
-
-```bash
-export google_api_key_json_envvar='{ "apiKey": "TU_API_KEY" }'
-./tools/update-discovery.sh
-```
-
-El script extrae `apiKey` y la envía como parámetro `key` a la API de Discovery,
-guardando el resultado en `docs/discovery/rbm-v1.json`.
 
 ## Autenticación
 
@@ -286,6 +271,26 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/messages?agentId
     "representative":{"representativeType":"USER"},
     "text":"Mensaje enviado desde el dispositivo"
   }'
+```
+
+### Brands, Agents e Integrations
+
+Además de los mensajes, el simulador expone recursos CRUD para **brands**, **agents**, **integrations** y la consulta de **regions**. Algunos ejemplos:
+
+```bash
+# obtener token
+TOKEN=$(curl -s -X POST http://localhost:8080/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&client_id=test-client&client_secret=secret" | jq -r .access_token)
+
+# crear brand
+curl -X POST http://localhost:8080/v1/brands \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"displayName":"Mi Empresa S.A."}'
+
+# listar regions
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/regions
 ```
 
 ## Próximos pasos
