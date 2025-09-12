@@ -6,10 +6,8 @@ import com.messi.rbm.simulator.service.WebhookService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.messi.rbm.simulator.service.WebhookService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Endpoint for sending agent messages to user phones in the simulator.
@@ -30,6 +31,9 @@ public class AgentMessageController {
 
     private final WebhookService webhookService;
     private final BusinessMessagingService messagingService;
+
+    private static final Pattern EVENT_PATTERN =
+            Pattern.compile("#(READ|DELIVERED|DISPLAYED)(?:\\(delay=(\\d+)\\))?");
 
     public AgentMessageController(WebhookService webhookService, BusinessMessagingService messagingService) {
         this.webhookService = webhookService;
@@ -83,12 +87,15 @@ public class AgentMessageController {
                     "text", userText
             )).subscribe();
         }
-        if (text.contains("#READ")) {
-            webhookService.sendCallback(agentId, eventMap("READ", msisdn)).subscribe();
+
+        Matcher matcher = EVENT_PATTERN.matcher(text);
+        while (matcher.find()) {
+            String type = matcher.group(1);
+            String delayGroup = matcher.group(2);
+            long delay = delayGroup != null ? Long.parseLong(delayGroup) : 0L;
+            scheduleEvent(agentId, msisdn, type, delay);
         }
-        if (text.contains("#DELIVERED")) {
-            webhookService.sendCallback(agentId, eventMap("DELIVERED", msisdn)).subscribe();
-        }
+
         if (text.contains("#IS_TYPING")) {
             webhookService.sendCallback(agentId, eventMap("IS_TYPING", msisdn)).subscribe();
         }
@@ -98,6 +105,12 @@ public class AgentMessageController {
         if (text.contains("#UNSUBSCRIBE")) {
             webhookService.sendCallback(agentId, eventMap("UNSUBSCRIBE", msisdn)).subscribe();
         }
+    }
+
+    private void scheduleEvent(String agentId, String msisdn, String type, long delay) {
+        Mono.delay(Duration.ofMillis(delay))
+                .then(webhookService.sendCallback(agentId, eventMap(type, msisdn)))
+                .subscribe();
     }
 
     private Map<String, Object> eventMap(String type, String msisdn) {
