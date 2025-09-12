@@ -53,7 +53,6 @@ La aplicación utiliza variables para interactuar con la API de RBM y los script
 
 - `RBM_PROJECT_ID`, `RBM_BRAND_ID`, `RBM_AUTH_SCOPES`, `RBM_BASE_URL`
 - `GOOGLE_APPLICATION_CREDENTIALS` (para cuentas de servicio)
-- `google_api_key_json_envvar` (JSON con `apiKey` para scripts de *Discovery*)
 
 ## Arrancar la aplicación
 
@@ -162,20 +161,6 @@ duplicados. Para reproducir la validación localmente utiliza:
 ```bash
 ./mvnw verify
 ```
-
-## Discovery API
-
-Para obtener el documento de *discovery* de RBM utiliza el script `tools/update-discovery.sh`.
-Requiere que la variable de entorno `google_api_key_json_envvar` contenga un JSON con el
-campo `apiKey`:
-
-```bash
-export google_api_key_json_envvar='{ "apiKey": "TU_API_KEY" }'
-./tools/update-discovery.sh
-```
-
-El script extrae `apiKey` y la envía como parámetro `key` a la API de Discovery,
-guardando el resultado en `docs/discovery/rbm-v1.json`.
 
 ## Autenticación
 

@@ -14,14 +14,8 @@ Este agente debe:
 - Mantener documentación viva (este archivo + README/ADR).
 
 ### Enlaces fuente (¡puedes navegar!)
-- **Referencia RBM (REST) — ES**:  
+- **Referencia RBM (REST) — ES**:
   https://developers.google.com/business-communications/rcs-business-messaging/reference/rest?hl=es-419
-- **Discovery Document RBM v1**:  
-  https://rcsbusinessmessaging.googleapis.com/$discovery/rest?version=v1
-- **Discovery API (cómo usar discovery docs)**:  
-  https://developers.google.com/discovery/v1/reference/apis
-
-> Nota: Explora todos los subapartados de la referencia RBM (recursos, métodos, request/response, errores, cuotas, auth). Usa el Discovery Document para generar/validar clientes y esquemas.
 
 ---
 
@@ -49,7 +43,6 @@ Este agente debe:
 - **Variables de entorno** (ejemplo):
     - `RBM_PROJECT_ID`, `RBM_BRAND_ID`, `RBM_AUTH_SCOPES`, `RBM_BASE_URL`
     - `GOOGLE_APPLICATION_CREDENTIALS` (si se usa SA)
-    - `google_api_key_json_envvar` (JSON con `apiKey` para Discovery)
 
 > Nunca comprometas credenciales. Usa `.env.local` (gitignored) o secret manager.
 
@@ -71,15 +64,7 @@ Este agente debe:
 ---
 
 ## 5) Uso de la API RBM
-### 5.1 Descubrimiento y contratos
-- **Discovery document** (`v1`) sirve para:
-    - Generar clientes/POJOs,
-    - Confirmar rutas y query params,
-    - Verificar esquemas de request/response.
-    - Puede descargarse con `./tools/update-discovery.sh` (usa `google_api_key_json_envvar`)
-- Antes de codificar endpoints, **bloquea el contrato** (interfaces + DTOs) y añade **tests de contrato** (JSON de ejemplo validado con el discovery).
-
-### 5.2 Cliente HTTP
+### Cliente HTTP
 - Usa **WebClient** (reactivo) o RestTemplate con **timeouts**, **retry con backoff** y **resolución de errores** por familia de status.
 - **Headers**: `Authorization: Bearer <token>`, `Content-Type: application/json`, `Accept: application/json`.
 - **Telemetry**: log de request id, latencia, tamaño payload, status.
@@ -180,7 +165,7 @@ Checklist de PR (auto):
 ---
 
 ## 8) Flujo de trabajo para tareas
-1. **Descubrir**: lee la referencia RBM y discovery; anota endpoints, métodos, esquemas y scopes.
+1. **Descubrir**: lee la referencia RBM; anota endpoints, métodos, esquemas y scopes.
 2. **Diseñar**: define DTOs, interfaces y diagramas simples en `/docs`.
 3. **Planificar**: crea issue con alcance, riesgos y criterios de aceptación.
 4. **Implementar**: pequeña, incremental, centrada en un caso de uso.
@@ -247,14 +232,12 @@ Plantilla sugerida:
 
 ## 13) Documentación viva
 - Mantén `/docs/adr/` (Architecture Decision Records) para decisiones relevantes (auth, cliente HTTP, esquema de eventos).
-- Actualiza ejemplos RBM cuando cambie el discovery.
 - En PRs que toquen contratos, incluye **diff de esquemas**.
 
 ---
 
 ## 14) Atajos útiles para investigación
 - **Buscar en la referencia RBM**: usa el buscador de la página; filtra por recurso (brands, agents, messages, etc.).
-- **Discovery doc**: valida rápidamente un campo o tipo buscando por nombre de recurso o método.
 - **Curls reproducibles**: guarda en `/docs/curl/` con variables `${TOKEN}`/`${PROJECT}`.
 
 ---
@@ -270,7 +253,6 @@ Plantilla sugerida:
 
 ## 16) Próximos pasos sugeridos
 - Crear `RbmApiClient` con WebClient + TokenProvider.
-- Añadir tests de contrato validados contra el discovery `v1`.
 - Esqueleto de simulador (endpoints locales que emulan RBM).
 - Pipeline CI con lints, tests, cobertura y SBOM.
 
