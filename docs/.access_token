@@ -1,0 +1,7 @@
+# Example access token for RBM Simulator tests
+# This token was generated using:
+# TOKEN=$(curl -s -X POST http://localhost:8080/token \
+#   -H "Content-Type: application/x-www-form-urlencoded" \
+#   -d "grant_type=client_credentials&client_id=test&client_secret=test" | jq -r .access_token)
+
+ACCESS_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.fake.payload.signature
