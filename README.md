@@ -23,6 +23,19 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 - Otros controladores de Business Messaging: `UserMessageController`, `AgentEventController`,
   `CapabilityController`, `TesterController`, `UserController`, `DialogflowMessageController` y `FileController`.
 
+## Comandos de eventos
+
+El texto de los mensajes de agente puede incluir etiquetas para simular eventos como
+`READ`, `DELIVERED` o `DISPLAYED`. Estos eventos se encolan en memoria y se envían al
+webhook del agente después del retardo indicado mediante el parámetro `delay`
+expresado en milisegundos:
+
+```json
+{"contentMessage":{"text":"Hola #DELIVERED(delay=1000)"}}
+```
+
+Si `delay` no se especifica, el evento se envía de forma asíncrona inmediatamente.
+
 ## Estructura del proyecto
 
 ```text
