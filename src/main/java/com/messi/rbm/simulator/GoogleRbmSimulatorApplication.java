@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 /**
  * Entry point for the RBM simulator application.
  */
-@SpringBootApplication(scanBasePackages = "com.messi.rbm")
+@SpringBootApplication
 @ConfigurationPropertiesScan
 public class GoogleRbmSimulatorApplication {
     public static void main(final String[] args) {

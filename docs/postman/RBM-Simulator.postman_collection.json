@@ -26,6 +26,21 @@
       "key": "INTEGRATION_ID",
       "value": "",
       "enabled": true
+    },
+    {
+      "key": "WEBHOOK_URL",
+      "value": "http://localhost:8081/callback",
+      "enabled": true
+    },
+    {
+      "key": "MSISDN",
+      "value": "1234567890",
+      "enabled": true
+    },
+    {
+      "key": "MESSAGE_ID",
+      "value": "msg-1",
+      "enabled": true
     }
   ],
   "_postman_variable_scope": "environment",

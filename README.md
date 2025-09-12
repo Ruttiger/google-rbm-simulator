@@ -19,6 +19,9 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
 - Controladores `TokenController` y `AgentMessageController` para tokens y mensajes de ejemplo.
+- `WebhookController` permite registrar callbacks para pruebas de Business Messaging.
+- Otros controladores de Business Messaging: `UserMessageController`, `AgentEventController`,
+  `CapabilityController`, `TesterController`, `UserController`, `DialogflowMessageController` y `FileController`.
 
 ## Estructura del proyecto
 
@@ -26,17 +29,27 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 src/
  ├─ main/
  │  ├─ java/com/messi/rbm/simulator/
-  │  │  ├─ GoogleRbmSimulatorApplication.java
+ │  │  ├─ GoogleRbmSimulatorApplication.java
  │  │  ├─ config/
  │  │  │  ├─ AuthProperties.java
  │  │  │  └─ SecurityConfig.java
  │  │  ├─ controller/
- │  │  │  ├─ AgentMessageController.java
+ │  │  │  ├─ messaging/
+ │  │  │  │  ├─ AgentMessageController.java
+ │  │  │  │  ├─ UserMessageController.java
+ │  │  │  │  ├─ AgentEventController.java
+ │  │  │  │  ├─ CapabilityController.java
+ │  │  │  │  ├─ TesterController.java
+ │  │  │  │  ├─ UserController.java
+ │  │  │  │  ├─ DialogflowMessageController.java
+ │  │  │  │  ├─ FileController.java
+ │  │  │  │  └─ WebhookController.java
  │  │  │  └─ TokenController.java
  │  │  ├─ model/
  │  │  │  └─ Message.java
  │  │  └─ service/
- │  │     └─ JwtService.java
+ │  │     ├─ JwtService.java
+ │  │     └─ BusinessMessagingService.java
  │  └─ resources/application.properties
  └─ test/...
 ```
@@ -292,6 +305,10 @@ curl -X POST http://localhost:8080/v1/brands \
 # listar regions
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/regions
 ```
+
+## Business Messaging
+
+Consulta [docs/business-messaging-api.md](docs/business-messaging-api.md) para ejemplos de triggers y registro de webhooks.
 
 ## Próximos pasos
 - Añadir más endpoints de simulación.
