@@ -51,3 +51,14 @@ Los eventos se entregan de forma asíncrona al webhook registrado.
    ```
    El simulador responderá con `200 OK` y enviará al webhook un callback con el evento `READ`.
 
+### Otros endpoints clave
+
+- **Mensajes de usuario**: `POST /v1/phones/{msisdn}/messages?agentId=...`
+- **Eventos del agente**: `POST /v1/phones/{msisdn}/agentEvents?agentId=...`
+- **Capacidades**:
+  - `GET /v1/phones/{msisdn}/capabilities?agentId=...`
+  - `POST /v1/phones/{msisdn}/capability:requestCapabilityCallback`
+- **Testers**: `POST /v1/phones/{msisdn}/testers?agentId=...`
+- **Users batch**: `POST /v1/users:batchGet`
+- **Dialogflow**: `POST /v1/phones/{msisdn}/dialogflowMessages?agentId=...`
+- **Files**: `POST /v1/files`
