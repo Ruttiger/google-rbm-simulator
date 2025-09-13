@@ -81,13 +81,14 @@ public class AgentMessageController {
         }
         if (text.startsWith("#USER:")) {
             String userText = text.substring(6);
-              Map<String, Object> payload = new java.util.LinkedHashMap<>();
-              payload.put("senderPhoneNumber", msisdn);
-              payload.put("eventId", java.util.UUID.randomUUID().toString());
-              payload.put("agentId", agentId);
-              payload.put("text", userText);
-              dispatcherService.dispatchEvent(agentId, payload).subscribe();
-          }
+            Map<String, Object> payload = new java.util.LinkedHashMap<>();
+            payload.put("senderPhoneNumber", msisdn);
+            payload.put("eventType", "USER_MESSAGE");
+            payload.put("eventId", java.util.UUID.randomUUID().toString());
+            payload.put("agentId", agentId);
+            payload.put("text", userText);
+            dispatcherService.dispatchEvent(agentId, payload).subscribe();
+        }
 
         Matcher matcher = EVENT_PATTERN.matcher(text);
         while (matcher.find()) {

@@ -26,6 +26,7 @@ public class UserMessageController {
                                                                  @RequestBody Message message) {
         Map<String, Object> payload = new java.util.LinkedHashMap<>();
         payload.put("senderPhoneNumber", msisdn);
+        payload.put("eventType", "USER_MESSAGE");
         payload.put("eventId", UUID.randomUUID().toString());
         payload.put("agentId", agentId);
         if (message.contentMessage() != null && message.contentMessage().text() != null) {
