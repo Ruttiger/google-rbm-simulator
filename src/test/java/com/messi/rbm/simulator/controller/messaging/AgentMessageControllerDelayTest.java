@@ -3,6 +3,8 @@ package com.messi.rbm.simulator.controller.messaging;
 import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.service.BusinessMessagingService;
 import com.messi.rbm.simulator.service.WebhookDispatcherService;
+import com.messi.rbm.simulator.service.WebhookService;
+import com.messi.rbm.simulator.model.WebhookConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -30,6 +32,9 @@ class AgentMessageControllerDelayTest {
     @Mock
     private BusinessMessagingService messagingService;
 
+    @Mock
+    private WebhookService webhookService;
+
     @InjectMocks
     private AgentMessageController controller;
 
@@ -39,6 +44,7 @@ class AgentMessageControllerDelayTest {
                 .thenReturn(Mono.empty());
         when(dispatcherService.dispatchEvent(anyString(), any()))
                 .thenReturn(Mono.empty());
+        when(webhookService.getConfig(anyString())).thenReturn(Mono.just(new WebhookConfig("http://example", null)));
 
         Message message = new Message(
                 null,
