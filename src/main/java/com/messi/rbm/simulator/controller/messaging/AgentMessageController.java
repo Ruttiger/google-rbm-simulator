@@ -35,7 +35,9 @@ public class AgentMessageController {
     private static final Pattern EVENT_PATTERN =
             Pattern.compile("#(READ|DELIVERED|DISPLAYED)(?:\\(delay=(\\d+)\\))?");
 
-    public AgentMessageController(WebhookDispatcherService dispatcherService, BusinessMessagingService messagingService) {
+    public AgentMessageController(
+            WebhookDispatcherService dispatcherService,
+            BusinessMessagingService messagingService) {
         this.dispatcherService = dispatcherService;
         this.messagingService = messagingService;
     }
@@ -81,13 +83,14 @@ public class AgentMessageController {
         }
         if (text.startsWith("#USER:")) {
             String userText = text.substring(6);
-              Map<String, Object> payload = new java.util.LinkedHashMap<>();
-              payload.put("senderPhoneNumber", msisdn);
-              payload.put("eventId", java.util.UUID.randomUUID().toString());
-              payload.put("agentId", agentId);
-              payload.put("text", userText);
-              dispatcherService.dispatchEvent(agentId, payload).subscribe();
-          }
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("senderPhoneNumber", msisdn);
+            payload.put("eventType", "USER_MESSAGE");
+            payload.put("eventId", java.util.UUID.randomUUID().toString());
+            payload.put("agentId", agentId);
+            payload.put("text", userText);
+            dispatcherService.dispatchEvent(agentId, payload).subscribe();
+        }
 
         Matcher matcher = EVENT_PATTERN.matcher(text);
         while (matcher.find()) {
@@ -115,7 +118,7 @@ public class AgentMessageController {
       }
 
       private Map<String, Object> eventMap(String type, String msisdn, String messageId, String agentId) {
-          Map<String, Object> map = new java.util.LinkedHashMap<>();
+          Map<String, Object> map = new LinkedHashMap<>();
           map.put("senderPhoneNumber", msisdn);
           map.put("eventType", type);
           map.put("eventId", java.util.UUID.randomUUID().toString());

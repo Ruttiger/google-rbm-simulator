@@ -56,9 +56,9 @@ public class WebhookDispatcherService {
                     .bodyToMono(Void.class);
         }
         try {
-            String json = mapper.writeValueAsString(event);
-            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-            String base64 = Base64.getEncoder().encodeToString(bytes);
+            String inner = mapper.writeValueAsString(event);
+            byte[] innerBytes = inner.getBytes(StandardCharsets.UTF_8);
+            String base64 = Base64.getEncoder().encodeToString(innerBytes);
             Map<String, Object> wrapper = Map.of(
                     "message", Map.of(
                             "data", base64,
@@ -66,12 +66,13 @@ public class WebhookDispatcherService {
                             "publishTime", Instant.now().toString()
                     )
             );
-            String signature = sign(bytes, config.clientToken());
+            String envelope = mapper.writeValueAsString(wrapper);
+            String signature = sign(envelope.getBytes(StandardCharsets.UTF_8), config.clientToken());
             return webClient.post()
                     .uri(config.webhookUrl())
                     .header("X-Goog-Signature", signature)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(wrapper)
+                    .bodyValue(envelope)
                     .retrieve()
                     .bodyToMono(Void.class);
         } catch (JsonProcessingException e) {
