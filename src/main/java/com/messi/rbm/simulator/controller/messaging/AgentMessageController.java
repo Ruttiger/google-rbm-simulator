@@ -3,6 +3,7 @@ package com.messi.rbm.simulator.controller.messaging;
 import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.service.BusinessMessagingService;
 import com.messi.rbm.simulator.service.WebhookDispatcherService;
+import com.messi.rbm.simulator.service.WebhookService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +32,18 @@ public class AgentMessageController {
 
     private final WebhookDispatcherService dispatcherService;
     private final BusinessMessagingService messagingService;
+    private final WebhookService webhookService;
 
     private static final Pattern EVENT_PATTERN =
             Pattern.compile("#(READ|DELIVERED|DISPLAYED)(?:\\(delay=(\\d+)\\))?");
 
     public AgentMessageController(
             WebhookDispatcherService dispatcherService,
-            BusinessMessagingService messagingService) {
+            BusinessMessagingService messagingService,
+            WebhookService webhookService) {
         this.dispatcherService = dispatcherService;
         this.messagingService = messagingService;
+        this.webhookService = webhookService;
     }
 
     @PostMapping("/v1/phones/{msisdn}/agentMessages")
@@ -81,34 +85,36 @@ public class AgentMessageController {
         if (text == null) {
             return;
         }
-        if (text.startsWith("#USER:")) {
-            String userText = text.substring(6);
-            Map<String, Object> payload = new LinkedHashMap<>();
-            payload.put("senderPhoneNumber", msisdn);
-            payload.put("eventType", "USER_MESSAGE");
-            payload.put("eventId", java.util.UUID.randomUUID().toString());
-            payload.put("agentId", agentId);
-            payload.put("text", userText);
-            dispatcherService.dispatchEvent(agentId, payload).subscribe();
-        }
+        webhookService.getConfig(agentId).subscribe(cfg -> {
+            if (text.startsWith("#USER:")) {
+                String userText = text.substring(6);
+                Map<String, Object> payload = new LinkedHashMap<>();
+                payload.put("senderPhoneNumber", msisdn);
+                payload.put("eventType", "USER_MESSAGE");
+                payload.put("eventId", java.util.UUID.randomUUID().toString());
+                payload.put("agentId", agentId);
+                payload.put("text", userText);
+                dispatcherService.dispatchEvent(agentId, payload).subscribe();
+            }
 
-        Matcher matcher = EVENT_PATTERN.matcher(text);
-        while (matcher.find()) {
-            String type = matcher.group(1);
-            String delayGroup = matcher.group(2);
-            long delay = delayGroup != null ? Long.parseLong(delayGroup) : 0L;
-              scheduleEvent(agentId, msisdn, messageId, type, delay);
-        }
+            Matcher matcher = EVENT_PATTERN.matcher(text);
+            while (matcher.find()) {
+                String type = matcher.group(1);
+                String delayGroup = matcher.group(2);
+                long delay = delayGroup != null ? Long.parseLong(delayGroup) : 0L;
+                scheduleEvent(agentId, msisdn, messageId, type, delay);
+            }
 
-        if (text.contains("#IS_TYPING")) {
-              dispatcherService.dispatchEvent(agentId, eventMap("IS_TYPING", msisdn, messageId, agentId)).subscribe();
-        }
-        if (text.contains("#SUBSCRIBE")) {
-              dispatcherService.dispatchEvent(agentId, eventMap("SUBSCRIBE", msisdn, messageId, agentId)).subscribe();
-        }
-        if (text.contains("#UNSUBSCRIBE")) {
-              dispatcherService.dispatchEvent(agentId, eventMap("UNSUBSCRIBE", msisdn, messageId, agentId)).subscribe();
-        }
+            if (text.contains("#IS_TYPING")) {
+                dispatcherService.dispatchEvent(agentId, eventMap("IS_TYPING", msisdn, messageId, agentId)).subscribe();
+            }
+            if (text.contains("#SUBSCRIBE")) {
+                dispatcherService.dispatchEvent(agentId, eventMap("SUBSCRIBE", msisdn, messageId, agentId)).subscribe();
+            }
+            if (text.contains("#UNSUBSCRIBE")) {
+                dispatcherService.dispatchEvent(agentId, eventMap("UNSUBSCRIBE", msisdn, messageId, agentId)).subscribe();
+            }
+        });
     }
 
       private void scheduleEvent(String agentId, String msisdn, String messageId, String type, long delay) {

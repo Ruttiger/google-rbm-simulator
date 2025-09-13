@@ -350,6 +350,18 @@ Los eventos posteriores se entregarán envueltos en un mensaje Pub/Sub:
 
 El header `X-Goog-Signature` contiene la firma `HMAC-SHA512` del contenido decodificado usando el `clientToken` como secreto.
 
+### Endpoint auxiliar de autoverificación
+
+Para pruebas rápidas se expone un endpoint sumidero que devuelve el secreto enviado durante la verificación y acepta cualquier otro evento sin procesamiento:
+
+```bash
+curl -X POST http://localhost:8080/webhook/google/{agentId} \
+  -H 'Content-Type: application/json' \
+  -d '{"secret":"abc"}'
+```
+
+La respuesta será `{"secret":"abc"}`. Para cualquier otro payload simplemente responderá `200`.
+
 ## Próximos pasos
 - Añadir más endpoints de simulación.
 - Construir imágenes Docker y despliegues.
