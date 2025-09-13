@@ -2,7 +2,7 @@ package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.service.BusinessMessagingService;
-import com.messi.rbm.simulator.service.WebhookService;
+import com.messi.rbm.simulator.service.WebhookDispatcherService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +29,14 @@ import java.util.regex.Pattern;
 @SuppressFBWarnings("ALL")
 public class AgentMessageController {
 
-    private final WebhookService webhookService;
+    private final WebhookDispatcherService dispatcherService;
     private final BusinessMessagingService messagingService;
 
     private static final Pattern EVENT_PATTERN =
             Pattern.compile("#(READ|DELIVERED|DISPLAYED)(?:\\(delay=(\\d+)\\))?");
 
-    public AgentMessageController(WebhookService webhookService, BusinessMessagingService messagingService) {
-        this.webhookService = webhookService;
+    public AgentMessageController(WebhookDispatcherService dispatcherService, BusinessMessagingService messagingService) {
+        this.dispatcherService = dispatcherService;
         this.messagingService = messagingService;
     }
 
@@ -55,7 +55,7 @@ public class AgentMessageController {
         }
         return messagingService.saveAgentMessage(msisdn, messageId, message)
                 .then(Mono.just(ResponseEntity.ok(response)))
-                .doOnSuccess(resp -> handleTriggers(agentId, msisdn, message));
+                  .doOnSuccess(resp -> handleTriggers(agentId, msisdn, messageId, message));
     }
 
     @GetMapping("/v1/phones/{msisdn}/agentMessages/{messageId}")
@@ -71,7 +71,7 @@ public class AgentMessageController {
                 .thenReturn(ResponseEntity.noContent().build());
     }
 
-    private void handleTriggers(String agentId, String msisdn, Message message) {
+      private void handleTriggers(String agentId, String msisdn, String messageId, Message message) {
         if (message.contentMessage() == null) {
             return;
         }
@@ -81,40 +81,49 @@ public class AgentMessageController {
         }
         if (text.startsWith("#USER:")) {
             String userText = text.substring(6);
-            webhookService.sendCallback(agentId, Map.of(
-                    "event", "USER_MESSAGE",
-                    "msisdn", msisdn,
-                    "text", userText
-            )).subscribe();
-        }
+              Map<String, Object> payload = new java.util.LinkedHashMap<>();
+              payload.put("senderPhoneNumber", msisdn);
+              payload.put("eventId", java.util.UUID.randomUUID().toString());
+              payload.put("agentId", agentId);
+              payload.put("text", userText);
+              dispatcherService.dispatchEvent(agentId, payload).subscribe();
+          }
 
         Matcher matcher = EVENT_PATTERN.matcher(text);
         while (matcher.find()) {
             String type = matcher.group(1);
             String delayGroup = matcher.group(2);
             long delay = delayGroup != null ? Long.parseLong(delayGroup) : 0L;
-            scheduleEvent(agentId, msisdn, type, delay);
+              scheduleEvent(agentId, msisdn, messageId, type, delay);
         }
 
         if (text.contains("#IS_TYPING")) {
-            webhookService.sendCallback(agentId, eventMap("IS_TYPING", msisdn)).subscribe();
+              dispatcherService.dispatchEvent(agentId, eventMap("IS_TYPING", msisdn, messageId, agentId)).subscribe();
         }
         if (text.contains("#SUBSCRIBE")) {
-            webhookService.sendCallback(agentId, eventMap("SUBSCRIBE", msisdn)).subscribe();
+              dispatcherService.dispatchEvent(agentId, eventMap("SUBSCRIBE", msisdn, messageId, agentId)).subscribe();
         }
         if (text.contains("#UNSUBSCRIBE")) {
-            webhookService.sendCallback(agentId, eventMap("UNSUBSCRIBE", msisdn)).subscribe();
+              dispatcherService.dispatchEvent(agentId, eventMap("UNSUBSCRIBE", msisdn, messageId, agentId)).subscribe();
         }
     }
 
-    private void scheduleEvent(String agentId, String msisdn, String type, long delay) {
-        Mono.delay(Duration.ofMillis(delay))
-                .then(webhookService.sendCallback(agentId, eventMap(type, msisdn)))
-                .subscribe();
-    }
+      private void scheduleEvent(String agentId, String msisdn, String messageId, String type, long delay) {
+          Mono.delay(Duration.ofMillis(delay))
+                  .then(dispatcherService.dispatchEvent(agentId, eventMap(type, msisdn, messageId, agentId)))
+                  .subscribe();
+      }
 
-    private Map<String, Object> eventMap(String type, String msisdn) {
-        return Map.of("event", type, "msisdn", msisdn);
-    }
+      private Map<String, Object> eventMap(String type, String msisdn, String messageId, String agentId) {
+          Map<String, Object> map = new java.util.LinkedHashMap<>();
+          map.put("senderPhoneNumber", msisdn);
+          map.put("eventType", type);
+          map.put("eventId", java.util.UUID.randomUUID().toString());
+          map.put("agentId", agentId);
+          if (messageId != null) {
+              map.put("messageId", messageId);
+          }
+          return map;
+      }
 }
 

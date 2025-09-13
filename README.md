@@ -323,6 +323,33 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/regions
 
 Consulta [docs/business-messaging-api.md](docs/business-messaging-api.md) para ejemplos de triggers y registro de webhooks.
 
+### Registro de webhook con firma
+
+Para emular el comportamiento de Google RBM es posible registrar una webhook con verificación y firma HMAC.
+
+```bash
+curl -X POST \
+  http://localhost:8080/v1/brands/123/agents/abc/webhooks \
+  -H 'Content-Type: application/json' \
+  -d '{"webhookUrl":"http://localhost:8081/callback","clientToken":"s3cr3t"}'
+```
+
+Durante el registro el simulador enviará un *challenge* `{"clientToken":"s3cr3t","secret":"<uuid>"}` y la webhook debe responder `{"secret":"<uuid>"}`.
+
+Los eventos posteriores se entregarán envueltos en un mensaje Pub/Sub:
+
+```json
+{
+  "message": {
+    "data": "<BASE64_PAYLOAD>",
+    "messageId": "UUID",
+    "publishTime": "2025-09-13T12:34:56Z"
+  }
+}
+```
+
+El header `X-Goog-Signature` contiene la firma `HMAC-SHA512` del contenido decodificado usando el `clientToken` como secreto.
+
 ## Próximos pasos
 - Añadir más endpoints de simulación.
 - Construir imágenes Docker y despliegues.

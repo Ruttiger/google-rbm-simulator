@@ -2,7 +2,7 @@ package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.service.BusinessMessagingService;
-import com.messi.rbm.simulator.service.WebhookService;
+import com.messi.rbm.simulator.service.WebhookDispatcherService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class AgentMessageControllerDelayTest {
 
     @Mock
-    private WebhookService webhookService;
+    private WebhookDispatcherService dispatcherService;
 
     @Mock
     private BusinessMessagingService messagingService;
@@ -37,24 +37,24 @@ class AgentMessageControllerDelayTest {
     void schedulesDeliveredEventWithDelay() {
         when(messagingService.saveAgentMessage(anyString(), anyString(), any()))
                 .thenReturn(Mono.empty());
-        when(webhookService.sendCallback(anyString(), any()))
+        when(dispatcherService.dispatchEvent(anyString(), any()))
                 .thenReturn(Mono.empty());
 
         Message message = new Message(
                 null,
                 null,
-                new Message.AgentContentMessage("#DELIVERED(delay=100)", null, null, null, null)
+                new Message.AgentContentMessage("#READ(delay=100)", null, null, null, null)
         );
 
         controller.receiveMessage("12345", "AGENT", "1", message).block();
 
-        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-        verify(webhookService, timeout(300).times(1))
-                .sendCallback(eq("AGENT"), captor.capture());
+        ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+        verify(dispatcherService, timeout(300).times(1))
+                .dispatchEvent(eq("AGENT"), captor.capture());
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> payload = (Map<String, Object>) captor.getValue();
-        assertThat(payload.get("event")).isEqualTo("DELIVERED");
-        assertThat(payload.get("msisdn")).isEqualTo("12345");
+        Map<String, Object> payload = captor.getValue();
+        assertThat(payload.get("eventType")).isEqualTo("READ");
+        assertThat(payload.get("senderPhoneNumber")).isEqualTo("12345");
+        assertThat(payload.get("messageId")).isEqualTo("1");
     }
 }

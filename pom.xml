@@ -95,13 +95,19 @@
                         <version>${gatling.version}</version>
                         <scope>test</scope>
                 </dependency>
-                <dependency>
-                        <groupId>io.gatling.highcharts</groupId>
-                        <artifactId>gatling-charts-highcharts</artifactId>
-                        <version>${gatling.version}</version>
-                        <scope>test</scope>
-                </dependency>
-        </dependencies>
+          <dependency>
+              <groupId>io.gatling.highcharts</groupId>
+              <artifactId>gatling-charts-highcharts</artifactId>
+              <version>${gatling.version}</version>
+              <scope>test</scope>
+          </dependency>
+          <dependency>
+              <groupId>com.squareup.okhttp3</groupId>
+              <artifactId>mockwebserver</artifactId>
+              <version>4.12.0</version>
+              <scope>test</scope>
+          </dependency>
+      </dependencies>
 
         <build>
                 <plugins>

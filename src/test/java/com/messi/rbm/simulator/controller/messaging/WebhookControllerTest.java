@@ -1,5 +1,6 @@
 package com.messi.rbm.simulator.controller.messaging;
 
+import com.messi.rbm.simulator.model.WebhookConfig;
 import com.messi.rbm.simulator.service.WebhookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,8 @@ class WebhookControllerTest {
                 .exchange()
                 .expectStatus().isOk();
 
-        webhookService.getWebhook("agent-1")
+        webhookService.getConfig("agent-1")
+                .map(WebhookConfig::webhookUrl)
                 .as(StepVerifier::create)
                 .expectNext("http://example.com/hook")
                 .verifyComplete();
