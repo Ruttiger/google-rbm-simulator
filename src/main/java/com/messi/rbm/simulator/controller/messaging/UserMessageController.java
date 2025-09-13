@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class UserMessageController {
     public Mono<ResponseEntity<Map<String, String>>> userMessage(@PathVariable String msisdn,
                                                                  @RequestParam String agentId,
                                                                  @RequestBody Message message) {
-        Map<String, Object> payload = new java.util.LinkedHashMap<>();
+        Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("senderPhoneNumber", msisdn);
         payload.put("eventType", "USER_MESSAGE");
         payload.put("eventId", UUID.randomUUID().toString());
