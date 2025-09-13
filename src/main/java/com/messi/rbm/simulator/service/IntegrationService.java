@@ -2,6 +2,7 @@ package com.messi.rbm.simulator.service;
 
 import com.messi.rbm.simulator.model.Integration;
 import com.messi.rbm.simulator.repo.RbmMemoryRepository;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
  * Service for managing integrations.
  */
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Repository is injected and not exposed")
 public class IntegrationService {
     private final RbmMemoryRepository repo;
 

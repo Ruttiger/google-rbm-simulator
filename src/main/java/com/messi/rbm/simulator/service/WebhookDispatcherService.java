@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,7 @@ import java.util.UUID;
  * Dispatches webhook events, handling Pub/Sub wrapping and signature generation.
  */
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class WebhookDispatcherService {
 
     private final WebhookService webhookService;
@@ -86,7 +88,7 @@ public class WebhookDispatcherService {
             mac.init(new SecretKeySpec(token.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
             byte[] raw = mac.doFinal(data);
             return Base64.getEncoder().encodeToString(raw);
-        } catch (Exception e) {
+        } catch (java.security.NoSuchAlgorithmException | java.security.InvalidKeyException e) {
             return "";
         }
     }

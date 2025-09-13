@@ -2,6 +2,7 @@ package com.messi.rbm.simulator.controller;
 
 import com.messi.rbm.simulator.config.AuthProperties;
 import com.messi.rbm.simulator.service.JwtService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.Map;
  * Issues OAuth tokens for clients interacting with the simulator.
  */
 @RestController
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class TokenController {
 
     private final AuthProperties properties;
