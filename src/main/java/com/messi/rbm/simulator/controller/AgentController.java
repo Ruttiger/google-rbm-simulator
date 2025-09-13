@@ -1,10 +1,19 @@
 package com.messi.rbm.simulator.controller;
 
-import com.messi.rbm.simulator.model.*;
+import com.messi.rbm.simulator.model.Agent;
+import com.messi.rbm.simulator.model.AgentLaunch;
+import com.messi.rbm.simulator.model.AgentVerification;
 import com.messi.rbm.simulator.service.AgentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -39,12 +48,16 @@ public class AgentController {
     @PatchMapping("/{agentId}")
     public ResponseEntity<Agent> patch(@PathVariable String brandId, @PathVariable String agentId,
                                        @RequestBody Map<String, Object> patch) {
-        return agentService.patch(brandId, agentId, patch).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return agentService.patch(brandId, agentId, patch)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{agentId}")
     public ResponseEntity<Void> delete(@PathVariable String brandId, @PathVariable String agentId) {
-        return agentService.delete(brandId, agentId) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        return agentService.delete(brandId, agentId)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     // Verification
@@ -56,14 +69,16 @@ public class AgentController {
     }
 
     @GetMapping("/{agentId}/verification")
-    public ResponseEntity<AgentVerification> getVerification(@PathVariable String brandId, @PathVariable String agentId) {
+    public ResponseEntity<AgentVerification> getVerification(
+            @PathVariable String brandId, @PathVariable String agentId) {
         return agentService.getVerification(brandId, agentId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{agentId}/verification")
-    public ResponseEntity<AgentVerification> updateVerification(@PathVariable String brandId, @PathVariable String agentId,
-                                                                @RequestBody AgentVerification patch) {
+    public ResponseEntity<AgentVerification> updateVerification(
+            @PathVariable String brandId, @PathVariable String agentId,
+            @RequestBody AgentVerification patch) {
         if (patch.getState() == null) {
             return ResponseEntity.badRequest().build();
         }

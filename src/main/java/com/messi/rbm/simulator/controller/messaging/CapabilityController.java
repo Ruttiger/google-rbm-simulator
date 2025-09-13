@@ -1,15 +1,17 @@
 package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.service.BusinessMessagingService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
 @RestController
-@SuppressFBWarnings("ALL")
 public class CapabilityController {
 
     private final BusinessMessagingService messagingService;

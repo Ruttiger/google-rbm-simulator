@@ -16,7 +16,9 @@ import java.util.Map;
 public class GoogleWebhookSinkController {
 
     @PostMapping("/webhook/google/{agentId}")
-    public Mono<ResponseEntity<?>> receive(@PathVariable String agentId, @RequestBody(required = false) Map<String, Object> body) {
+    public Mono<ResponseEntity<?>> receive(
+            @PathVariable String agentId,
+            @RequestBody(required = false) Map<String, Object> body) {
         if (body != null && body.containsKey("secret")) {
             Object secret = body.get("secret");
             return Mono.just(ResponseEntity.ok(Map.of("secret", secret)));

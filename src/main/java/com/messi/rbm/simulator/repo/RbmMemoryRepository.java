@@ -1,6 +1,14 @@
 package com.messi.rbm.simulator.repo;
 
-import com.messi.rbm.simulator.model.*;
+import com.messi.rbm.simulator.model.Agent;
+import com.messi.rbm.simulator.model.AgentLaunch;
+import com.messi.rbm.simulator.model.AgentVerification;
+import com.messi.rbm.simulator.model.Brand;
+import com.messi.rbm.simulator.model.Integration;
+import com.messi.rbm.simulator.model.IntegrationStatus;
+import com.messi.rbm.simulator.model.LaunchState;
+import com.messi.rbm.simulator.model.RbmAgentInfo;
+import com.messi.rbm.simulator.model.VerificationState;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -19,7 +27,8 @@ public class RbmMemoryRepository {
 
     private final ConcurrentHashMap<String, Brand> brands = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ConcurrentHashMap<String, Agent>> agentsByBrand = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, ConcurrentHashMap<String, Integration>> integrationsByAgent = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ConcurrentHashMap<String, Integration>> integrationsByAgent =
+            new ConcurrentHashMap<>();
 
     private final AtomicLong brandSeq = new AtomicLong(1);
     private final AtomicLong agentSeq = new AtomicLong(1);
@@ -81,17 +90,20 @@ public class RbmMemoryRepository {
 
     /** Gets an agent. */
     public Optional<Agent> getAgent(String brandId, String agentId) {
-        return Optional.ofNullable(agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).get(agentId));
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        return Optional.ofNullable(agents == null ? null : agents.get(agentId));
     }
 
     /** Lists agents for a brand. */
     public List<Agent> listAgents(String brandId) {
-        return new ArrayList<>(agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).values());
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        return agents == null ? List.of() : new ArrayList<>(agents.values());
     }
 
     /** Updates an agent. */
     public Optional<Agent> updateAgent(String brandId, String agentId, Map<String, Object> patch) {
-        Agent agent = agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).get(agentId);
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        Agent agent = agents == null ? null : agents.get(agentId);
         if (agent == null) {
             return Optional.empty();
         }
@@ -141,17 +153,20 @@ public class RbmMemoryRepository {
     /** Lists integrations. */
     public List<Integration> listIntegrations(String brandId, String agentId) {
         String key = brandId + "/" + agentId;
-        return new ArrayList<>(integrationsByAgent.getOrDefault(key, new ConcurrentHashMap<>()).values());
+        ConcurrentHashMap<String, Integration> map = integrationsByAgent.get(key);
+        return map == null ? List.of() : new ArrayList<>(map.values());
     }
 
     /** Gets integration. */
     public Optional<Integration> getIntegration(String brandId, String agentId, String integrationId) {
         String key = brandId + "/" + agentId;
-        return Optional.ofNullable(integrationsByAgent.getOrDefault(key, new ConcurrentHashMap<>()).get(integrationId));
+        ConcurrentHashMap<String, Integration> map = integrationsByAgent.get(key);
+        return Optional.ofNullable(map == null ? null : map.get(integrationId));
     }
 
     /** Updates integration. */
-    public Optional<Integration> updateIntegration(String brandId, String agentId, String integrationId, Map<String, Object> patch) {
+    public Optional<Integration> updateIntegration(
+            String brandId, String agentId, String integrationId, Map<String, Object> patch) {
         Integration integ = getIntegration(brandId, agentId, integrationId).orElse(null);
         if (integ == null) {
             return Optional.empty();
@@ -186,7 +201,8 @@ public class RbmMemoryRepository {
 
     /** Creates verification entry. */
     public Optional<AgentVerification> createVerification(String brandId, String agentId) {
-        Agent agent = agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).get(agentId);
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        Agent agent = agents == null ? null : agents.get(agentId);
         if (agent == null) {
             return Optional.empty();
         }
@@ -200,8 +216,10 @@ public class RbmMemoryRepository {
     }
 
     /** Updates verification. */
-    public Optional<AgentVerification> updateVerification(String brandId, String agentId, VerificationState state, String comment) {
-        Agent agent = agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).get(agentId);
+    public Optional<AgentVerification> updateVerification(
+            String brandId, String agentId, VerificationState state, String comment) {
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        Agent agent = agents == null ? null : agents.get(agentId);
         if (agent == null || agent.getVerification() == null) {
             return Optional.empty();
         }
@@ -217,7 +235,8 @@ public class RbmMemoryRepository {
 
     /** Creates launch entry. */
     public Optional<AgentLaunch> createLaunch(String brandId, String agentId) {
-        Agent agent = agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).get(agentId);
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        Agent agent = agents == null ? null : agents.get(agentId);
         if (agent == null || !agent.isVerified()) {
             return Optional.empty();
         }
@@ -231,8 +250,10 @@ public class RbmMemoryRepository {
     }
 
     /** Updates launch. */
-    public Optional<AgentLaunch> updateLaunch(String brandId, String agentId, LaunchState state, String comment) {
-        Agent agent = agentsByBrand.getOrDefault(brandId, new ConcurrentHashMap<>()).get(agentId);
+    public Optional<AgentLaunch> updateLaunch(
+            String brandId, String agentId, LaunchState state, String comment) {
+        ConcurrentHashMap<String, Agent> agents = agentsByBrand.get(brandId);
+        Agent agent = agents == null ? null : agents.get(agentId);
         if (agent == null || agent.getLaunch() == null) {
             return Optional.empty();
         }

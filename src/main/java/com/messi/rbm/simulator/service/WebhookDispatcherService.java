@@ -3,7 +3,6 @@ package com.messi.rbm.simulator.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.messi.rbm.simulator.model.WebhookConfig;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,7 +20,6 @@ import java.util.UUID;
  * Dispatches webhook events, handling Pub/Sub wrapping and signature generation.
  */
 @Service
-@SuppressFBWarnings("ALL")
 public class WebhookDispatcherService {
 
     private final WebhookService webhookService;

@@ -4,7 +4,14 @@ import com.messi.rbm.simulator.model.Integration;
 import com.messi.rbm.simulator.service.IntegrationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -41,10 +48,14 @@ public class IntegrationController {
     }
 
     @PatchMapping("/{integrationId}")
-    public ResponseEntity<Integration> patch(@PathVariable String brandId, @PathVariable String agentId,
-                                             @PathVariable String integrationId, @RequestBody Map<String, Object> patch) {
+    public ResponseEntity<Integration> patch(
+            @PathVariable String brandId,
+            @PathVariable String agentId,
+            @PathVariable String integrationId,
+            @RequestBody Map<String, Object> patch) {
         return integrationService.patch(brandId, agentId, integrationId, patch)
-                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{integrationId}")

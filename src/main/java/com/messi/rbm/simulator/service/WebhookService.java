@@ -1,7 +1,6 @@
 package com.messi.rbm.simulator.service;
 
 import com.messi.rbm.simulator.model.WebhookConfig;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * Stores webhook registrations and performs verification challenges.
  */
 @Service
-@SuppressFBWarnings("ALL")
 public class WebhookService {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookService.class);
