@@ -2,7 +2,6 @@ package com.messi.rbm.simulator.controller;
 
 import com.messi.rbm.simulator.model.WebhookConfig;
 import com.messi.rbm.simulator.service.WebhookService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping("/v1/brands/{brandId}/agents/{agentId}/webhooks")
-@SuppressFBWarnings("ALL")
 public class WebhookRegistrationController {
 
     private final WebhookService webhookService;

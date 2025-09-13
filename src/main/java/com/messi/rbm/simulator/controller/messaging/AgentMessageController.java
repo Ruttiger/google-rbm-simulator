@@ -4,7 +4,6 @@ import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.service.BusinessMessagingService;
 import com.messi.rbm.simulator.service.WebhookDispatcherService;
 import com.messi.rbm.simulator.service.WebhookService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +26,6 @@ import java.util.regex.Pattern;
  * Endpoint for sending agent messages to user phones in the simulator.
  */
 @RestController
-@SuppressFBWarnings("ALL")
 public class AgentMessageController {
 
     private final WebhookDispatcherService dispatcherService;
@@ -109,10 +107,13 @@ public class AgentMessageController {
                 dispatcherService.dispatchEvent(agentId, eventMap("IS_TYPING", msisdn, messageId, agentId)).subscribe();
             }
             if (text.contains("#SUBSCRIBE")) {
-                dispatcherService.dispatchEvent(agentId, eventMap("SUBSCRIBE", msisdn, messageId, agentId)).subscribe();
+                dispatcherService.dispatchEvent(agentId, eventMap("SUBSCRIBE", msisdn, messageId, agentId))
+                        .subscribe();
             }
             if (text.contains("#UNSUBSCRIBE")) {
-                dispatcherService.dispatchEvent(agentId, eventMap("UNSUBSCRIBE", msisdn, messageId, agentId)).subscribe();
+                dispatcherService.dispatchEvent(
+                                agentId, eventMap("UNSUBSCRIBE", msisdn, messageId, agentId))
+                        .subscribe();
             }
         });
     }

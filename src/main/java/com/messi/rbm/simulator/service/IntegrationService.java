@@ -31,7 +31,8 @@ public class IntegrationService {
         return repo.getIntegration(brandId, agentId, integrationId);
     }
 
-    public Optional<Integration> patch(String brandId, String agentId, String integrationId, Map<String, Object> patch) {
+    public Optional<Integration> patch(
+            String brandId, String agentId, String integrationId, Map<String, Object> patch) {
         return repo.updateIntegration(brandId, agentId, integrationId, patch);
     }
 

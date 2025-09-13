@@ -1,15 +1,17 @@
 package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.service.WebhookDispatcherService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
 @RestController
-@SuppressFBWarnings("ALL")
 public class AgentEventController {
 
     private final WebhookDispatcherService dispatcherService;

@@ -1,6 +1,10 @@
 package com.messi.rbm.simulator.service;
 
-import com.messi.rbm.simulator.model.*;
+import com.messi.rbm.simulator.model.Agent;
+import com.messi.rbm.simulator.model.AgentLaunch;
+import com.messi.rbm.simulator.model.AgentVerification;
+import com.messi.rbm.simulator.model.LaunchState;
+import com.messi.rbm.simulator.model.VerificationState;
 import com.messi.rbm.simulator.repo.RbmMemoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +45,9 @@ public class AgentService {
 
     public Optional<AgentVerification> requestVerification(String brandId, String agentId) {
         Agent agent = repo.getAgent(brandId, agentId).orElse(null);
-        if (agent == null || agent.getVerification() != null && agent.getVerification().getState() == VerificationState.PENDING) {
+        if (agent == null
+                || agent.getVerification() != null
+                && agent.getVerification().getState() == VerificationState.PENDING) {
             return Optional.empty();
         }
         return repo.createVerification(brandId, agentId);
@@ -51,13 +57,17 @@ public class AgentService {
         return repo.getAgent(brandId, agentId).map(Agent::getVerification);
     }
 
-    public Optional<AgentVerification> updateVerification(String brandId, String agentId, VerificationState state, String comment) {
+    public Optional<AgentVerification> updateVerification(
+            String brandId, String agentId, VerificationState state, String comment) {
         return repo.updateVerification(brandId, agentId, state, comment);
     }
 
     public Optional<AgentLaunch> requestLaunch(String brandId, String agentId) {
         Agent agent = repo.getAgent(brandId, agentId).orElse(null);
-        if (agent == null || !agent.isVerified() || (agent.getLaunch() != null && agent.getLaunch().getState() == LaunchState.PENDING)) {
+        if (agent == null
+                || !agent.isVerified()
+                || (agent.getLaunch() != null
+                && agent.getLaunch().getState() == LaunchState.PENDING)) {
             return Optional.empty();
         }
         return repo.createLaunch(brandId, agentId);

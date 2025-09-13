@@ -1,7 +1,6 @@
 package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.service.WebhookService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +13,6 @@ import java.util.Map;
  * Allows manual registration of webhook callbacks for agents.
  */
 @RestController
-@SuppressFBWarnings("ALL")
 public class WebhookController {
 
     private final WebhookService webhookService;
