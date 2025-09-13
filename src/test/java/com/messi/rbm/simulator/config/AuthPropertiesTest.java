@@ -17,7 +17,7 @@ class AuthPropertiesTest {
         AuthProperties.Client c = new AuthProperties.Client();
         c.setClientId("client");
         c.setClientSecret("secret");
-        props.getAcceptedClients().add(c);
+        props.setAcceptedClients(List.of(c));
 
         assertTrue(props.isClientAccepted("client", "secret"));
         assertFalse(props.isClientAccepted("bad", "wrong"));

@@ -6,6 +6,7 @@ import com.messi.rbm.simulator.model.AgentVerification;
 import com.messi.rbm.simulator.model.LaunchState;
 import com.messi.rbm.simulator.model.VerificationState;
 import com.messi.rbm.simulator.repo.RbmMemoryRepository;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * Service for managing agents.
  */
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Repository is injected and not exposed")
 public class AgentService {
     private final RbmMemoryRepository repo;
 

@@ -78,27 +78,27 @@ public class AuthProperties {
     }
 
     public List<Client> getAcceptedClients() {
-        return acceptedClients;
+        return List.copyOf(acceptedClients);
     }
 
     public void setAcceptedClients(List<Client> acceptedClients) {
-        this.acceptedClients = acceptedClients;
+        this.acceptedClients = new ArrayList<>(acceptedClients);
     }
 
     public List<String> getAllowedScopes() {
-        return allowedScopes;
+        return List.copyOf(allowedScopes);
     }
 
     public void setAllowedScopes(List<String> allowedScopes) {
-        this.allowedScopes = allowedScopes;
+        this.allowedScopes = new ArrayList<>(allowedScopes);
     }
 
     public Key getKey() {
-        return key;
+        return new Key(key);
     }
 
     public void setKey(Key key) {
-        this.key = key;
+        this.key = new Key(key);
     }
 
     public boolean isClientAccepted(String id, String secret) {
@@ -142,6 +142,16 @@ public class AuthProperties {
         private String keyId;
         private String privateKeyPem;
         private String publicKeyPem;
+
+        public Key() {
+        }
+
+        public Key(Key other) {
+            this.generateOnStartup = other.generateOnStartup;
+            this.keyId = other.keyId;
+            this.privateKeyPem = other.privateKeyPem;
+            this.publicKeyPem = other.publicKeyPem;
+        }
 
         public boolean isGenerateOnStartup() {
             return generateOnStartup;

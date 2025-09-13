@@ -2,6 +2,7 @@ package com.messi.rbm.simulator.auth;
 
 import com.messi.rbm.simulator.config.AuthProperties;
 import com.messi.rbm.simulator.service.JwtService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
  * Simple WebFilter validating JWT tokens for /v1 requests.
  */
 @Component
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class JwtAuthFilter implements WebFilter {
 
     private final JwtService jwtService;

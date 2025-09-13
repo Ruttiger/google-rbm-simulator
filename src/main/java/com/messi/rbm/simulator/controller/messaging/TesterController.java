@@ -1,6 +1,7 @@
 package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.service.BusinessMessagingService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class TesterController {
 
     private final BusinessMessagingService messagingService;

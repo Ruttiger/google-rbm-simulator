@@ -46,6 +46,12 @@ public record Message(
             List<JsonNode> suggestions
     ) {
 
+        public AgentContentMessage {
+            if (suggestions != null) {
+                suggestions = List.copyOf(suggestions);
+            }
+        }
+
         @AssertTrue(message = "contentMessage must contain at least one non-empty field")
         public boolean hasContent() {
             return (text != null && !text.isBlank())

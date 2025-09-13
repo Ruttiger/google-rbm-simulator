@@ -1,6 +1,7 @@
 package com.messi.rbm.simulator.controller.messaging;
 
 import com.messi.rbm.simulator.service.BusinessMessagingService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class UserController {
 
     private final BusinessMessagingService messagingService;
@@ -18,7 +20,11 @@ public class UserController {
         this.messagingService = messagingService;
     }
 
-    public record UsersRequest(List<String> users, String agentId) { }
+    public record UsersRequest(List<String> users, String agentId) {
+        public UsersRequest {
+            users = List.copyOf(users);
+        }
+    }
 
     @PostMapping("/v1/users:batchGet")
     public Mono<Map<String, List<String>>> batchGet(@RequestBody UsersRequest request) {

@@ -1,6 +1,7 @@
 package com.messi.rbm.simulator.service;
 
 import com.messi.rbm.simulator.config.AuthProperties;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -30,6 +31,7 @@ import java.text.ParseException;
  * Service responsible for generating JWT tokens used by the simulator.
  */
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Configuration is injected and not exposed")
 public class JwtService {
 
     private final AuthProperties properties;

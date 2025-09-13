@@ -4,6 +4,7 @@ import com.messi.rbm.simulator.model.Message;
 import com.messi.rbm.simulator.service.BusinessMessagingService;
 import com.messi.rbm.simulator.service.WebhookDispatcherService;
 import com.messi.rbm.simulator.service.WebhookService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +27,7 @@ import java.util.regex.Pattern;
  * Endpoint for sending agent messages to user phones in the simulator.
  */
 @RestController
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class AgentMessageController {
 
     private final WebhookDispatcherService dispatcherService;

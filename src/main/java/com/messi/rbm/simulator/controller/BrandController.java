@@ -2,6 +2,7 @@ package com.messi.rbm.simulator.controller;
 
 import com.messi.rbm.simulator.model.Brand;
 import com.messi.rbm.simulator.service.BrandService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +21,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/v1/brands")
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class BrandController {
 
     private final BrandService brandService;

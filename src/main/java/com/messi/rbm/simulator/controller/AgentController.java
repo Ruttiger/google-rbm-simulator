@@ -4,6 +4,7 @@ import com.messi.rbm.simulator.model.Agent;
 import com.messi.rbm.simulator.model.AgentLaunch;
 import com.messi.rbm.simulator.model.AgentVerification;
 import com.messi.rbm.simulator.service.AgentService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/v1/brands/{brandId}/agents")
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class AgentController {
 
     private final AgentService agentService;

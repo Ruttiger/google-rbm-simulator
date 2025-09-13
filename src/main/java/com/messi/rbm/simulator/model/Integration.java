@@ -1,10 +1,12 @@
 package com.messi.rbm.simulator.model;
 
 import jakarta.validation.constraints.NotNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents an agent integration.
  */
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"}, justification = "Model acts as a simple data carrier")
 public class Integration {
     private String name;
     private IntegrationStatus status = IntegrationStatus.ENABLED;
