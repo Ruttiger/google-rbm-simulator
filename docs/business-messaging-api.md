@@ -18,6 +18,30 @@ Cuerpo:
 
 Registra un webhook en memoria para el agente indicado.
 
+### Registrar Webhook con verificación
+
+`POST /v1/brands/{brandId}/agents/{agentId}/webhooks`
+
+Cuerpo:
+```json
+{
+  "webhookUrl": "http://localhost:8081/callback",
+  "clientToken": "s3cr3t"
+}
+```
+
+El simulador enviará un `challenge` a la URL indicada:
+
+```json
+{ "clientToken": "s3cr3t", "secret": "<uuid>" }
+```
+
+La webhook debe responder `200 OK` con el mismo secreto para quedar registrada:
+
+```json
+{ "secret": "<uuid>" }
+```
+
 ### Enviar mensaje del agente
 
 `POST /v1/phones/{msisdn}/agentMessages?agentId=...&messageId=...`
@@ -33,7 +57,25 @@ Envía un mensaje desde el agente al usuario. El simulador detecta **triggers** 
 | `#SUBSCRIBE`   | evento de suscripción |
 | `#UNSUBSCRIBE` | evento de baja |
 
-Los eventos se entregan de forma asíncrona al webhook registrado.
+Los eventos se entregan de forma asíncrona al webhook registrado. Cuando la webhook tiene `clientToken`, el payload se envía envuelto en Pub/Sub y firmado con `X-Goog-Signature`.
+
+Ejemplo de evento recibido:
+
+```json
+{
+  "message": {
+    "data": "eyJzZW5kZXJQaG9uZU51bWJlciI6IjUyMTIzNDUiLCJldmVudFR5cGUiOiJSRUFEIiwiZXZlbnRJZCI6IjEyMyIsIm1lc3NhZ2VJZCI6IjEiLCJhZ2VudElkIjoiYWdlbnQifQ==",
+    "messageId": "uuid",
+    "publishTime": "2025-09-13T12:34:56Z"
+  }
+}
+```
+
+Para verificar la firma:
+
+```bash
+expected=$(echo -n '<decoded_json>' | openssl dgst -sha512 -hmac 's3cr3t' -binary | base64)
+```
 
 ## Ejemplo de uso
 

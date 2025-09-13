@@ -30,7 +30,8 @@ public class WebhookController {
         if (agentId == null || webhookUrl == null) {
             return Mono.just(ResponseEntity.badRequest().build());
         }
-        webhookService.register(agentId, webhookUrl);
+        // Auxiliary registration without token or verification.
+        webhookService.register(agentId, webhookUrl, null);
         return Mono.just(ResponseEntity.ok().build());
     }
 }
