@@ -33,7 +33,7 @@ public class AgentMessageController {
     private final WebhookService webhookService;
 
     private static final Pattern EVENT_PATTERN =
-            Pattern.compile("#(READ|DELIVERED|DISPLAYED)(?:\\(delay=(\\d+)\\))?");
+            Pattern.compile("#(READ|DELIVERED|REVOKED)(?:\\(delay=(\\d+)\\))?");
 
     public AgentMessageController(
             WebhookDispatcherService dispatcherService,
