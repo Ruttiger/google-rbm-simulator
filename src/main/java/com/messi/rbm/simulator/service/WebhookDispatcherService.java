@@ -68,11 +68,13 @@ public class WebhookDispatcherService {
             );
             String envelope = mapper.writeValueAsString(wrapper);
             String signature = sign(envelope.getBytes(StandardCharsets.UTF_8), config.clientToken());
+
             return webClient.post()
                     .uri(config.webhookUrl())
                     .header("X-Goog-Signature", signature)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(envelope)
+
                     .retrieve()
                     .bodyToMono(Void.class);
         } catch (JsonProcessingException e) {
