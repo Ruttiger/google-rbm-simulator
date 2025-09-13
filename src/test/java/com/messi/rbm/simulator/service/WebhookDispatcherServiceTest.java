@@ -37,10 +37,10 @@ class WebhookDispatcherServiceTest {
             String body = req.getBody().readUtf8();
             JsonNode json = mapper.readTree(body);
             String data = json.get("message").get("data").asText();
-            byte[] decoded = Base64.getDecoder().decode(data);
+            assertThat(data).isNotEmpty();
             Mac mac = Mac.getInstance("HmacSHA512");
             mac.init(new SecretKeySpec("token".getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
-            String expectedSig = Base64.getEncoder().encodeToString(mac.doFinal(decoded));
+            String expectedSig = Base64.getEncoder().encodeToString(mac.doFinal(body.getBytes(StandardCharsets.UTF_8)));
             assertThat(req.getHeader("X-Goog-Signature")).isEqualTo(expectedSig);
         }
     }
