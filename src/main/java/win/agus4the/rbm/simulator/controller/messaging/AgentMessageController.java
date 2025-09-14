@@ -5,6 +5,7 @@ import win.agus4the.rbm.simulator.service.messaging.BusinessMessagingService;
 import win.agus4the.rbm.simulator.service.communications.WebhookDispatcherService;
 import win.agus4the.rbm.simulator.service.communications.WebhookService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,8 @@ public class AgentMessageController {
     private final WebhookService webhookService;
 
     private static final Pattern EVENT_PATTERN =
-            Pattern.compile("#(READ|DELIVERED|REVOKED)(?:\\(delay=(\\d+)\\))?");
+            Pattern.compile(
+                    "#(READ|DELIVERED|REVOKED|IS_TYPING|SUBSCRIBE|UNSUBSCRIBE)(?:\\(delay=(\\d+)\\))?");
 
     public AgentMessageController(
             WebhookDispatcherService dispatcherService,
@@ -102,31 +104,22 @@ public class AgentMessageController {
                 String type = matcher.group(1);
                 String delayGroup = matcher.group(2);
                 long delay = delayGroup != null ? Long.parseLong(delayGroup) : 0L;
-                scheduleEvent(agentId, msisdn, messageId, type, delay);
-            }
-
-            if (text.contains("#IS_TYPING")) {
-                dispatcherService.dispatchEvent(agentId, eventMap("IS_TYPING", msisdn, messageId, agentId)).subscribe();
-            }
-            if (text.contains("#SUBSCRIBE")) {
-                dispatcherService.dispatchEvent(agentId, eventMap("SUBSCRIBE", msisdn, messageId, agentId))
-                        .subscribe();
-            }
-            if (text.contains("#UNSUBSCRIBE")) {
-                dispatcherService.dispatchEvent(
-                                agentId, eventMap("UNSUBSCRIBE", msisdn, messageId, agentId))
-                        .subscribe();
+                String id = switch (type) {
+                    case "IS_TYPING", "SUBSCRIBE", "UNSUBSCRIBE" -> null;
+                    default -> messageId;
+                };
+                scheduleEvent(agentId, msisdn, type, delay, id);
             }
         });
     }
 
-      private void scheduleEvent(String agentId, String msisdn, String messageId, String type, long delay) {
+      private void scheduleEvent(String agentId, String msisdn, String type, long delay, @Nullable String messageId) {
           Mono.delay(Duration.ofMillis(delay))
                   .then(dispatcherService.dispatchEvent(agentId, eventMap(type, msisdn, messageId, agentId)))
                   .subscribe();
       }
 
-      private Map<String, Object> eventMap(String type, String msisdn, String messageId, String agentId) {
+      private Map<String, Object> eventMap(String type, String msisdn, @Nullable String messageId, String agentId) {
           Map<String, Object> map = new LinkedHashMap<>();
           map.put("senderPhoneNumber", msisdn);
           map.put("eventType", type);

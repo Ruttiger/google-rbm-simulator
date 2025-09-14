@@ -38,16 +38,19 @@ sea permisivo.
 
 ## Comandos de eventos
 
-El texto de los mensajes de agente puede incluir etiquetas para simular eventos como
-`READ`, `DELIVERED` o `REVOKED`. Estos eventos se encolan en memoria y se envían al
-webhook del agente después del retardo indicado mediante el parámetro `delay`
-expresado en milisegundos:
+El texto de los mensajes de agente puede incluir etiquetas para simular eventos
+como `READ`, `DELIVERED`, `REVOKED`, `IS_TYPING`, `SUBSCRIBE` y `UNSUBSCRIBE`.
+Cada evento puede opcionalmente especificar un retardo con la sintaxis
+`#EVENTO(delay=ms)` y es posible encadenar múltiples eventos dentro del mismo
+mensaje:
 
 ```json
-{"contentMessage":{"text":"Hola #DELIVERED(delay=1000)"}}
+{"contentMessage":{"text":"#IS_TYPING(delay=500)#DELIVERED(delay=1000)#READ"}}
 ```
 
-Si `delay` no se especifica, el evento se envía de forma asíncrona inmediatamente.
+Los eventos se encolan en memoria y se entregan al webhook del agente una vez
+transcurrido el retardo indicado. Si `delay` no se especifica, el evento se
+envía de forma asíncrona inmediatamente.
 
 ## Estructura del proyecto
 
