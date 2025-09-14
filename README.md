@@ -15,6 +15,11 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 ./mvnw spring-boot:run
 ```
 
+## Observabilidad
+
+La aplicación registra automáticamente cada petición y respuesta HTTP mediante [Logbook](https://github.com/zalando/logbook).
+La clase `LogbookConfig` expone un `FunctionalHttpLogFormatter` para que los desarrolladores personalicen el formato de los logs.
+
 ## Arquitectura
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
