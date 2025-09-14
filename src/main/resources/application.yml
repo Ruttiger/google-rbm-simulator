@@ -35,6 +35,10 @@ logbook:
   obfuscate:
     headers: [ Authorization ]
     parameters: [ access_token, password ]
+  # Registra los cuerpos de las peticiones y respuestas cuando es true
+  log-body: true
+  # Máximo de caracteres a mostrar del body cuando log-body está activo
+  max-body-size: 2048
 
 logging:
   level:

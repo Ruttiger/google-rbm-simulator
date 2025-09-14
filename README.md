@@ -18,7 +18,26 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 ## Observabilidad
 
 La aplicación registra automáticamente cada petición y respuesta HTTP mediante [Logbook](https://github.com/zalando/logbook).
-La clase `LogbookConfig` expone un `FunctionalHttpLogFormatter` para que los desarrolladores personalicen el formato de los logs.
+La clase `LogbookConfig` expone un `FunctionalHttpLogFormatter` que produce entradas con el formato:
+
+```
+[IN] id=<id> method=<método> uri=<uri> headers=<headers> body=<body>
+[OUT] id=<id> status=<código> headers=<headers> body=<body>
+```
+
+Los headers y parámetros sensibles se ofuscan según las listas definidas en `logbook.obfuscate.headers` y
+`logbook.obfuscate.parameters` dentro de `application.yml`.
+
+El body se registra solo cuando `logbook.log-body` es `true` y se trunca al número de caracteres indicado en
+`logbook.max-body-size` para evitar volcar payloads masivos en los logs.
+
+Ejemplo de configuración:
+
+```yaml
+logbook:
+  log-body: true # activa logging del body
+  max-body-size: 2048 # límite de caracteres a mostrar
+```
 
 ## Arquitectura
 
