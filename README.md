@@ -22,6 +22,16 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 - `WebhookController` permite registrar callbacks para pruebas de Business Messaging.
 - Otros controladores de Business Messaging: `UserMessageController`, `AgentEventController`,
   `CapabilityController`, `TesterController`, `UserController`, `DialogflowMessageController` y `FileController`.
+- Controladores de Business Communications: `BrandController`, `AgentController` (verificación y lanzamiento),
+  `IntegrationController`, `RegionController`, `WebhookRegistrationController` y `GoogleWebhookSinkController`.
+- Módulo `auth/` con el filtro `JwtAuthFilter` para validar tokens JWT.
+- Módulo `repo/` con `RbmMemoryRepository` como almacenamiento en memoria para brands, agents e integrations.
+
+### Repositorio y filtro de autenticación
+
+`RbmMemoryRepository` mantiene en memoria las entidades RBM permitiendo un CRUD rápido sin base de datos externa. El
+`JwtAuthFilter` intercepta todas las peticiones a `/v1`, verifica el token y bloquea accesos no autorizados salvo que el modo
+sea permisivo.
 
 ## Comandos de eventos
 
@@ -46,6 +56,10 @@ src/
  │  │  ├─ config/
  │  │  │  ├─ AuthProperties.java
  │  │  │  └─ SecurityConfig.java
+ │  │  ├─ auth/
+ │  │  │  └─ JwtAuthFilter.java
+ │  │  ├─ repo/
+ │  │  │  └─ RbmMemoryRepository.java
  │  │  ├─ controller/
  │  │  │  ├─ messaging/
  │  │  │  │  ├─ AgentMessageController.java
@@ -57,6 +71,12 @@ src/
  │  │  │  │  ├─ DialogflowMessageController.java
  │  │  │  │  ├─ FileController.java
  │  │  │  │  └─ WebhookController.java
+ │  │  │  ├─ BrandController.java
+ │  │  │  ├─ AgentController.java
+ │  │  │  ├─ IntegrationController.java
+ │  │  │  ├─ RegionController.java
+ │  │  │  ├─ WebhookRegistrationController.java
+ │  │  │  ├─ GoogleWebhookSinkController.java
  │  │  │  └─ TokenController.java
  │  │  ├─ model/
  │  │  │  └─ Message.java
@@ -299,68 +319,94 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/messages?agentId
   }'
 ```
 
-### Brands, Agents e Integrations
+## Business Messaging vs Business Communications
 
-Además de los mensajes, el simulador expone recursos CRUD para **brands**, **agents**, **integrations** y la consulta de **regions**. Algunos ejemplos:
+- **Business Messaging**: controla el intercambio de mensajes y eventos entre usuarios y agentes.
+- **Business Communications**: administra recursos RBM como brands, agents, integrations, regions y webhooks.
+
+## Business Communications
+
+### Autenticación JWT
+Todos los endpoints bajo `/v1` están protegidos por `JwtAuthFilter`. Obtén un token desde `/token`:
 
 ```bash
-# obtener token
 TOKEN=$(curl -s -X POST http://localhost:8080/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=client_credentials&client_id=test-client&client_secret=secret" | jq -r .access_token)
+```
 
-# crear brand
+Incluye el token en cada petición:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/regions
+```
+
+### Brands
+```bash
+# crear
 curl -X POST http://localhost:8080/v1/brands \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"displayName":"Mi Empresa S.A."}'
 
-# listar regions
+# listar
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/brands
+```
+
+### Agents
+```bash
+# crear
+curl -X POST http://localhost:8080/v1/brands/1/agents \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"displayName":"Agente Demo"}'
+
+# solicitar verificación
+curl -X POST http://localhost:8080/v1/brands/1/agents/1:requestVerification \
+  -H "Authorization: Bearer $TOKEN"
+
+# solicitar lanzamiento
+curl -X POST http://localhost:8080/v1/brands/1/agents/1:requestLaunch \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### Integrations
+```bash
+curl -X POST http://localhost:8080/v1/brands/1/agents/1/integrations \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"agentWebhookIntegration":{"webhookUri":"http://localhost:8081/callback"}}'
+
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/v1/brands/1/agents/1/integrations
+```
+
+### Regions
+```bash
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/regions
 ```
 
-## Business Messaging
-
-Consulta [docs/business-messaging-api.md](docs/business-messaging-api.md) para ejemplos de triggers y registro de webhooks.
-
-### Registro de webhook con firma
-
-Para emular el comportamiento de Google RBM es posible registrar una webhook con verificación y firma HMAC.
-
+### Registro de webhooks con challenge
 ```bash
-curl -X POST \
-  http://localhost:8080/v1/brands/123/agents/abc/webhooks \
+curl -X POST http://localhost:8080/v1/brands/1/agents/1/webhooks \
   -H 'Content-Type: application/json' \
   -d '{"webhookUrl":"http://localhost:8081/callback","clientToken":"s3cr3t"}'
 ```
 
-Durante el registro el simulador enviará un *challenge* `{"clientToken":"s3cr3t","secret":"<uuid>"}` y la webhook debe responder `{"secret":"<uuid>"}`.
-
-Los eventos posteriores se entregarán envueltos en un mensaje Pub/Sub:
-
-```json
-{
-  "message": {
-    "data": "<BASE64_PAYLOAD>",
-    "messageId": "UUID",
-    "publishTime": "2025-09-13T12:34:56Z"
-  }
-}
-```
-
-El header `X-Goog-Signature` contiene la firma `HMAC-SHA512` del contenido decodificado usando el `clientToken` como secreto.
-
-### Endpoint auxiliar de autoverificación
-
-Para pruebas rápidas se expone un endpoint sumidero que devuelve el secreto enviado durante la verificación y acepta cualquier otro evento sin procesamiento:
-
+### Endpoint sumidero
 ```bash
-curl -X POST http://localhost:8080/webhook/google/{agentId} \
+curl -X POST http://localhost:8080/webhook/google/1 \
   -H 'Content-Type: application/json' \
   -d '{"secret":"abc"}'
 ```
 
-La respuesta será `{"secret":"abc"}`. Para cualquier otro payload simplemente responderá `200`.
+### Endpoints auxiliares
+- `/token` genera tokens de prueba.
+- `/webhook/google/{agentId}` actúa como sumidero y eco de desafíos.
+
+## Business Messaging
+
+Consulta [docs/business-messaging-api.md](docs/business-messaging-api.md) para ejemplos de triggers de mensajes y detalles del flujo de callbacks.
 
 ## Próximos pasos
 - Añadir más endpoints de simulación.
