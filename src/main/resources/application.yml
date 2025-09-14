@@ -15,3 +15,18 @@ auth:
     publicKeyPem: ""  # opcional si no generas
 server:
   port: 8080
+
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://otel-collector:4317
+
+logbook:
+  format.style: json
+  obfuscate:
+    headers: [ Authorization ]
+    parameters: [ access_token, password ]
