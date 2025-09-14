@@ -1,5 +1,7 @@
 package win.agus4the.rbm.simulator.controller.communications;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +17,16 @@ import java.util.Map;
 @RestController
 public class GoogleWebhookSinkController {
 
+    private static final Logger log = LoggerFactory.getLogger(GoogleWebhookSinkController.class);
+
     @PostMapping("/webhook/google/{agentId}")
     public Mono<ResponseEntity<?>> receive(
             @PathVariable String agentId,
             @RequestBody(required = false) Map<String, Object> body) {
+        log.info("Webhook sink received payload for agent {}", agentId);
         if (body != null && body.containsKey("secret")) {
             Object secret = body.get("secret");
+            log.debug("Echoing secret for agent {}", agentId);
             return Mono.just(ResponseEntity.ok(Map.of("secret", secret)));
         }
         return Mono.just(ResponseEntity.ok().build());

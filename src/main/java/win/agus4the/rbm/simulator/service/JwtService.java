@@ -10,6 +10,8 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -37,6 +39,7 @@ public class JwtService {
     private final AuthProperties properties;
     private RSASSASigner signer;
     private RSAKey rsaKey;
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
 
     /**
      * Creates a JWT service with the given configuration properties.
@@ -58,10 +61,12 @@ public class JwtService {
                     .privateKey((RSAPrivateKey) kp.getPrivate())
                     .keyID(keyProps.getKeyId())
                     .build();
+            log.info("Generated RSA key on startup with keyId={}", keyProps.getKeyId());
         } else {
             RSAPrivateKey priv = loadPrivateKey(keyProps.getPrivateKeyPem());
             RSAPublicKey pub = loadPublicKey(keyProps.getPublicKeyPem());
             rsaKey = new RSAKey.Builder(pub).privateKey(priv).keyID(keyProps.getKeyId()).build();
+            log.info("Loaded RSA key with keyId={}", keyProps.getKeyId());
         }
         signer = new RSASSASigner(rsaKey);
     }
@@ -99,7 +104,9 @@ public class JwtService {
                 claims
         );
         jwt.sign(signer);
-        return jwt.serialize();
+        String serialized = jwt.serialize();
+        log.debug("Generated token for subject={} scopes={}", subject, scopes);
+        return serialized;
     }
 
     public RSAKey getRsaKey() {
@@ -120,8 +127,11 @@ public class JwtService {
                 return false;
             }
             Date exp = jwt.getJWTClaimsSet().getExpirationTime();
-            return exp != null && exp.toInstant().isAfter(Instant.now());
+            boolean valid = exp != null && exp.toInstant().isAfter(Instant.now());
+            log.debug("Token validation result subject={} valid={}", jwt.getJWTClaimsSet().getSubject(), valid);
+            return valid;
         } catch (ParseException | JOSEException e) {
+            log.warn("Token validation failed", e);
             return false;
         }
     }

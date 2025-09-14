@@ -4,6 +4,8 @@ import win.agus4the.rbm.simulator.config.AuthProperties;
 import win.agus4the.rbm.simulator.service.JwtService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.nimbusds.jwt.SignedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -28,6 +30,7 @@ public class TokenController {
 
     private final AuthProperties properties;
     private final JwtService jwtService;
+    private static final Logger log = LoggerFactory.getLogger(TokenController.class);
 
     public TokenController(AuthProperties properties, JwtService jwtService) {
         this.properties = properties;
@@ -41,9 +44,11 @@ public class TokenController {
             ServerWebExchange exchange) {
         return exchange.getFormData().flatMap(form -> {
             String grantType = form.getFirst("grant_type");
+            log.debug("Token request received with grant_type={} authHeaderPresent={}", grantType, auth != null);
             if ("client_credentials".equals(grantType)) {
                 ClientCredentials creds = extractClient(auth, form);
                 if (creds == null || !properties.isClientAccepted(creds.clientId(), creds.clientSecret())) {
+                    log.warn("Invalid client credentials for clientId={}", creds != null ? creds.clientId() : "unknown");
                     return Mono.just(ResponseEntity.status(401).build());
                 }
                 List<String> scopes = properties.filterScopes(parseScope(form.getFirst("scope")));
@@ -54,6 +59,7 @@ public class TokenController {
                 List<String> scopes = properties.filterScopes(parseScope(form.getFirst("scope")));
                 return generateResponse(subject, scopes);
             } else {
+                log.warn("Unsupported grant_type={}", grantType);
                 return Mono.just(ResponseEntity.badRequest().build());
             }
         });
@@ -68,6 +74,7 @@ public class TokenController {
                             "expires_in", properties.getTokenTtlSeconds(),
                             "scope", String.join(" ", scopes)
                     );
+                    log.info("Issued token for subject={} scopes={}", subject, scopes);
                     return ResponseEntity.ok(resp);
                 });
     }

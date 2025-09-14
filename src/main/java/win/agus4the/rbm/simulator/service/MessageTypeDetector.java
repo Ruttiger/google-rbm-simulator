@@ -2,6 +2,8 @@ package win.agus4the.rbm.simulator.service;
 
 import win.agus4the.rbm.simulator.model.messaging.Message;
 import win.agus4the.rbm.simulator.model.messaging.MessageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,17 +12,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageTypeDetector {
 
+    private static final Logger log = LoggerFactory.getLogger(MessageTypeDetector.class);
+
     public MessageType detect(final Message message) {
+        MessageType type;
         if (message == null || message.contentMessage() == null) {
-            return MessageType.TEXT;
-        }
-        if (message.contentMessage().richCard() != null) {
-            return MessageType.RICH_CARD;
-        }
-        if (message.contentMessage().uploadedRbmFile() != null
+            type = MessageType.TEXT;
+        } else if (message.contentMessage().richCard() != null) {
+            type = MessageType.RICH_CARD;
+        } else if (message.contentMessage().uploadedRbmFile() != null
                 || message.contentMessage().contentInfo() != null) {
-            return MessageType.MEDIA;
+            type = MessageType.MEDIA;
+        } else {
+            type = MessageType.TEXT;
         }
-        return MessageType.TEXT;
+        log.debug("Detected message type={} for message={}", type, message);
+        return type;
     }
 }

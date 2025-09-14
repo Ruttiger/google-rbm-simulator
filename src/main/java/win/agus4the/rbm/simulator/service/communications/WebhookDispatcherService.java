@@ -3,6 +3,8 @@ package win.agus4the.rbm.simulator.service.communications;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import win.agus4the.rbm.simulator.model.communications.WebhookConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,6 +29,7 @@ public class WebhookDispatcherService {
     private final WebhookService webhookService;
     private final WebClient webClient;
     private final ObjectMapper mapper;
+    private static final Logger log = LoggerFactory.getLogger(WebhookDispatcherService.class);
 
     public WebhookDispatcherService(WebhookService webhookService, WebClient.Builder builder, ObjectMapper mapper) {
         this.webhookService = webhookService;
@@ -41,8 +44,12 @@ public class WebhookDispatcherService {
      */
     public Mono<Void> dispatchEvent(String agentId, Map<String, Object> event) {
         return webhookService.getConfig(agentId)
+                .doOnNext(cfg -> log.info("Dispatching event type={} agentId={} to {}", event.get("eventType"), agentId, cfg.webhookUrl()))
                 .flatMap(cfg -> send(cfg, event))
-                .onErrorResume(e -> Mono.empty());
+                .onErrorResume(e -> {
+                    log.warn("Failed to dispatch event agentId={} error={}", agentId, e.getMessage());
+                    return Mono.empty();
+                });
     }
 
     private Mono<Void> send(WebhookConfig config, Map<String, Object> event) {
@@ -53,7 +60,8 @@ public class WebhookDispatcherService {
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(event)
                     .retrieve()
-                    .bodyToMono(Void.class);
+                    .bodyToMono(Void.class)
+                    .doOnSuccess(v -> log.debug("Dispatched raw event agentId={}", config.webhookUrl()));
         }
         try {
             String inner = mapper.writeValueAsString(event);
@@ -74,10 +82,11 @@ public class WebhookDispatcherService {
                     .header("X-Goog-Signature", signature)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(envelope)
-
                     .retrieve()
-                    .bodyToMono(Void.class);
+                    .bodyToMono(Void.class)
+                    .doOnSuccess(v -> log.debug("Dispatched signed event agentId={} signaturePresent=true", config.webhookUrl()));
         } catch (JsonProcessingException e) {
+            log.warn("Failed to serialize event for agentId={}", config.webhookUrl(), e);
             return Mono.empty();
         }
     }
@@ -87,8 +96,11 @@ public class WebhookDispatcherService {
             Mac mac = Mac.getInstance("HmacSHA512");
             mac.init(new SecretKeySpec(token.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
             byte[] raw = mac.doFinal(data);
-            return Base64.getEncoder().encodeToString(raw);
+            String sig = Base64.getEncoder().encodeToString(raw);
+            log.debug("Generated signature for agent webhook");
+            return sig;
         } catch (java.security.NoSuchAlgorithmException | java.security.InvalidKeyException e) {
+            log.warn("Signature generation failed", e);
             return "";
         }
     }
