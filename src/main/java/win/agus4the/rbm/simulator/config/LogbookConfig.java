@@ -3,14 +3,12 @@ package win.agus4the.rbm.simulator.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.zalando.logbook.HttpLogFormatter;
-import org.zalando.logbook.Logbook;
-import org.zalando.logbook.core.DefaultHttpLogWriter;
-import org.zalando.logbook.core.DefaultSink;
 
 /**
- * Configuration for Logbook HTTP logging. Registers a {@link Logbook} bean that
- * uses a {@link FunctionalHttpLogFormatter} so developers can tailor how
- * requests and responses are rendered in logs.
+ * Configuration for Logbook HTTP logging. Registers a custom
+ * {@link HttpLogFormatter} so developers can tailor how requests and responses
+ * are rendered in logs while keeping the starter's auto-configuration and
+ * property-based filters intact.
  */
 @Configuration
 public class LogbookConfig {
@@ -21,12 +19,5 @@ public class LogbookConfig {
                 (precorrelation, request) -> request.getMethod() + " " + request.getRequestUri(),
                 (correlation, response) -> "status=" + response.getStatus()
         );
-    }
-
-    @Bean
-    public Logbook logbook(HttpLogFormatter formatter) {
-        return Logbook.builder()
-                .sink(new DefaultSink(formatter, new DefaultHttpLogWriter()))
-                .build();
     }
 }
