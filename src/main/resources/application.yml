@@ -18,12 +18,14 @@ server:
 
 management:
   tracing:
-    enabled: true
+    enabled: false
     sampling:
       probability: 1.0
   otlp:
     tracing:
       endpoint: http://otel-collector:4317
+      export:
+        enabled: false
 
 logbook:
   format.style: json
