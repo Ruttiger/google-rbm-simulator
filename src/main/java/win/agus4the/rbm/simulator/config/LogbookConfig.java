@@ -3,6 +3,8 @@ package win.agus4the.rbm.simulator.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.zalando.logbook.HttpLogFormatter;
+import org.zalando.logbook.Logbook;
+import org.zalando.logbook.spring.webflux.LogbookWebFilter;
 
 /**
  * Configuration for Logbook HTTP logging. Registers a custom
@@ -19,5 +21,10 @@ public class LogbookConfig {
                 (precorrelation, request) -> request.getMethod() + " " + request.getRequestUri(),
                 (correlation, response) -> "status=" + response.getStatus()
         );
+    }
+
+    @Bean
+    public LogbookWebFilter logbookWebFilter(Logbook logbook) {
+        return new LogbookWebFilter(logbook);
     }
 }
