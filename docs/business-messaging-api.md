@@ -12,11 +12,12 @@ Cuerpo:
 ```json
 {
   "agentId": "AGENT_ID",
-  "webhookUrl": "http://localhost:8081/callback"
+  "webhookUrl": "http://localhost:8081/callback",
+  "clientToken": "s3cr3t"
 }
 ```
 
-Registra un webhook en memoria para el agente indicado.
+Registra un webhook en memoria para el agente indicado. El campo `clientToken` es obligatorio para que el simulador firme los eventos RBM.
 
 ### Registrar Webhook con verificación
 
@@ -95,7 +96,7 @@ expected=$(echo -n '<decoded_json>' | openssl dgst -sha512 -hmac 's3cr3t' -binar
    ```bash
    curl -X POST http://localhost:8080/v1/webhooks \
      -H 'Content-Type: application/json' \
-     -d '{"agentId":"my-agent","webhookUrl":"http://localhost:8081/callback"}'
+     -d '{"agentId":"my-agent","webhookUrl":"http://localhost:8081/callback","clientToken":"s3cr3t"}'
    ```
 2. Enviar mensaje con trigger:
    ```bash

@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 class WebhookControllerTest {
@@ -21,7 +23,7 @@ class WebhookControllerTest {
     private WebhookService webhookService;
 
     @Test
-    void registersWebhook() {
+    void registersWebhookWithoutToken() {
         webTestClient.post()
                 .uri("/v1/webhooks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -33,6 +35,24 @@ class WebhookControllerTest {
                 .map(WebhookConfig::webhookUrl)
                 .as(StepVerifier::create)
                 .expectNext("http://example.com/hook")
+                .verifyComplete();
+    }
+
+    @Test
+    void registersWebhookWithToken() {
+        webTestClient.post()
+                .uri("/v1/webhooks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"agentId\":\"agent-2\",\"webhookUrl\":\"http://example.com/hook\",\"clientToken\":\"s3cr3t\"}")
+                .exchange()
+                .expectStatus().isOk();
+
+        webhookService.getConfig("agent-2")
+                .as(StepVerifier::create)
+                .assertNext(cfg -> {
+                    assertThat(cfg.webhookUrl()).isEqualTo("http://example.com/hook");
+                    assertThat(cfg.clientToken()).isEqualTo("s3cr3t");
+                })
                 .verifyComplete();
     }
 }

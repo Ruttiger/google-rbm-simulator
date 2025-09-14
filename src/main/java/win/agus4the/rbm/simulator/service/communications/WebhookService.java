@@ -33,7 +33,7 @@ public class WebhookService {
     public void register(String agentId, String webhookUrl, String clientToken) {
         if (agentId != null && webhookUrl != null) {
             webhooks.put(agentId, new WebhookConfig(webhookUrl, clientToken));
-            log.info("Webhook registered for agent {}", agentId);
+            log.info("Webhook registered for agent {} tokenPresent={}", agentId, clientToken != null);
         } else {
             log.warn("Webhook registration failed due to missing data agentId={} url={}", agentId, webhookUrl);
         }
