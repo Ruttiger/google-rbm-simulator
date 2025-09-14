@@ -1100,7 +1100,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"agentId\": \"{{AGENT_ID}}\",\n  \"webhookUrl\": \"{{WEBHOOK_URL}}\"\n}"
+              "raw": "{\n  \"agentId\": \"{{AGENT_ID}}\",\n  \"webhookUrl\": \"{{WEBHOOK_URL}}\",\n  \"clientToken\": \"s3cr3t\"\n}"
             }
           },
           "response": [],

@@ -28,12 +28,13 @@ public class WebhookController {
     public Mono<ResponseEntity<Void>> register(@RequestBody Map<String, String> body) {
         String agentId = body.get("agentId");
         String webhookUrl = body.get("webhookUrl");
+        String clientToken = body.get("clientToken");
         if (agentId == null || webhookUrl == null) {
             log.warn("Webhook registration failed: missing agentId or webhookUrl");
             return Mono.just(ResponseEntity.badRequest().build());
         }
-        // Auxiliary registration without token or verification.
-        webhookService.register(agentId, webhookUrl, null);
+        // Auxiliary registration without verification.
+        webhookService.register(agentId, webhookUrl, clientToken);
         log.info("Registered webhook for agent {} at {}", agentId, webhookUrl);
         return Mono.just(ResponseEntity.ok().build());
     }
