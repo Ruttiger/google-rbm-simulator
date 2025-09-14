@@ -74,7 +74,9 @@ mensaje:
 
 Los eventos se encolan en memoria y se entregan al webhook del agente una vez
 transcurrido el retardo indicado. Si `delay` no se especifica, el evento se
-envía de forma asíncrona inmediatamente.
+envía de forma asíncrona inmediatamente. Cuando el uso de memoria del heap
+supera el 80 %, los nuevos eventos se descartan y se registra una advertencia
+en los logs para evitar una saturación que pueda provocar un fallo.
 
 ## Estructura del proyecto
 
