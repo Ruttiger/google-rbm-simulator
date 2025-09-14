@@ -53,16 +53,18 @@ Envía un mensaje desde el agente al usuario. El simulador detecta **triggers** 
 | `#USER:<txt>`  | genera un mensaje entrante del usuario con `<txt>` |
 | `#READ`        | envía un evento `READ` |
 | `#DELIVERED`   | envía un evento `DELIVERED` |
+| `#REVOKED`     | envía un evento `REVOKED` |
 | `#IS_TYPING`   | envía un evento `IS_TYPING` |
 | `#SUBSCRIBE`   | evento de suscripción |
 | `#UNSUBSCRIBE` | evento de baja |
 
-Puede añadirse un retardo a un trigger con la sintaxis `#EVENT(delay=ms)`, donde el valor de `ms` se expresa en milisegundos.
+Cada trigger puede incluir un retardo con la sintaxis `#EVENTO(delay=ms)` y es
+posible concatenar múltiples eventos en el mismo mensaje:
 
 ```json
 {
   "contentMessage": {
-    "text": "Hola #DELIVERED(delay=1000)"
+    "text": "#IS_TYPING(delay=500)#DELIVERED(delay=1000)#READ"
   }
 }
 ```
