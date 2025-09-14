@@ -8,7 +8,7 @@
 		<version>3.5.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-        <groupId>com.messi.rbm</groupId>
+        <groupId>win.agus4the.rbm</groupId>
         <artifactId>google-rbm-simulator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>google-rbm-simulator</name>
@@ -171,7 +171,7 @@
                                 <artifactId>gatling-maven-plugin</artifactId>
                                 <version>4.20.1</version>
                                 <configuration>
-                                        <simulationClass>com.messi.rbm.simulator.gatling.AgentMessagesSimulation</simulationClass>
+                                        <simulationClass>win.agus4the.rbm.simulator.gatling.AgentMessagesSimulation</simulationClass>
                                         <jvmArgs>
                                                 <jvmArg>-Dgatling.netty.useNativeTransport=false</jvmArg>
                                         </jvmArgs>
