@@ -7,6 +7,8 @@ import win.agus4the.rbm.simulator.service.communications.WebhookService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,7 @@ public class AgentMessageController {
     private final WebhookDispatcherService dispatcherService;
     private final BusinessMessagingService messagingService;
     private final WebhookService webhookService;
+    private static final Logger log = LoggerFactory.getLogger(AgentMessageController.class);
 
     private static final Pattern EVENT_PATTERN =
             Pattern.compile(
@@ -54,6 +57,7 @@ public class AgentMessageController {
             @RequestParam String agentId,
             @RequestParam String messageId,
             @Valid @RequestBody Message message) {
+        log.info("Agent message received agentId={} msisdn={} messageId={}", agentId, msisdn, messageId);
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("name", "phones/" + msisdn + "/agentMessages/" + messageId);
         response.put("sendTime", Instant.now().toString());
@@ -63,19 +67,29 @@ public class AgentMessageController {
         }
         return messagingService.saveAgentMessage(msisdn, messageId, message)
                 .then(Mono.just(ResponseEntity.ok(response)))
-                  .doOnSuccess(resp -> handleTriggers(agentId, msisdn, messageId, message));
+                .doOnSuccess(resp -> {
+                    log.debug("Agent message stored agentId={} msisdn={} messageId={}", agentId, msisdn, messageId);
+                    handleTriggers(agentId, msisdn, messageId, message);
+                });
     }
 
     @GetMapping("/v1/phones/{msisdn}/agentMessages/{messageId}")
     public Mono<ResponseEntity<Message>> getMessage(@PathVariable String msisdn, @PathVariable String messageId) {
         return messagingService.getAgentMessage(msisdn, messageId)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+                .map(msg -> {
+                    log.info("Retrieved agent message msisdn={} messageId={}", msisdn, messageId);
+                    return ResponseEntity.ok(msg);
+                })
+                .switchIfEmpty(Mono.fromSupplier(() -> {
+                    log.warn("Agent message not found msisdn={} messageId={}", msisdn, messageId);
+                    return ResponseEntity.notFound().build();
+                }));
     }
 
     @DeleteMapping("/v1/phones/{msisdn}/agentMessages/{messageId}")
     public Mono<ResponseEntity<Void>> deleteMessage(@PathVariable String msisdn, @PathVariable String messageId) {
         return messagingService.deleteAgentMessage(msisdn, messageId)
+                .doOnSuccess(v -> log.info("Deleted agent message msisdn={} messageId={}", msisdn, messageId))
                 .thenReturn(ResponseEntity.noContent().build());
     }
 
@@ -96,7 +110,9 @@ public class AgentMessageController {
                 payload.put("eventId", java.util.UUID.randomUUID().toString());
                 payload.put("agentId", agentId);
                 payload.put("text", userText);
-                dispatcherService.dispatchEvent(agentId, payload).subscribe();
+                dispatcherService.dispatchEvent(agentId, payload)
+                        .doOnSubscribe(sub -> log.debug("Dispatching USER_MESSAGE agentId={} msisdn={}", agentId, msisdn))
+                        .subscribe();
             }
 
             Matcher matcher = EVENT_PATTERN.matcher(text);
@@ -108,6 +124,8 @@ public class AgentMessageController {
                     case "IS_TYPING", "SUBSCRIBE", "UNSUBSCRIBE" -> null;
                     default -> messageId;
                 };
+                log.debug("Scheduling event type={} delay={}ms agentId={} msisdn={} messageId={}"
+                        , type, delay, agentId, msisdn, id);
                 scheduleEvent(agentId, msisdn, type, delay, id);
             }
         });

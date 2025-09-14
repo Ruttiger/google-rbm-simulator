@@ -33,6 +33,9 @@ public class WebhookService {
     public void register(String agentId, String webhookUrl, String clientToken) {
         if (agentId != null && webhookUrl != null) {
             webhooks.put(agentId, new WebhookConfig(webhookUrl, clientToken));
+            log.info("Webhook registered for agent {}", agentId);
+        } else {
+            log.warn("Webhook registration failed due to missing data agentId={} url={}", agentId, webhookUrl);
         }
     }
 
@@ -40,7 +43,9 @@ public class WebhookService {
      * Retrieve webhook configuration for an agent.
      */
     public Mono<WebhookConfig> getConfig(String agentId) {
-        return Mono.justOrEmpty(webhooks.get(agentId));
+        WebhookConfig cfg = webhooks.get(agentId);
+        log.debug("Retrieving webhook config for agent {} found={}", agentId, cfg != null);
+        return Mono.justOrEmpty(cfg);
     }
 
     /**

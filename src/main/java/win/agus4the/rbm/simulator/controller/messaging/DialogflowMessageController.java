@@ -2,6 +2,8 @@ package win.agus4the.rbm.simulator.controller.messaging;
 
 import win.agus4the.rbm.simulator.service.messaging.BusinessMessagingService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class DialogflowMessageController {
 
     private final BusinessMessagingService messagingService;
+    private static final Logger log = LoggerFactory.getLogger(DialogflowMessageController.class);
 
     public DialogflowMessageController(BusinessMessagingService messagingService) {
         this.messagingService = messagingService;
@@ -28,8 +31,10 @@ public class DialogflowMessageController {
                                                                 @RequestParam String agentId,
                                                                 @RequestBody Map<String, Object> body) {
         if (!messagingService.isTester(agentId, msisdn)) {
+            log.warn("Dialogflow message forbidden for non-tester msisdn={} agentId={}", msisdn, agentId);
             return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).build());
         }
+        log.info("Dialogflow message delivered to msisdn={} agentId={}", msisdn, agentId);
         return Mono.just(ResponseEntity.ok(Map.of("status", "DELIVERED")));
     }
 }

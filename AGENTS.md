@@ -264,6 +264,7 @@ Plantilla sugerida:
 ## 17) Nuevos tests
 - Pruebas unitarias para `TokenController` y `AgentMessageController`. Ejecuta la suite básica con `./mvnw test`.
 - Para validar también las pruebas de integración utiliza `./mvnw verify`.
+- No es necesario verificar el contenido de los logs en las pruebas.
 
 ## 18) Pipeline
 - Workflow de GitHub Actions en `.github/workflows/ci.yml` que compila y ejecuta la suite de tests.
