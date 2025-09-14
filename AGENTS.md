@@ -134,6 +134,8 @@ app/
   web/              # Controllers (REST) – DTOs de entrada/salida
   service/          # Orquestación de casos de uso
   domain/           # Modelos y lógica de dominio
+  auth/             # Filtros y utilidades de autenticación
+  repo/             # Repositorios en memoria
   infra/
     rbm/            # Cliente(s) RBM, mapeos, auth, config
     http/           # Cross-cutting HTTP (WebClientFactory, retry, CB)
@@ -233,6 +235,7 @@ Plantilla sugerida:
 ## 13) Documentación viva
 - Mantén `/docs/adr/` (Architecture Decision Records) para decisiones relevantes (auth, cliente HTTP, esquema de eventos).
 - En PRs que toquen contratos, incluye **diff de esquemas**.
+- Todo cambio de funcionalidad debe reflejarse de inmediato en `README.md`, `AGENTS.md` y los archivos relevantes de `docs/`; incluye ejemplos de requests/responses y actualiza las rutas de los controladores.
 
 ---
 
