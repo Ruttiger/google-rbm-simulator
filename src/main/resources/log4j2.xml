@@ -7,7 +7,7 @@
   </Appenders>
 
   <Loggers>
-    <AsyncLogger name="org.zalando.logbook" level="trace" additivity="false">
+    <AsyncLogger name="org.zalando.logbook" level="TRACE" additivity="false">
       <AppenderRef ref="Console"/>
     </AsyncLogger>
 
