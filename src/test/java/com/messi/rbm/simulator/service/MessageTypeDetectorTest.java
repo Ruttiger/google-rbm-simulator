@@ -2,8 +2,8 @@ package com.messi.rbm.simulator.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.messi.rbm.simulator.model.Message;
-import com.messi.rbm.simulator.model.MessageType;
+import com.messi.rbm.simulator.model.messaging.Message;
+import com.messi.rbm.simulator.model.messaging.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

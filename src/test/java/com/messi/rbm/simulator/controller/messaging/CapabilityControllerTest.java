@@ -1,6 +1,6 @@
 package com.messi.rbm.simulator.controller.messaging;
 
-import com.messi.rbm.simulator.service.BusinessMessagingService;
+import com.messi.rbm.simulator.service.messaging.BusinessMessagingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;

@@ -20,12 +20,15 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
 - Controladores `TokenController` y `AgentMessageController` para tokens y mensajes de ejemplo.
 - `WebhookController` permite registrar callbacks para pruebas de Business Messaging.
-- Otros controladores de Business Messaging: `UserMessageController`, `AgentEventController`,
+- Controladores de Business Messaging (paquete `controller/messaging`): `UserMessageController`, `AgentEventController`,
   `CapabilityController`, `TesterController`, `UserController`, `DialogflowMessageController` y `FileController`.
-- Controladores de Business Communications: `BrandController`, `AgentController` (verificación y lanzamiento),
+- Controladores de Business Communications (paquete `controller/communications`): `BrandController`, `AgentController` (verificación y lanzamiento),
   `IntegrationController`, `RegionController`, `WebhookRegistrationController` y `GoogleWebhookSinkController`.
+- Servicios de Business Messaging en `service/messaging` como `BusinessMessagingService`.
+- Servicios de Business Communications en `service/communications` (`BrandService`, `AgentService`, `IntegrationService`, etc.).
+- Modelos divididos en `model/messaging` y `model/communications`.
 - Módulo `auth/` con el filtro `JwtAuthFilter` para validar tokens JWT.
-- Módulo `repo/` con `RbmMemoryRepository` como almacenamiento en memoria para brands, agents e integrations.
+- Repositorio en memoria `repo/communications/RbmMemoryRepository` para brands, agents e integrations.
 
 ### Repositorio y filtro de autenticación
 
@@ -58,9 +61,16 @@ src/
  │  │  │  └─ SecurityConfig.java
  │  │  ├─ auth/
  │  │  │  └─ JwtAuthFilter.java
- │  │  ├─ repo/
+ │  │  ├─ repo/communications/
  │  │  │  └─ RbmMemoryRepository.java
  │  │  ├─ controller/
+ │  │  │  ├─ communications/
+ │  │  │  │  ├─ BrandController.java
+ │  │  │  │  ├─ AgentController.java
+ │  │  │  │  ├─ IntegrationController.java
+ │  │  │  │  ├─ RegionController.java
+ │  │  │  │  ├─ WebhookRegistrationController.java
+ │  │  │  │  └─ GoogleWebhookSinkController.java
  │  │  │  ├─ messaging/
  │  │  │  │  ├─ AgentMessageController.java
  │  │  │  │  ├─ UserMessageController.java
@@ -71,18 +81,22 @@ src/
  │  │  │  │  ├─ DialogflowMessageController.java
  │  │  │  │  ├─ FileController.java
  │  │  │  │  └─ WebhookController.java
- │  │  │  ├─ BrandController.java
- │  │  │  ├─ AgentController.java
- │  │  │  ├─ IntegrationController.java
- │  │  │  ├─ RegionController.java
- │  │  │  ├─ WebhookRegistrationController.java
- │  │  │  ├─ GoogleWebhookSinkController.java
  │  │  │  └─ TokenController.java
  │  │  ├─ model/
- │  │  │  └─ Message.java
+ │  │  │  ├─ communications/ (Agent, Brand, Integration, ...)
+ │  │  │  └─ messaging/ (Message, MessageType)
  │  │  └─ service/
+ │  │     ├─ communications/
+ │  │     │  ├─ AgentService.java
+ │  │     │  ├─ BrandService.java
+ │  │     │  ├─ IntegrationService.java
+ │  │     │  ├─ RegionService.java
+ │  │     │  ├─ WebhookDispatcherService.java
+ │  │     │  └─ WebhookService.java
+ │  │     ├─ messaging/
+ │  │     │  └─ BusinessMessagingService.java
  │  │     ├─ JwtService.java
- │  │     └─ BusinessMessagingService.java
+ │  │     └─ MessageTypeDetector.java
  │  └─ resources/application.properties
  └─ test/...
 ```
@@ -406,7 +420,7 @@ curl -X POST http://localhost:8080/webhook/google/1 \
 
 ## Business Messaging
 
-Consulta [docs/business-messaging-api.md](docs/business-messaging-api.md) para ejemplos de triggers de mensajes y detalles del flujo de callbacks.
+Consulta [docs/business-messaging-api.md](docs/business-messaging-api.md) para ejemplos de triggers de mensajes y detalles del flujo de callbacks. Para la administración de brands y agents revisa [docs/business-communications-api.md](docs/business-communications-api.md).
 
 ## Próximos pasos
 - Añadir más endpoints de simulación.

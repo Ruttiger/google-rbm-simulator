@@ -1,7 +1,7 @@
 package com.messi.rbm.simulator.controller.messaging;
 
-import com.messi.rbm.simulator.model.WebhookConfig;
-import com.messi.rbm.simulator.service.WebhookService;
+import com.messi.rbm.simulator.model.communications.WebhookConfig;
+import com.messi.rbm.simulator.service.communications.WebhookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
