@@ -1,6 +1,6 @@
 # Colección Postman del simulador RBM
 
-Los archivos `RBM-Simulator.postman_collection.json` y `RBM-Simulator.postman_environment.json` facilitan las pruebas manuales de los endpoints del simulador.
+Los archivos `RBM-Simulator.postman_collection.json` (colección) y `RBM-Simulator.postman_environment.json` (entorno) facilitan las pruebas manuales de los endpoints del simulador.
 
 ## Importar la colección y el entorno
 
@@ -20,3 +20,15 @@ Con el entorno activo:
 3. Ajusta la variable `authToken` del entorno si algún endpoint requiere autenticación.
 
 Estas plantillas permiten enviar mensajes de prueba y observar las respuestas del simulador sin necesidad de escribir manualmente las solicitudes.
+
+## Triggers de eventos
+
+Los mensajes pueden incluir triggers especiales para simular eventos:
+
+- `#READ`: envía un evento `READ`.
+- `#DELIVERED`: envía un evento `DELIVERED`.
+- `#USER:<txt>`: genera un mensaje entrante del usuario con el texto `<txt>`.
+
+Cada trigger admite un parámetro `delay` para diferir su envío usando la sintaxis `#EVENT(delay=ms)`, donde `ms` se expresa en milisegundos.
+
+Ejemplo: `Hola #READ(delay=500)`

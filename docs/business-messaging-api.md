@@ -57,6 +57,16 @@ Envía un mensaje desde el agente al usuario. El simulador detecta **triggers** 
 | `#SUBSCRIBE`   | evento de suscripción |
 | `#UNSUBSCRIBE` | evento de baja |
 
+Puede añadirse un retardo a un trigger con la sintaxis `#EVENT(delay=ms)`, donde el valor de `ms` se expresa en milisegundos.
+
+```json
+{
+  "contentMessage": {
+    "text": "Hola #DELIVERED(delay=1000)"
+  }
+}
+```
+
 Los eventos se entregan de forma asíncrona al webhook registrado. Cuando la webhook tiene `clientToken`, el payload se envía envuelto en Pub/Sub y firmado con `X-Goog-Signature`.
 
 Ejemplo de evento recibido:
