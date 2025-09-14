@@ -1,6 +1,6 @@
 package com.messi.rbm.simulator.controller.messaging;
 
-import com.messi.rbm.simulator.service.WebhookDispatcherService;
+import com.messi.rbm.simulator.service.communications.WebhookDispatcherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

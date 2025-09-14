@@ -1,10 +1,10 @@
 package com.messi.rbm.simulator.controller.messaging;
 
-import com.messi.rbm.simulator.model.Message;
-import com.messi.rbm.simulator.service.BusinessMessagingService;
-import com.messi.rbm.simulator.service.WebhookDispatcherService;
-import com.messi.rbm.simulator.service.WebhookService;
-import com.messi.rbm.simulator.model.WebhookConfig;
+import com.messi.rbm.simulator.model.messaging.Message;
+import com.messi.rbm.simulator.service.messaging.BusinessMessagingService;
+import com.messi.rbm.simulator.service.communications.WebhookDispatcherService;
+import com.messi.rbm.simulator.service.communications.WebhookService;
+import com.messi.rbm.simulator.model.communications.WebhookConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

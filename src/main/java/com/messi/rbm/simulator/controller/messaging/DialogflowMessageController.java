@@ -1,6 +1,6 @@
 package com.messi.rbm.simulator.controller.messaging;
 
-import com.messi.rbm.simulator.service.BusinessMessagingService;
+import com.messi.rbm.simulator.service.messaging.BusinessMessagingService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

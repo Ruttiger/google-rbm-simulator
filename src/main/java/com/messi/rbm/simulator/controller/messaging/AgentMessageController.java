@@ -1,9 +1,9 @@
 package com.messi.rbm.simulator.controller.messaging;
 
-import com.messi.rbm.simulator.model.Message;
-import com.messi.rbm.simulator.service.BusinessMessagingService;
-import com.messi.rbm.simulator.service.WebhookDispatcherService;
-import com.messi.rbm.simulator.service.WebhookService;
+import com.messi.rbm.simulator.model.messaging.Message;
+import com.messi.rbm.simulator.service.messaging.BusinessMessagingService;
+import com.messi.rbm.simulator.service.communications.WebhookDispatcherService;
+import com.messi.rbm.simulator.service.communications.WebhookService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

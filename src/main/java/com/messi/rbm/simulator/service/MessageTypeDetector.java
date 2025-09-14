@@ -1,7 +1,7 @@
 package com.messi.rbm.simulator.service;
 
-import com.messi.rbm.simulator.model.Message;
-import com.messi.rbm.simulator.model.MessageType;
+import com.messi.rbm.simulator.model.messaging.Message;
+import com.messi.rbm.simulator.model.messaging.MessageType;
 import org.springframework.stereotype.Component;
 
 /**
