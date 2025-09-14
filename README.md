@@ -360,6 +360,21 @@ curl -i -X POST "http://localhost:8080/v1/phones/+5215512345678/messages?agentId
   }'
 ```
 
+### Bulk capability check
+```bash
+# mínimo 500 números únicos en E.164
+curl -i -X POST "http://localhost:8080/v1/users:batchGet" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "agentId": "AGENT_ID",
+        "users": ["+5215512340001", "+5215512340002", "... al menos 500 ..."]
+      }'
+```
+- `reachableUsers` refleja los testers registrados para el agente.
+- La muestra aleatoria es el **75%** redondeado hacia arriba.
+- Con menos de 500 o más de 10000 números, la API responde **400**.
+
 ## Business Messaging vs Business Communications
 
 - **Business Messaging**: controla el intercambio de mensajes y eventos entre usuarios y agentes.

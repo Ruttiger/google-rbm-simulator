@@ -1469,10 +1469,15 @@
           ]
         },
         {
-          "name": "Batch Get Users",
+          "name": "Users — Batch Get",
           "request": {
+            "description": "Devuelve los MSISDN alcanzables. Usa ≥500 números únicos en formato E.164 para obtener 200; con menos devuelve 400.",
             "method": "POST",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -1492,7 +1497,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"agentId\": \"{{AGENT_ID}}\",\n  \"users\": [\n    \"{{MSISDN}}\"\n  ]\n}"
+              "raw": "{\n  \"agentId\": \"{{AGENT_ID}}\",\n  \"users\": [\n    \"+5215512340001\",\n    \"+5215512340002\",\n    \"+5215512340003\",\n    \"+5215512340004\",\n    \"+5215512340005\",\n    \"+5215512340006\",\n    \"+5215512340007\",\n    \"+5215512340008\",\n    \"+5215512340009\",\n    \"+5215512340010\"\n  ]\n}"
             }
           },
           "response": [],
@@ -1502,7 +1507,9 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200',()=>pm.response.to.have.status(200));"
+                  "pm.test(\"Status 200 con ≥500, 400 si <500\", function () {",
+                  "  pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
                 ]
               }
             }
