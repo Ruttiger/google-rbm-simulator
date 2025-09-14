@@ -42,6 +42,8 @@ public class AgentMessageController {
             Pattern.compile(
                     "#(READ|DELIVERED|REVOKED|IS_TYPING|SUBSCRIBE|UNSUBSCRIBE)(?:\\(delay=(\\d+)\\))?");
 
+    private static final double MEMORY_USAGE_THRESHOLD = 0.80; // 80%
+
     public AgentMessageController(
             WebhookDispatcherService dispatcherService,
             BusinessMessagingService messagingService,
@@ -132,6 +134,19 @@ public class AgentMessageController {
     }
 
       private void scheduleEvent(String agentId, String msisdn, String type, long delay, @Nullable String messageId) {
+          Runtime rt = Runtime.getRuntime();
+          long maxMemory = rt.maxMemory();
+          long totalMemory = rt.totalMemory();
+          long freeMemory = rt.freeMemory();
+          long usedMemory = totalMemory - freeMemory;
+          double usedRatio = (double) usedMemory / maxMemory;
+
+          if (usedRatio >= MEMORY_USAGE_THRESHOLD) {
+              log.warn("Event '{}' discarded due to high memory usage {}% (agentId={}, msisdn={}, messageId={})",
+                      type, String.format("%.1f", usedRatio * 100), agentId, msisdn, messageId);
+              return;
+          }
+
           Mono.delay(Duration.ofMillis(delay))
                   .then(dispatcherService.dispatchEvent(agentId, eventMap(type, msisdn, messageId, agentId)))
                   .subscribe();
