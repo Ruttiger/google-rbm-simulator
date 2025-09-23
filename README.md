@@ -51,14 +51,14 @@ logbook:
 - Servicios de Business Messaging en `service/messaging` como `BusinessMessagingService`.
 - Servicios de Business Communications en `service/communications` (`BrandService`, `AgentService`, `IntegrationService`, etc.).
 - Modelos divididos en `model/messaging` y `model/communications`.
-- Módulo `auth/` con el filtro `JwtAuthFilter` para validar tokens JWT.
+- Módulo `auth/` con el filtro `JwtAuthFilter` que exige cabeceras `Authorization: Bearer` en modo estricto.
 - Repositorio en memoria `repo/communications/RbmMemoryRepository` para brands, agents e integrations.
 
 ### Repositorio y filtro de autenticación
 
 `RbmMemoryRepository` mantiene en memoria las entidades RBM permitiendo un CRUD rápido sin base de datos externa. El
-`JwtAuthFilter` intercepta todas las peticiones a `/v1`, verifica el token y bloquea accesos no autorizados salvo que el modo
-sea permisivo.
+`JwtAuthFilter` intercepta todas las peticiones a `/v1` y únicamente comprueba la presencia del encabezado bearer, permitiendo
+accesos sin cabecera cuando el modo es permisivo.
 
 ## Comandos de eventos
 
@@ -385,7 +385,7 @@ curl -i -X POST "http://localhost:8080/v1/users:batchGet" \
 ## Business Communications
 
 ### Autenticación JWT
-Todos los endpoints bajo `/v1` están protegidos por `JwtAuthFilter`. Obtén un token desde `/token`:
+Todos los endpoints bajo `/v1` están protegidos por `JwtAuthFilter`, que en modo estricto solo comprueba la existencia del encabezado bearer. Obtén un token desde `/token`:
 
 ```bash
 TOKEN=$(curl -s -X POST http://localhost:8080/token \
