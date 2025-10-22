@@ -7,6 +7,8 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ConfigurationProperties(prefix = "auth")
 @Validated
@@ -82,7 +84,13 @@ public class AuthProperties {
     }
 
     public void setAcceptedClients(List<Client> acceptedClients) {
-        this.acceptedClients = new ArrayList<>(acceptedClients);
+        if (acceptedClients == null) {
+            this.acceptedClients = new ArrayList<>();
+            return;
+        }
+        this.acceptedClients = acceptedClients.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public List<String> getAllowedScopes() {
@@ -90,7 +98,13 @@ public class AuthProperties {
     }
 
     public void setAllowedScopes(List<String> allowedScopes) {
-        this.allowedScopes = new ArrayList<>(allowedScopes);
+        if (allowedScopes == null) {
+            this.allowedScopes = new ArrayList<>();
+            return;
+        }
+        this.allowedScopes = allowedScopes.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Key getKey() {
@@ -106,7 +120,9 @@ public class AuthProperties {
             return true;
         }
         return acceptedClients.stream()
-                .anyMatch(c -> c.getClientId().equals(id) && c.getClientSecret().equals(secret));
+                .filter(Objects::nonNull)
+                .filter(c -> Objects.nonNull(c.getClientId()) && Objects.nonNull(c.getClientSecret()))
+                .anyMatch(c -> Objects.equals(c.getClientId(), id) && Objects.equals(c.getClientSecret(), secret));
     }
 
     public List<String> filterScopes(List<String> requested) {

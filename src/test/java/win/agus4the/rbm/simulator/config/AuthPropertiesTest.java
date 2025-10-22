@@ -2,8 +2,10 @@ package win.agus4the.rbm.simulator.config;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,5 +39,33 @@ class AuthPropertiesTest {
         props.setAllowedScopes(List.of("a", "b"));
         List<String> filtered = props.filterScopes(List.of());
         assertEquals(List.of("a", "b"), filtered);
+    }
+
+    @Test
+    void ignoresNullAcceptedClientsList() {
+        AuthProperties props = new AuthProperties();
+        props.setAcceptedClients(null);
+
+        assertTrue(props.getAcceptedClients().isEmpty());
+    }
+
+    @Test
+    void ignoresNullAllowedScopesList() {
+        AuthProperties props = new AuthProperties();
+        props.setAllowedScopes(null);
+
+        assertTrue(props.getAllowedScopes().isEmpty());
+    }
+
+    @Test
+    void clientWithoutSecretIsRejectedSafely() {
+        AuthProperties props = new AuthProperties();
+        props.setMode(AuthProperties.Mode.STRICT);
+        AuthProperties.Client c = new AuthProperties.Client();
+        c.setClientId("client");
+        props.setAcceptedClients(Arrays.asList(c, null));
+
+        boolean accepted = assertDoesNotThrow(() -> props.isClientAccepted("client", null));
+        assertFalse(accepted);
     }
 }
