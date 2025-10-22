@@ -18,17 +18,24 @@ steps:
   displayName: 'Build + tests + SpotBugs'
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'verify'            # ejecuta spotbugs + check por el binding del POM
+    goals: 'verify'
     options: '-B'
     mavenOptions: '-Xmx1024m'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/*.xml'
 
-# Publica el SARIF como artefacto CodeAnalysisLogs (lo detecta la pestaña Scans)
+# (Opcional) Lista lo que haya en target para confirmar rutas
+- script: |
+    echo "=== LISTADO target ==="
+    find "$(System.DefaultWorkingDirectory)/target" -maxdepth 3 -type f -print || true
+  displayName: 'Debug: listar artefactos SpotBugs'
+  condition: always()
+
+# Publica la carpeta EXACTA donde cae el SARIF
 - task: PublishBuildArtifacts@1
   displayName: 'Publicar SARIF como CodeAnalysisLogs'
-  condition: always()                 # <- publica aunque el paso anterior falle
+  condition: always()
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/**/target/spotbugs'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/spotbugs'
     ArtifactName: 'CodeAnalysisLogs'
     publishLocation: 'Container'
