@@ -12,75 +12,46 @@ steps:
 - checkout: self
   fetchDepth: 0
 
-# Detecta base de comparación:
-# - en PR: contra la rama destino del PR
-# - en push directo: contra origin/main
+# Detectar clases .java cambiadas y preparar la opción para SpotBugs
 - bash: |
     set -euo pipefail
     echo "## Detectando base..."
-    if [ -n "${SYSTEM_PULLREQUEST_TARGETBRANCH:-}" ]; then
-      BASE="${SYSTEM_PULLREQUEST_TARGETBRANCH#refs/heads/}"
-    else
-      BASE="main"
-    fi
+    BASE="${SYSTEM_PULLREQUEST_TARGETBRANCH:-}"
+    BASE="${BASE#refs/heads/}"
+    [ -z "$BASE" ] && BASE="main"
     echo "Base = $BASE"
 
-    git fetch --no-tags --depth=0 origin "+refs/heads/$BASE:refs/remotes/origin/$BASE"
+    # Asegura que exista el remoto de la base; si no, trae sólo esa rama
+    if ! git show-ref --verify --quiet "refs/remotes/origin/$BASE"; then
+      git fetch --no-tags origin "+refs/heads/$BASE:refs/remotes/origin/$BASE"
+    fi
 
-    # Obtiene archivos .java cambiados respecto a la base
-    CHANGED=$(git diff --name-only "origin/$BASE"...HEAD -- 'src/main/java/**/*.java' 'src/test/java/**/*.java' || true)
+    # Archivos .java cambiados respecto a la base
+    CHANGED="$(git diff --name-only "origin/$BASE"...HEAD -- 'src/**/*.java' || true)"
 
     if [ -z "$CHANGED" ]; then
-      echo "No hay .java cambiados; no forzaremos onlyAnalyze."
-      echo "##vso[task.setvariable variable=ONLY_ANALYZE;isOutput=true]"
+      echo "No hay .java cambiados; ejecución completa (sin onlyAnalyze)."
+      echo "##vso[task.setvariable variable=SPOTBUGS_ONLY_ANALYZE_OPTION]"
       exit 0
     fi
 
-    # Convierte rutas a nombres de clase/paquete para SpotBugs:
-    #   src/main/java/com/foo/Bar.java  -> com.foo.Bar
-    #   src/test/java/com/foo/BarTest.java -> com.foo.BarTest
+    # Convertir rutas a nombres de clase/paquete para SpotBugs (separados por ':')
     LIST=""
     while IFS= read -r f; do
-      cls=$(echo "$f" | sed -E 's#^src/(main|test)/java/##; s#/#.#g; s#\.java$##')
-      # Permitimos inner classes con wildcard
+      cls="$(echo "$f" | sed -E 's#^src/(main|test)/java/##; s#/#.#g; s#\.java$##')"
       [ -n "$cls" ] && LIST="${LIST:+$LIST:}${cls}"
     done <<< "$CHANGED"
 
-    echo "ONLY_ANALYZE=$LIST"
-    echo "##vso[task.setvariable variable=ONLY_ANALYZE;isOutput=true]$LIST"
-  name: detect
+    echo "Clases detectadas: $LIST"
+    echo "##vso[task.setvariable variable=SPOTBUGS_ONLY_ANALYZE_OPTION]-Dspotbugs.onlyAnalyze=$LIST"
+  displayName: detect
 
 - task: Maven@3
-  displayName: 'Incremental: build + tests + SpotBugs (solo archivos cambiados)'
+  displayName: 'Incremental: build + tests + SpotBugs'
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'verify'
-    options: >-
-      -B
-      $(if [ -n "$(detect.ONLY_ANALYZE)" ]; then echo "-Dspotbugs.onlyAnalyze=$(detect.ONLY_ANALYZE)"; fi)
+    options: '-B $(SPOTBUGS_ONLY_ANALYZE_OPTION)'
     mavenOptions: '-Xmx1024m'
     publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/*.xml'
-
-# (Opcional) listar archivos generados para debug
-- bash: |
-    find "$(System.DefaultWorkingDirectory)/target" -maxdepth 3 -type f -print || true
-  displayName: 'Debug: listar artefactos'
-  condition: always()
-
-# Publica SARIF como CodeAnalysisLogs para la pestaña Scans
-- task: PublishBuildArtifacts@1
-  displayName: 'Publicar SARIF como CodeAnalysisLogs'
-  condition: always()
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/spotbugs'
-    ArtifactName: 'CodeAnalysisLogs'
-    publishLocation: 'Container'
-
-# (Opcional) Si usas GHAS para histórico/PR, descomenta:
-# - task: AdvancedSecurity-Publish@1
-#   displayName: 'Publicar SARIF en Code Scanning (GHAS)'
-#   condition: always()
-#   inputs:
-#     SarifsInputDirectory: '$(System.DefaultWorkingDirectory)/target/spotbugs'
-#     Category: 'SpotBugs'
+    testR
