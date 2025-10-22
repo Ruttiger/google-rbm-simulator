@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import win.agus4the.rbm.simulator.GoogleRbmSimulatorApplication;
 import win.agus4the.rbm.simulator.service.messaging.BusinessMessagingService;
@@ -17,11 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = GoogleRbmSimulatorApplication.class)
 @AutoConfigureWebTestClient
+@Import(UserControllerTest.RandomTestConfig.class)
 class UserControllerTest {
 
     @Autowired
@@ -29,6 +34,9 @@ class UserControllerTest {
 
     @Autowired
     private BusinessMessagingService messagingService;
+
+    @Autowired
+    private Supplier<Random> randomSupplier;
 
     private static final String AGENT = "AGENT";
 
@@ -76,7 +84,7 @@ class UserControllerTest {
 
         int sampleSize = (int) Math.ceil(users.size() * 0.75);
         List<String> sample = new ArrayList<>(users);
-        Collections.shuffle(sample, new Random(0));
+        Collections.shuffle(sample, randomSupplier.get());
         sample = sample.subList(0, sampleSize);
         Set<String> testers = Set.of(users.get(0), users.get(1));
         long reachableInSample = sample.stream().filter(testers::contains).count();
@@ -96,5 +104,13 @@ class UserControllerTest {
         return IntStream.range(0, count)
                 .mapToObj(i -> String.format("+1%010d", i))
                 .toList();
+    }
+
+    @TestConfiguration
+    static class RandomTestConfig {
+        @Bean
+        Supplier<Random> deterministicRandomSupplier() {
+            return () -> new Random(0);
+        }
     }
 }

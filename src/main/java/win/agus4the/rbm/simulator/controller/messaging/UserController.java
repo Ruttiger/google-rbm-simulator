@@ -4,6 +4,7 @@ import win.agus4the.rbm.simulator.service.messaging.BusinessMessagingService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @RestController
@@ -23,10 +27,13 @@ import java.util.regex.Pattern;
 public class UserController {
 
     private final BusinessMessagingService messagingService;
+    private final Supplier<Random> randomSupplier;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(BusinessMessagingService messagingService) {
+    public UserController(BusinessMessagingService messagingService,
+                          ObjectProvider<Supplier<Random>> randomSupplierProvider) {
         this.messagingService = messagingService;
+        this.randomSupplier = randomSupplierProvider.getIfAvailable(() -> ThreadLocalRandom::current);
     }
 
     public record UsersRequest(List<String> users, String agentId) {
@@ -63,7 +70,7 @@ public class UserController {
                 .map(reachable -> {
                     int sampleSize = (int) Math.ceil(n * 0.75);
                     List<String> sample = new ArrayList<>(users);
-                    Collections.shuffle(sample, new java.util.Random(0));
+                    Collections.shuffle(sample, randomSupplier.get());
                     sample = sample.subList(0, sampleSize);
 
                     long reachableInSample = sample.stream().filter(reachable::contains).count();
