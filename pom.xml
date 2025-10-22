@@ -244,7 +244,7 @@
 						  </configuration>
 						
 						  <executions>
-						    <!-- 1) Reporte SARIF completo (NO hace fallar el build) -->
+						    <!-- 1) Reporte SARIF completo (no gate) -->
 						    <execution>
 						      <id>spotbugs-sarif-report</id>
 						      <phase>verify</phase>
@@ -252,7 +252,7 @@
 						        <goal>spotbugs</goal>
 						      </goals>
 						      <configuration>
-						        <threshold>Low</threshold> <!-- incluir todo en el reporte -->
+						        <threshold>Low</threshold>
 						        <sarifOutput>true</sarifOutput>
 						        <sarifOutputDirectory>${project.build.directory}/spotbugs</sarifOutputDirectory>
 						        <sarifOutputFilename>spotbugs.sarif</sarifOutputFilename>
@@ -268,14 +268,15 @@
 						      </goals>
 						      <configuration>
 						        <failOnError>true</failOnError>
-						        <!-- Dos opciones equivalentes, usa UNA -->
-						        <threshold>High</threshold>       <!-- Solo prioridad alta -->
-						        <!-- o, si prefieres por rank (1..4 ≈ error) -->
-						        <!-- <maxRank>4</maxRank> -->
+						        <!-- clave: limitar el gate a rank de alta severidad -->
+						        <maxRank>4</maxRank>     <!-- 1..4 = alta severidad -->
+						        <!-- (opcional, equivalente) -->
+						        <threshold>High</threshold>
 						      </configuration>
 						    </execution>
 						  </executions>
 						</plugin>
+
                         <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-checkstyle-plugin</artifactId>
