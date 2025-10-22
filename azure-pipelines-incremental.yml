@@ -10,13 +10,12 @@ pr:
       - '*'
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
 - checkout: self
   fetchDepth: 0
 
-# Detecta clases Java cambiadas y construye la opción -Dspotbugs.onlyAnalyze=...
 - bash: |
     set -euo pipefail
     echo "Detectando base..."
@@ -47,36 +46,37 @@ steps:
 
     echo "Clases detectadas: $LIST"
     echo "##vso[task.setvariable variable=SPOTBUGS_ONLY_ANALYZE_OPTION;]-Dspotbugs.onlyAnalyze=$LIST"
-  displayName: detect
+  displayName: 'detect'
 
 - task: Maven@3
-  displayName: Incremental: build + tests + SpotBugs
+  displayName: 'Incremental: build + tests + SpotBugs'
   inputs:
-    mavenPomFile: pom.xml
-    goals: verify
-    options: "-B $(SPOTBUGS_ONLY_ANALYZE_OPTION)"
-    mavenOptions: "-Xmx1024m"
+    mavenPomFile: 'pom.xml'
+    goals: 'verify'
+    options: |
+      -B $(SPOTBUGS_ONLY_ANALYZE_OPTION)
+    mavenOptions: '-Xmx1024m'
     publishJUnitResults: true
-    testResultsFiles: "**/surefire-reports/*.xml"
+    testResultsFiles: '**/surefire-reports/*.xml'
 
 - bash: |
     echo "=== TARGET ==="
     find "$(System.DefaultWorkingDirectory)/target" -maxdepth 3 -type f -print || true
-  displayName: Debug: listar artefactos
+  displayName: 'Debug: listar artefactos'
   condition: always()
 
 - task: PublishBuildArtifacts@1
-  displayName: Publicar SARIF como CodeAnalysisLogs
+  displayName: 'Publicar SARIF como CodeAnalysisLogs'
   condition: always()
   inputs:
-    PathtoPublish: "$(System.DefaultWorkingDirectory)/target/spotbugs"
-    ArtifactName: CodeAnalysisLogs
-    publishLocation: Container
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/spotbugs'
+    ArtifactName: 'CodeAnalysisLogs'
+    publishLocation: 'Container'
 
-# Si luego habilitas GHAS en tu org, añade este paso (quítale el #):
+# (opcional, si usas GHAS)
 # - task: AdvancedSecurity-Publish@1
-#   displayName: Publicar SARIF en Code Scanning (GHAS)
+#   displayName: 'Publicar SARIF en Code Scanning (GHAS)'
 #   condition: always()
 #   inputs:
-#     SarifsInputDirectory: "$(System.DefaultWorkingDirectory)/target/spotbugs"
-#     Category: "SpotBugs"
+#     SarifsInputDirectory: '$(System.DefaultWorkingDirectory)/target/spotbugs'
+#     Category: 'SpotBugs'
