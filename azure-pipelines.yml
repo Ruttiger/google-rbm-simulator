@@ -1,0 +1,33 @@
+trigger:
+  branches:
+    include:
+      - main
+pr:
+  branches:
+    include:
+      - '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  fetchDepth: 0  # útil para PRs e historial
+
+- task: Maven@3
+  displayName: 'Build + tests + SpotBugs'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'verify'            # ejecuta spotbugs + check por el binding del POM
+    options: '-B'
+    mavenOptions: '-Xmx1024m'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/*.xml'
+
+# Publica el SARIF como artefacto CodeAnalysisLogs (lo detecta la pestaña Scans)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publicar SARIF como CodeAnalysisLogs'
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/**/target/spotbugs'
+    ArtifactName: 'CodeAnalysisLogs'
+    publishLocation: 'Container'
