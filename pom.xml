@@ -236,25 +236,43 @@
 						  <groupId>com.github.spotbugs</groupId>
 						  <artifactId>spotbugs-maven-plugin</artifactId>
 						  <version>4.9.7.0</version>
+						
+						  <!-- Config común -->
 						  <configuration>
 						    <effort>Max</effort>
-						    <threshold>Low</threshold>
-						
-						    <!-- SARIF -->
-						    <sarifOutput>true</sarifOutput>
-						    <sarifOutputDirectory>${project.build.directory}/spotbugs</sarifOutputDirectory>
-						    <sarifOutputFilename>spotbugs.sarif</sarifOutputFilename>
-						
-						    <!-- Claves para incremental: si viene vacía = full-scan -->
 						    <onlyAnalyze>${spotbugs.onlyAnalyze}</onlyAnalyze>
 						  </configuration>
+						
 						  <executions>
+						    <!-- 1) Reporte SARIF completo (NO hace fallar el build) -->
 						    <execution>
+						      <id>spotbugs-sarif-report</id>
 						      <phase>verify</phase>
 						      <goals>
-						        <goal>spotbugs</goal>  <!-- genera el fichero -->
-						        <goal>check</goal>     <!-- hace fallar si hay bugs según threshold -->
+						        <goal>spotbugs</goal>
 						      </goals>
+						      <configuration>
+						        <threshold>Low</threshold> <!-- incluir todo en el reporte -->
+						        <sarifOutput>true</sarifOutput>
+						        <sarifOutputDirectory>${project.build.directory}/spotbugs</sarifOutputDirectory>
+						        <sarifOutputFilename>spotbugs.sarif</sarifOutputFilename>
+						      </configuration>
+						    </execution>
+						
+						    <!-- 2) Gate: solo ERROR -->
+						    <execution>
+						      <id>spotbugs-gate-errors-only</id>
+						      <phase>verify</phase>
+						      <goals>
+						        <goal>check</goal>
+						      </goals>
+						      <configuration>
+						        <failOnError>true</failOnError>
+						        <!-- Dos opciones equivalentes, usa UNA -->
+						        <threshold>High</threshold>       <!-- Solo prioridad alta -->
+						        <!-- o, si prefieres por rank (1..4 ≈ error) -->
+						        <!-- <maxRank>4</maxRank> -->
+						      </configuration>
 						    </execution>
 						  </executions>
 						</plugin>
