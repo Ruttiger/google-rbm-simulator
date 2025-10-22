@@ -1,9 +1,3 @@
-
-pr:
-  branches:
-    include:
-      - '*'
-
 pool:
   vmImage: 'ubuntu-latest'
 
