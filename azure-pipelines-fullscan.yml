@@ -1,0 +1,36 @@
+# Sin triggers: se ejecuta manualmente desde Pipelines
+trigger: none
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  fetchDepth: 0
+
+- task: Maven@3
+  displayName: 'Full scan: build + tests + SpotBugs (todo el código)'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'verify'
+    options: '-B'               # ojo: NO pasamos -Dspotbugs.onlyAnalyze
+    mavenOptions: '-Xmx1024m'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/*.xml'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publicar SARIF como CodeAnalysisLogs'
+  condition: always()
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/spotbugs'
+    ArtifactName: 'CodeAnalysisLogs'
+    publishLocation: 'Container'
+
+# (Opcional) GHAS:
+# - task: AdvancedSecurity-Publish@1
+#   displayName: 'Publicar SARIF en Code Scanning (GHAS)'
+#   condition: always()
+#   inputs:
+#     SarifsInputDirectory: '$(System.DefaultWorkingDirectory)/target/spotbugs'
+#     Category: 'SpotBugs'
