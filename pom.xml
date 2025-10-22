@@ -232,15 +232,31 @@
                                         </execution>
                                 </executions>
                         </plugin>
-                        <plugin>
-                                <groupId>com.github.spotbugs</groupId>
-                                <artifactId>spotbugs-maven-plugin</artifactId>
-                                <version>4.7.3.4</version>
-                                <configuration>
-                                        <effort>Max</effort>
-                                        <threshold>Low</threshold>
-                                </configuration>
-                        </plugin>
+						<plugin>
+						  <groupId>com.github.spotbugs</groupId>
+						  <artifactId>spotbugs-maven-plugin</artifactId>
+						  <version>4.9.7.0</version> <!-- o la versión que prefieras estable -->
+						  <configuration>
+						    <effort>Max</effort>
+						    <threshold>Low</threshold>
+						    <!-- Salida SARIF -->
+						    <sarifOutput>true</sarifOutput>
+						    <sarifOutputDirectory>${project.build.directory}/spotbugs</sarifOutputDirectory>
+						    <sarifOutputFilename>spotbugs.sarif</sarifOutputFilename>
+						
+						    <!-- Opcional: si quieres excluir paquetes, añade <excludeFilterFile> -->
+						    <!-- <excludeFilterFile>${project.basedir}/spotbugs-exclude.xml</excludeFilterFile> -->
+						  </configuration>
+						  <executions>
+						    <execution>
+						      <phase>verify</phase>
+						      <goals>
+						        <goal>spotbugs</goal>
+						        <goal>check</goal> <!-- hace fallar el build si hay hallazgos por encima del umbral -->
+						      </goals>
+						    </execution>
+						  </executions>
+						</plugin>
                         <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-checkstyle-plugin</artifactId>
