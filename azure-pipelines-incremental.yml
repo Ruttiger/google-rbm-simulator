@@ -1,0 +1,86 @@
+trigger:
+  branches:
+    include: [ main, feature/* ]
+pr:
+  branches:
+    include: [ '*' ]
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  fetchDepth: 0
+
+# Detecta base de comparación:
+# - en PR: contra la rama destino del PR
+# - en push directo: contra origin/main
+- bash: |
+    set -euo pipefail
+    echo "## Detectando base..."
+    if [ -n "${SYSTEM_PULLREQUEST_TARGETBRANCH:-}" ]; then
+      BASE="${SYSTEM_PULLREQUEST_TARGETBRANCH#refs/heads/}"
+    else
+      BASE="main"
+    fi
+    echo "Base = $BASE"
+
+    git fetch --no-tags --depth=0 origin "+refs/heads/$BASE:refs/remotes/origin/$BASE"
+
+    # Obtiene archivos .java cambiados respecto a la base
+    CHANGED=$(git diff --name-only "origin/$BASE"...HEAD -- 'src/main/java/**/*.java' 'src/test/java/**/*.java' || true)
+
+    if [ -z "$CHANGED" ]; then
+      echo "No hay .java cambiados; no forzaremos onlyAnalyze."
+      echo "##vso[task.setvariable variable=ONLY_ANALYZE;isOutput=true]"
+      exit 0
+    fi
+
+    # Convierte rutas a nombres de clase/paquete para SpotBugs:
+    #   src/main/java/com/foo/Bar.java  -> com.foo.Bar
+    #   src/test/java/com/foo/BarTest.java -> com.foo.BarTest
+    LIST=""
+    while IFS= read -r f; do
+      cls=$(echo "$f" | sed -E 's#^src/(main|test)/java/##; s#/#.#g; s#\.java$##')
+      # Permitimos inner classes con wildcard
+      [ -n "$cls" ] && LIST="${LIST:+$LIST:}${cls}"
+    done <<< "$CHANGED"
+
+    echo "ONLY_ANALYZE=$LIST"
+    echo "##vso[task.setvariable variable=ONLY_ANALYZE;isOutput=true]$LIST"
+  name: detect
+
+- task: Maven@3
+  displayName: 'Incremental: build + tests + SpotBugs (solo archivos cambiados)'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'verify'
+    options: >-
+      -B
+      $(if [ -n "$(detect.ONLY_ANALYZE)" ]; then echo "-Dspotbugs.onlyAnalyze=$(detect.ONLY_ANALYZE)"; fi)
+    mavenOptions: '-Xmx1024m'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/*.xml'
+
+# (Opcional) listar archivos generados para debug
+- bash: |
+    find "$(System.DefaultWorkingDirectory)/target" -maxdepth 3 -type f -print || true
+  displayName: 'Debug: listar artefactos'
+  condition: always()
+
+# Publica SARIF como CodeAnalysisLogs para la pestaña Scans
+- task: PublishBuildArtifacts@1
+  displayName: 'Publicar SARIF como CodeAnalysisLogs'
+  condition: always()
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/spotbugs'
+    ArtifactName: 'CodeAnalysisLogs'
+    publishLocation: 'Container'
+
+# (Opcional) Si usas GHAS para histórico/PR, descomenta:
+# - task: AdvancedSecurity-Publish@1
+#   displayName: 'Publicar SARIF en Code Scanning (GHAS)'
+#   condition: always()
+#   inputs:
+#     SarifsInputDirectory: '$(System.DefaultWorkingDirectory)/target/spotbugs'
+#     Category: 'SpotBugs'

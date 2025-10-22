@@ -235,24 +235,25 @@
 						<plugin>
 						  <groupId>com.github.spotbugs</groupId>
 						  <artifactId>spotbugs-maven-plugin</artifactId>
-						  <version>4.9.7.0</version> <!-- o la versión que prefieras estable -->
+						  <version>4.9.7.0</version>
 						  <configuration>
 						    <effort>Max</effort>
 						    <threshold>Low</threshold>
-						    <!-- Salida SARIF -->
+						
+						    <!-- SARIF -->
 						    <sarifOutput>true</sarifOutput>
 						    <sarifOutputDirectory>${project.build.directory}/spotbugs</sarifOutputDirectory>
 						    <sarifOutputFilename>spotbugs.sarif</sarifOutputFilename>
 						
-						    <!-- Opcional: si quieres excluir paquetes, añade <excludeFilterFile> -->
-						    <!-- <excludeFilterFile>${project.basedir}/spotbugs-exclude.xml</excludeFilterFile> -->
+						    <!-- Claves para incremental: si viene vacía = full-scan -->
+						    <onlyAnalyze>${spotbugs.onlyAnalyze}</onlyAnalyze>
 						  </configuration>
 						  <executions>
 						    <execution>
 						      <phase>verify</phase>
 						      <goals>
-						        <goal>spotbugs</goal>
-						        <goal>check</goal> <!-- hace fallar el build si hay hallazgos por encima del umbral -->
+						        <goal>spotbugs</goal>  <!-- genera el fichero -->
+						        <goal>check</goal>     <!-- hace fallar si hay bugs según threshold -->
 						      </goals>
 						    </execution>
 						  </executions>
