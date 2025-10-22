@@ -27,6 +27,7 @@ steps:
 # Publica el SARIF como artefacto CodeAnalysisLogs (lo detecta la pestaña Scans)
 - task: PublishBuildArtifacts@1
   displayName: 'Publicar SARIF como CodeAnalysisLogs'
+  condition: always()                 # <- publica aunque el paso anterior falle
   inputs:
     PathtoPublish: '$(System.DefaultWorkingDirectory)/**/target/spotbugs'
     ArtifactName: 'CodeAnalysisLogs'
