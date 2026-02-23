@@ -92,7 +92,7 @@ public class AgentMessageController {
     public Mono<ResponseEntity<Void>> deleteMessage(@PathVariable String msisdn, @PathVariable String messageId) {
         return messagingService.deleteAgentMessage(msisdn, messageId)
                 .doOnSuccess(v -> log.info("Deleted agent message msisdn={} messageId={}", msisdn, messageId))
-                .thenReturn(ResponseEntity.noContent().build());
+                .thenReturn(ResponseEntity.ok().build());
     }
 
       private void handleTriggers(String agentId, String msisdn, String messageId, Message message) {
