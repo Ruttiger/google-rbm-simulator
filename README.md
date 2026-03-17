@@ -1,6 +1,31 @@
-# Google RBM Simulator
+# MaaP Simulator (RBM + PCM)
 
 Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone endpoints de simulación compatibles con la API de Google RBM.
+
+
+## Simulador multi-interfaz
+
+Este proyecto evoluciona a un simulador **MaaP multi-interfaz**. Actualmente soporta:
+- RBM
+- PCM
+
+La activación de interfaces se controla con:
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--maap.simulator.enabled-interfaces=RBM,PCM"
+```
+
+Ejemplos rápidos PCM:
+```bash
+# smsTextSubmit
+curl -u pcm-user:pcm-pass -X POST http://localhost:8080/restadpt_generico1/smsTextSubmit \
+  -H "Content-Type: application/json" \
+  -d '{"sender":"bot1","recipients":[{"to":"+34600000001"}],"smsText":"hola"}'
+
+# provisionar DR fallback
+curl -X PUT http://localhost:8080/v1/provisioning/pcm/webhooks/bot1 \
+  -H "Content-Type: application/json" \
+  -d '{"deliveryReportUrl":"http://localhost:9000/deliveryReport","smsDeliverUrl":"http://localhost:9000/smsDeliver"}'
+```
 
 ## Inicio rápido
 

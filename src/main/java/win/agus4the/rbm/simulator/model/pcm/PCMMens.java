@@ -1,24 +1,25 @@
 package win.agus4the.rbm.simulator.model.pcm;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 import java.util.List;
 
 /**
- * Represents a message SMS sent to the PCM simulator.
- *
- * @param sender             the sender is the phone number of the user sending the message.
- * @param recipients         the recipients are the phone numbers of the users receiving the message, in E.164 format.
- * @param smsText            the text content supplied by the user.
- * @param deliveryReport     the delivery report status of the message.
- * @param deliveryReportURL  the URL where the delivery report can be retrieved.
- * @param expiryDate         the expiry date of the message.
+ * Represents a PCM submit request for text/binary MT messages.
  */
 public record PCMMens(
-        String sender,
-        List<Recipient>recipients,
+        @NotBlank String sender,
+        @NotEmpty List<@Valid Recipient> recipients,
         String smsText,
+        String smsBinary,
         String deliveryReport,
         String deliveryReportURL,
         String expiryDate
 ) {
 
+    public boolean hasPayload() {
+        return (smsText != null && !smsText.isBlank()) || (smsBinary != null && !smsBinary.isBlank());
+    }
 }
