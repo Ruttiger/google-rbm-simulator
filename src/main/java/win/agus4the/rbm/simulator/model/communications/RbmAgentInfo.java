@@ -4,10 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Core RBM agent information.
  */
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"}, justification = "Mutable DTO used as transport model")
 public class RbmAgentInfo {
 
     @NotBlank

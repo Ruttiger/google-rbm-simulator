@@ -3,10 +3,12 @@ package win.agus4the.rbm.simulator.model.communications;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Representation of an RBM agent.
  */
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"}, justification = "Mutable DTO used as transport model")
 public class Agent {
 
     private String name;
