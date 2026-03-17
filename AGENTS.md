@@ -1,15 +1,16 @@
 # AGENTS.md — Guía para el agente de Codex
 
-> Proyecto: **Simulador Gateway Google RBM Platform**  
+> Proyecto: **Simulador MaaP Gateway (RBM + PCM, OSP futuro)**  
 > Lenguaje/Stack: **Java 17 + Spring Boot**  
-> Objetivo: Automatizar tareas de desarrollo, investigación y PRs manteniendo calidad y trazabilidad.
+> Objetivo: Automatizar tareas de desarrollo, investigación y PRs manteniendo calidad y trazabilidad en una arquitectura multi-canal por interfaces.
 
 ---
 
 ## 1) Contexto y objetivos
 Este agente debe:
-- Investigar y usar la API de **RCS Business Messaging (RBM)** de Google.
-- Implementar/mantener un **gateway simulador** en Spring Boot.
+- Investigar y usar la API de **RCS Business Messaging (RBM)** de Google y el contrato operativo de **PCM**.
+- Implementar/mantener un **gateway simulador MaaP multi-canal** en Spring Boot.
+- Mantener **compatibilidad hacia atrás de RBM** al introducir nuevos canales.
 - Producir PRs pequeñas, revisables y con buenas prácticas.
 - Mantener documentación viva (este archivo + README/ADR).
 
@@ -25,7 +26,7 @@ Este agente debe:
 3. **Propuestas > cambios directos**: si la modificación es no trivial (contratos, modelos, flujos), abre primero un RFC corto (`/docs/rfc/NNN-titulo.md`).
 4. **PRs atómicas**: una PR = un objetivo claro (máx. ~300 LOC efectivos). Si superas, divide.
 5. **Automatiza**: añade tests y tareas Gradle/Maven; configura CI para validar.
-6. **Idempotencia y resiliencia** para integraciones RBM: reintentos con backoff, timeouts, circuit breaker, logs estructurados, correlación.
+6. **Idempotencia y resiliencia** para integraciones por canal (RBM/PCM y futuros): reintentos con backoff, timeouts, circuit breaker, logs estructurados, correlación.
 7. **Documentación siempre al día**: modifica README, AGENTS, ADRs y demás documentos cuando sea necesario para reflejar el estado actual del proyecto.
 
 ---
@@ -131,18 +132,22 @@ Response:
 ## 6) Arquitectura sugerida
 ```
 app/
-  web/              # Controllers (REST) – DTOs de entrada/salida
-  service/          # Orquestación de casos de uso
-  domain/           # Modelos y lógica de dominio
+  core/             # Casos de uso, contratos de puertos, dominio común MaaP
+    web/            # Controllers (REST) – DTOs de entrada/salida
+    service/        # Orquestación + routing por interfaz de canal
+    domain/         # Modelos y lógica de dominio compartida
+  channel/
+    rbm/            # Adaptadores RBM (clientes, mapeos, auth/config)
+    pcm/            # Adaptadores PCM (submits, callbacks, auth basic)
+    osp/            # Placeholder para futuras extensiones
   auth/             # Filtros y utilidades de autenticación
   repo/             # Repositorios en memoria
-  infra/
-    rbm/            # Cliente(s) RBM, mapeos, auth, config
-    http/           # Cross-cutting HTTP (WebClientFactory, retry, CB)
+  infra/http/       # Cross-cutting HTTP (WebClientFactory, retry, CB)
   config/           # @Configuration y properties tipadas
   support/          # utilidades, mappers, fixtures
 ```
-- **Reglas**: `web` no conoce `infra`; `service` media entre `web` y `domain/infra`.
+- **Reglas**: `core` no conoce implementaciones concretas de `channel/*`; depende de interfaces/puertos.
+- **Compatibilidad**: cualquier cambio multi-canal debe mantener compatibilidad de contratos RBM existentes.
 - **DTOs** separados de modelos de dominio (mappers explícitos).
 
 ---
@@ -167,7 +172,7 @@ Checklist de PR (auto):
 ---
 
 ## 8) Flujo de trabajo para tareas
-1. **Descubrir**: lee la referencia RBM; anota endpoints, métodos, esquemas y scopes.
+1. **Descubrir**: lee la referencia RBM y el contrato PCM; anota endpoints, métodos, esquemas y scopes/auth por canal.
 2. **Diseñar**: define DTOs, interfaces y diagramas simples en `/docs`.
 3. **Planificar**: crea issue con alcance, riesgos y criterios de aceptación.
 4. **Implementar**: pequeña, incremental, centrada en un caso de uso.
@@ -183,7 +188,7 @@ Checklist de PR (auto):
 - **Inmutabilidad** donde sea posible.
 - **Conventional Commits**: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`, `build:`.
 - **Formateo**: `spotless`/`google-java-format`.
-- **Nombres** claros y específicos del dominio RBM.
+- **Nombres** claros y específicos del dominio MaaP/canal (RBM, PCM, OSP).
 
 ---
 

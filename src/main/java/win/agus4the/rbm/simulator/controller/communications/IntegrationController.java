@@ -78,11 +78,20 @@ public class IntegrationController {
             @RequestBody Map<String, Object> patch) {
         return integrationService.patch(brandId, agentId, integrationId, patch)
                 .map(integration -> {
-                    log.info("Patched integration brand={} agent={} id={} keys={}", brandId, agentId, integrationId, patch.keySet());
+                    log.info(
+                            "Patched integration brand={} agent={} id={} keys={}",
+                            brandId,
+                            agentId,
+                            integrationId,
+                            patch.keySet());
                     return ResponseEntity.ok(integration);
                 })
                 .orElseGet(() -> {
-                    log.warn("Integration not found for patch brand={} agent={} id={}", brandId, agentId, integrationId);
+                    log.warn(
+                            "Integration not found for patch brand={} agent={} id={}",
+                            brandId,
+                            agentId,
+                            integrationId);
                     return ResponseEntity.notFound().build();
                 });
     }

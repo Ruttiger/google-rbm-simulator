@@ -23,7 +23,9 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @RestController
-@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
+@SuppressFBWarnings(
+        value = {"EI_EXPOSE_REP2", "CT_CONSTRUCTOR_THROW"},
+        justification = "Dependencies are injected and constructor wiring is framework-managed")
 public class UserController {
 
     private final BusinessMessagingService messagingService;
@@ -54,12 +56,14 @@ public class UserController {
 
         final Pattern E164 = Pattern.compile("^\\+[1-9]\\d{1,14}$");
         if (users.stream().anyMatch(n -> n == null || !E164.matcher(n).matches())) {
-            return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "Todos los MSISDN deben estar en formato E.164")));
+            return Mono.just(ResponseEntity.badRequest()
+                    .body(Map.of("error", "Todos los MSISDN deben estar en formato E.164")));
         }
 
         final int n = users.size();
         if (n < 500 || n > 10_000) {
-            return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "Debe proporcionar entre 500 y 10000 números únicos")));
+            return Mono.just(ResponseEntity.badRequest()
+                    .body(Map.of("error", "Debe proporcionar entre 500 y 10000 números únicos")));
         }
 
         if (n != new HashSet<>(users).size()) {

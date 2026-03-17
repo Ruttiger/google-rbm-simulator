@@ -3,6 +3,7 @@ package win.agus4the.rbm.simulator.service.pcm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import win.agus4the.rbm.simulator.model.pcm.PCMEvent;
 import win.agus4the.rbm.simulator.model.pcm.PCMMens;
 import win.agus4the.rbm.simulator.model.pcm.PCMResponse;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
 public class PCMMessageService {
 
     private static final Logger log = LoggerFactory.getLogger(PCMMessageService.class);
@@ -89,7 +92,7 @@ public class PCMMessageService {
 
         try {
             String base64 = header.substring(6);
-            String decoded = new String(Base64.getDecoder().decode(base64));
+            String decoded = new String(Base64.getDecoder().decode(base64), StandardCharsets.UTF_8);
             String[] parts = decoded.split(":", 2);
             if (parts.length != 2) return false;
 

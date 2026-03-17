@@ -1,6 +1,8 @@
 # Google RBM Simulator
 
-Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** que expone endpoints de simulación compatibles con la API de Google RBM.
+Google RBM Simulator es un **simulador MaaP** en **Spring Boot 3** (WebFlux) con soporte activo para los canales **RBM** (Google RCS Business Messaging) y **PCM** (Personalized Communication Manager).
+
+El proyecto mantiene compatibilidad con contratos RBM existentes y agrega una canalización multi-canal por interfaces. El canal **OSP** se define como **placeholder de próxima evolución**: la arquitectura deja puntos de extensión listos, pero su implementación funcional aún no está activa.
 
 ## Inicio rápido
 
@@ -40,6 +42,13 @@ logbook:
 ```
 
 ## Arquitectura
+
+### Simulador MaaP multi-canal
+
+- **Canales activos**: RBM + PCM.
+- **Canal futuro**: OSP (placeholder, sin flujos productivos habilitados).
+- **Compatibilidad RBM**: se preservan endpoints y modelos RBM ya publicados para no romper integraciones actuales.
+- **Extensibilidad por interfaces**: los casos de uso se diseñan para rutear por canal sin acoplar `web` directamente a una implementación concreta.
 
 - **Spring Boot 3 / WebFlux** para un stack reactivo no bloqueante.
 - Controladores `TokenController` y `AgentMessageController` para tokens y mensajes de ejemplo.

@@ -1,6 +1,10 @@
-# Colección Postman del simulador RBM
+# Colección Postman del simulador MaaP (RBM + PCM)
 
-Los archivos `RBM-Simulator.postman_collection.json` (colección) y `RBM-Simulator.postman_environment.json` (entorno) facilitan las pruebas manuales de los endpoints del simulador.
+Los archivos `RBM-Simulator.postman_collection.json` (colección) y `RBM-Simulator.postman_environment.json` (entorno) facilitan las pruebas manuales de los endpoints del simulador MaaP.
+
+La colección se organiza en secciones por canal:
+- **RBM**: mensajes, eventos y endpoints de Business Communications/Business Messaging.
+- **PCM**: envío (`submits`) y callbacks para pruebas de integraciones DR.
 
 ## Importar la colección y el entorno
 
@@ -9,7 +13,7 @@ Los archivos `RBM-Simulator.postman_collection.json` (colección) y `RBM-Simulat
    - La colección aparecerá como **RBM Simulator**.
    - El entorno se llamará **RBM Simulator**.
 3. Activa el entorno importado.
-4. Verifica que la variable `baseUrl` apunte a la URL donde se ejecuta la aplicación (por defecto `http://localhost:8080`).
+4. Verifica que las variables base por canal apunten a la URL donde se ejecuta la aplicación (por defecto `http://localhost:8080`): `baseUrl`, `rbmBasePath`, `pcmBasePath`.
 
 ## Probar los endpoints
 
@@ -32,3 +36,13 @@ Los mensajes pueden incluir triggers especiales para simular eventos:
 Cada trigger admite un parámetro `delay` para diferir su envío usando la sintaxis `#EVENT(delay=ms)`, donde `ms` se expresa en milisegundos.
 
 Ejemplo: `Hola #READ(delay=500)`
+
+
+## Variables de entorno recomendadas en Postman
+
+- `baseUrl`: host base del simulador.
+- `authToken`: token Bearer para endpoints RBM protegidos.
+- `rbmBasePath`: base path de requests RBM (ej. `/v1`).
+- `pcmBasePath`: base path de requests PCM (ej. `/pcm`).
+- `pcmBasicUser` y `pcmBasicPassword`: credenciales Basic para requests PCM.
+- `drCallbackUrl`: URL de callback para pruebas de delivery reports en PCM.

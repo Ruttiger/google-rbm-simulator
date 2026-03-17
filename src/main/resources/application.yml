@@ -43,3 +43,9 @@ logbook:
 logging:
   level:
     org.zalando.logbook: TRACE
+
+
+sim:
+  pcm:
+    username: "pcm-user"
+    password: "pcm-pass"

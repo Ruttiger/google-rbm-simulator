@@ -44,7 +44,11 @@ public class WebhookDispatcherService {
      */
     public Mono<Void> dispatchEvent(String agentId, Map<String, Object> event) {
         return webhookService.getConfig(agentId)
-                .doOnNext(cfg -> log.info("Dispatching event type={} agentId={} to {}", event.get("eventType"), agentId, cfg.webhookUrl()))
+                .doOnNext(cfg -> log.info(
+                        "Dispatching event type={} agentId={} to {}",
+                        event.get("eventType"),
+                        agentId,
+                        cfg.webhookUrl()))
                 .flatMap(cfg -> send(cfg, event))
                 .onErrorResume(e -> {
                     log.warn("Failed to dispatch event agentId={} error={}", agentId, e.getMessage());
@@ -84,7 +88,9 @@ public class WebhookDispatcherService {
                     .bodyValue(envelope)
                     .retrieve()
                     .bodyToMono(Void.class)
-                    .doOnSuccess(v -> log.debug("Dispatched signed event agentId={} signaturePresent=true", config.webhookUrl()));
+                    .doOnSuccess(v -> log.debug(
+                            "Dispatched signed event agentId={} signaturePresent=true",
+                            config.webhookUrl()));
         } catch (JsonProcessingException e) {
             log.warn("Failed to serialize event for agentId={}", config.webhookUrl(), e);
             return Mono.empty();
