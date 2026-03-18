@@ -13,11 +13,13 @@ public class MaapSimulatorProperties {
     private boolean strictPcmDeliveryReportRouting;
 
     public Set<MaapChannel> getEnabledInterfaces() {
-        return enabledInterfaces;
+        return EnumSet.copyOf(enabledInterfaces);
     }
 
     public void setEnabledInterfaces(Set<MaapChannel> enabledInterfaces) {
-        this.enabledInterfaces = enabledInterfaces;
+        this.enabledInterfaces = enabledInterfaces == null || enabledInterfaces.isEmpty()
+                ? EnumSet.noneOf(MaapChannel.class)
+                : EnumSet.copyOf(enabledInterfaces);
     }
 
     public boolean isStrictPcmDeliveryReportRouting() {

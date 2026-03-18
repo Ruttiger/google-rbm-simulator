@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.List;
 
 /**
@@ -53,7 +52,6 @@ public record Message(
             }
         }
 
-        @SuppressFBWarnings("EI_EXPOSE_REP")
         public List<JsonNode> suggestions() {
             return suggestions == null ? null : List.copyOf(suggestions);
         }

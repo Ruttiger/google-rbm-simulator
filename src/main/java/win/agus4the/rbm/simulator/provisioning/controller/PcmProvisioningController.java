@@ -1,5 +1,6 @@
 package win.agus4the.rbm.simulator.provisioning.controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import win.agus4the.rbm.simulator.provisioning.model.PcmWebhookProvisioningRespo
 
 @RestController
 @RequestMapping("/v1/provisioning/pcm/webhooks")
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring-managed dependency")
 public class PcmProvisioningController {
 
     private final ProvisioningService provisioningService;

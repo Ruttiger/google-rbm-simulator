@@ -1,5 +1,6 @@
 package win.agus4the.rbm.simulator.service.pcm;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,11 +15,13 @@ import win.agus4the.rbm.simulator.model.pcm.PCMEvent;
 import win.agus4the.rbm.simulator.model.pcm.PCMMens;
 import win.agus4the.rbm.simulator.model.pcm.PCMResponse;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring-managed dependencies")
 public class PCMMessageService {
 
     private static final Logger log = LoggerFactory.getLogger(PCMMessageService.class);
@@ -100,7 +103,7 @@ public class PCMMessageService {
         if (header == null || !header.startsWith("Basic ")) return false;
 
         try {
-            String decoded = new String(Base64.getDecoder().decode(header.substring(6)));
+            String decoded = new String(Base64.getDecoder().decode(header.substring(6)), StandardCharsets.UTF_8);
             String[] parts = decoded.split(":", 2);
             return parts.length == 2 && parts[0].equals(validUser) && parts[1].equals(validPassword);
         } catch (IllegalArgumentException e) {

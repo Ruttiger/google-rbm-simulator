@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @RestController
-@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependencies are injected and not exposed")
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "CT_CONSTRUCTOR_THROW"}, justification = "Dependencies are injected; constructor follows Spring pattern")
 public class UserController {
 
     private final BusinessMessagingService messagingService;

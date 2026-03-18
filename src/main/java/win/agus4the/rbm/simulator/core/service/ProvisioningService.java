@@ -1,5 +1,6 @@
 package win.agus4the.rbm.simulator.core.service;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.stereotype.Service;
 import win.agus4the.rbm.simulator.core.model.MaapChannel;
 import win.agus4the.rbm.simulator.core.model.MaapProvisioningConfig;
@@ -8,6 +9,7 @@ import win.agus4the.rbm.simulator.core.repo.MaapProvisioningRepository;
 import java.util.Optional;
 
 @Service
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Spring-managed dependency")
 public class ProvisioningService {
 
     private final MaapProvisioningRepository repository;
