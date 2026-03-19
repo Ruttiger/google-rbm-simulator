@@ -1,6 +1,6 @@
 # AGENTS.md — Guía para el agente de Codex
 
-> Proyecto: **Simulador Gateway Google RBM Platform**  
+> Proyecto: **Simulador MaaP multi-interfaz (RBM + PCM)**  
 > Lenguaje/Stack: **Java 17 + Spring Boot**  
 > Objetivo: Automatizar tareas de desarrollo, investigación y PRs manteniendo calidad y trazabilidad.
 
@@ -274,3 +274,7 @@ Plantilla sugerida:
 - Documentar instrucciones de arranque, ejemplos de mensajes y comandos de prueba en el `README`.
 - Estructurar los ejemplos por tipo de mensaje para facilitar las pruebas manuales.
 
+
+
+## Nota de evolución
+Este repositorio ya no es exclusivo de RBM: debe mantener arquitectura MaaP común y adaptadores por canal (RBM/PCM), dejando OSP como extensión futura.

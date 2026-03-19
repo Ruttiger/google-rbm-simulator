@@ -2,7 +2,7 @@
   "info": {
     "name": "RBM Simulator - Full Suite",
     "_postman_id": "2b4deab7-4f21-44fd-9fc1-9f9585b8698b",
-    "description": "Colecci\u00f3n completa para probar el simulador de RBM Business Communications (brands, agents, integrations, regions, auth).",
+    "description": "Colección completa para probar el simulador de RBM Business Communications (brands, agents, integrations, regions, auth).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -387,7 +387,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"displayName\": \"Agente Demo\",\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripci\u00f3n corta\",\n    \"logoUri\": \"https://example.com/logo.png\",\n    \"heroUri\": \"https://example.com/hero.jpg\",\n    \"privacy\": {\n      \"uri\": \"https://example.com/privacy\",\n      \"label\": \"Privacidad\"\n    },\n    \"termsConditions\": {\n      \"uri\": \"https://example.com/terms\",\n      \"label\": \"T\u00e9rminos\"\n    },\n    \"color\": \"#3366FF\"\n  }\n}"
+              "raw": "{\n  \"displayName\": \"Agente Demo\",\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripción corta\",\n    \"logoUri\": \"https://example.com/logo.png\",\n    \"heroUri\": \"https://example.com/hero.jpg\",\n    \"privacy\": {\n      \"uri\": \"https://example.com/privacy\",\n      \"label\": \"Privacidad\"\n    },\n    \"termsConditions\": {\n      \"uri\": \"https://example.com/terms\",\n      \"label\": \"Términos\"\n    },\n    \"color\": \"#3366FF\"\n  }\n}"
             }
           },
           "response": [],
@@ -481,7 +481,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripci\u00f3n editada\"\n  }\n}"
+              "raw": "{\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripción editada\"\n  }\n}"
             }
           },
           "response": [],
@@ -1557,6 +1557,123 @@
           ]
         }
       ]
+    },
+    {
+      "name": "PCM",
+      "item": [
+        {
+          "name": "Provision PCM webhook (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/provisioning/pcm/webhooks/{{PCM_SENDER}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "provisioning",
+                "pcm",
+                "webhooks",
+                "{{PCM_SENDER}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryReportUrl\": \"{{PCM_DELIVERY_REPORT_URL}}\",\n  \"smsDeliverUrl\": \"{{PCM_SMS_DELIVER_URL}}\",\n  \"username\": \"{{PCM_WEBHOOK_USERNAME}}\",\n  \"password\": \"{{PCM_WEBHOOK_PASSWORD}}\"\n}"
+            },
+            "description": "Crea/actualiza la configuración de webhook PCM por sender. Si luego omites deliveryReportURL en smsTextSubmit, el simulador usará esta URL provisionada."
+          }
+        },
+        {
+          "name": "Get PCM webhook provisioning (GET)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/provisioning/pcm/webhooks/{{PCM_SENDER}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "provisioning",
+                "pcm",
+                "webhooks",
+                "{{PCM_SENDER}}"
+              ]
+            },
+            "description": "Verifica la configuración guardada para el sender PCM."
+          }
+        },
+        {
+          "name": "smsTextSubmit — mensaje simple",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{pcm_basic_auth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/restadpt_generico1/smsTextSubmit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "restadpt_generico1",
+                "smsTextSubmit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sender\": \"{{PCM_SENDER}}\",\n  \"recipients\": [\n    {\n      \"to\": \"+34600000001\"\n    }\n  ],\n  \"deliveryReport\": \"All\",\n  \"smsText\": \"Hola desde PCM\"\n}"
+            },
+            "description": "Envía un MT de texto básico. Usa deliveryReport=All para generar callback Delivered inmediato cuando exista deliveryReportURL."
+          }
+        },
+        {
+          "name": "smsTextSubmit — comandos embebidos (REJECTED/EXPIRED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{pcm_basic_auth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/restadpt_generico1/smsTextSubmit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "restadpt_generico1",
+                "smsTextSubmit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sender\": \"{{PCM_SENDER}}\",\n  \"recipients\": [\n    {\n      \"to\": \"+34600000002\"\n    }\n  ],\n  \"deliveryReport\": \"All\",\n  \"smsText\": \"Prueba PCM #REJECTED(delay=400) #EXPIRED(delay=1200)\"\n}"
+            },
+            "description": "Dispara callbacks programados con comandos en smsText. Soportados por el simulador: #DELIVERED, #REJECTED y #EXPIRED con delay opcional en milisegundos."
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -1583,6 +1700,26 @@
     {
       "key": "WEBHOOK_URL",
       "value": "http://localhost:8081/callback"
+    },
+    {
+      "key": "PCM_SENDER",
+      "value": "bot1"
+    },
+    {
+      "key": "PCM_DELIVERY_REPORT_URL",
+      "value": "http://localhost:8081/callback/pcm/dlr"
+    },
+    {
+      "key": "PCM_SMS_DELIVER_URL",
+      "value": "http://localhost:8081/callback/pcm/mo"
+    },
+    {
+      "key": "PCM_WEBHOOK_USERNAME",
+      "value": "pcm-user"
+    },
+    {
+      "key": "PCM_WEBHOOK_PASSWORD",
+      "value": "pcm-pass"
     }
   ]
 }

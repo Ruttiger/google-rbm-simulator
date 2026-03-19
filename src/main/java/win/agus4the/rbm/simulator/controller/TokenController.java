@@ -48,7 +48,9 @@ public class TokenController {
             if ("client_credentials".equals(grantType)) {
                 ClientCredentials creds = extractClient(auth, form);
                 if (creds == null || !properties.isClientAccepted(creds.clientId(), creds.clientSecret())) {
-                    log.warn("Invalid client credentials for clientId={}", creds != null ? creds.clientId() : "unknown");
+                    log.warn(
+                            "Invalid client credentials for clientId={}",
+                            creds != null ? creds.clientId() : "unknown");
                     return Mono.just(ResponseEntity.status(401).build());
                 }
                 List<String> scopes = properties.filterScopes(parseScope(form.getFirst("scope")));

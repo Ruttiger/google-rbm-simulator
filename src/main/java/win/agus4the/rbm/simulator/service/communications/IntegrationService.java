@@ -38,14 +38,18 @@ public class IntegrationService {
 
     public Optional<Integration> get(String brandId, String agentId, String integrationId) {
         Optional<Integration> integration = repo.getIntegration(brandId, agentId, integrationId);
-        log.debug("Get integration brand={} agent={} id={} found={}", brandId, agentId, integrationId, integration.isPresent());
+        log.debug(
+                "Get integration brand={} agent={} id={} found={}",
+                brandId, agentId, integrationId, integration.isPresent());
         return integration;
     }
 
     public Optional<Integration> patch(
             String brandId, String agentId, String integrationId, Map<String, Object> patch) {
         Optional<Integration> updated = repo.updateIntegration(brandId, agentId, integrationId, patch);
-        updated.ifPresent(i -> log.info("Patched integration brand={} agent={} id={} keys={}", brandId, agentId, integrationId, patch.keySet()));
+        updated.ifPresent(i -> log.info(
+                "Patched integration brand={} agent={} id={} keys={}",
+                brandId, agentId, integrationId, patch.keySet()));
         return updated;
     }
 

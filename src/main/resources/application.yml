@@ -43,3 +43,14 @@ logbook:
 logging:
   level:
     org.zalando.logbook: TRACE
+
+
+maap:
+  simulator:
+    enabled-interfaces: RBM,PCM
+    strict-pcm-delivery-report-routing: false
+
+sim:
+  pcm:
+    username: pcm-user
+    password: pcm-pass
