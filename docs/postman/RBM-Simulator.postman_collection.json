@@ -1562,7 +1562,57 @@
       "name": "PCM",
       "item": [
         {
-          "name": "smsTextSubmit",
+          "name": "Provision PCM webhook (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/provisioning/pcm/webhooks/{{PCM_SENDER}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "provisioning",
+                "pcm",
+                "webhooks",
+                "{{PCM_SENDER}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryReportUrl\": \"{{PCM_DELIVERY_REPORT_URL}}\",\n  \"smsDeliverUrl\": \"{{PCM_SMS_DELIVER_URL}}\",\n  \"username\": \"{{PCM_WEBHOOK_USERNAME}}\",\n  \"password\": \"{{PCM_WEBHOOK_PASSWORD}}\"\n}"
+            },
+            "description": "Crea/actualiza la configuración de webhook PCM por sender. Si luego omites deliveryReportURL en smsTextSubmit, el simulador usará esta URL provisionada."
+          }
+        },
+        {
+          "name": "Get PCM webhook provisioning (GET)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/provisioning/pcm/webhooks/{{PCM_SENDER}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "provisioning",
+                "pcm",
+                "webhooks",
+                "{{PCM_SENDER}}"
+              ]
+            },
+            "description": "Verifica la configuración guardada para el sender PCM."
+          }
+        },
+        {
+          "name": "smsTextSubmit — mensaje simple",
           "request": {
             "method": "POST",
             "header": [
@@ -1576,9 +1626,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/restadpt_generico1/smsTextSubmit",
+              "raw": "{{baseUrl}}/restadpt_generico1/smsTextSubmit",
               "host": [
-                "{{base_url}}"
+                "{{baseUrl}}"
               ],
               "path": [
                 "restadpt_generico1",
@@ -1587,8 +1637,40 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\"sender\":\"bot1\",\"recipients\":[{\"to\":\"+34600000001\"}],\"smsText\":\"hola\"}"
-            }
+              "raw": "{\n  \"sender\": \"{{PCM_SENDER}}\",\n  \"recipients\": [\n    {\n      \"to\": \"+34600000001\"\n    }\n  ],\n  \"deliveryReport\": \"All\",\n  \"smsText\": \"Hola desde PCM\"\n}"
+            },
+            "description": "Envía un MT de texto básico. Usa deliveryReport=All para generar callback Delivered inmediato cuando exista deliveryReportURL."
+          }
+        },
+        {
+          "name": "smsTextSubmit — comandos embebidos (REJECTED/EXPIRED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{pcm_basic_auth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/restadpt_generico1/smsTextSubmit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "restadpt_generico1",
+                "smsTextSubmit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sender\": \"{{PCM_SENDER}}\",\n  \"recipients\": [\n    {\n      \"to\": \"+34600000002\"\n    }\n  ],\n  \"deliveryReport\": \"All\",\n  \"smsText\": \"Prueba PCM #REJECTED(delay=400) #EXPIRED(delay=1200)\"\n}"
+            },
+            "description": "Dispara callbacks programados con comandos en smsText. Soportados por el simulador: #DELIVERED, #REJECTED y #EXPIRED con delay opcional en milisegundos."
           }
         }
       ]
@@ -1618,6 +1700,26 @@
     {
       "key": "WEBHOOK_URL",
       "value": "http://localhost:8081/callback"
+    },
+    {
+      "key": "PCM_SENDER",
+      "value": "bot1"
+    },
+    {
+      "key": "PCM_DELIVERY_REPORT_URL",
+      "value": "http://localhost:8081/callback/pcm/dlr"
+    },
+    {
+      "key": "PCM_SMS_DELIVER_URL",
+      "value": "http://localhost:8081/callback/pcm/mo"
+    },
+    {
+      "key": "PCM_WEBHOOK_USERNAME",
+      "value": "pcm-user"
+    },
+    {
+      "key": "PCM_WEBHOOK_PASSWORD",
+      "value": "pcm-pass"
     }
   ]
 }
