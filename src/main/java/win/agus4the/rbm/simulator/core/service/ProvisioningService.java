@@ -18,8 +18,16 @@ public class ProvisioningService {
         this.repository = repository;
     }
 
-    public MaapProvisioningConfig upsertPcm(String sender, String drUrl, String inboundUrl, String username, String password) {
-        return repository.upsert(new MaapProvisioningConfig(MaapChannel.PCM, sender, drUrl, inboundUrl, username, password));
+    public MaapProvisioningConfig upsertPcm(
+            String sender,
+            String drUrl,
+            String inboundUrl,
+            String username,
+            String password
+    ) {
+        MaapProvisioningConfig config = new MaapProvisioningConfig(
+                MaapChannel.PCM, sender, drUrl, inboundUrl, username, password);
+        return repository.upsert(config);
     }
 
     public Optional<MaapProvisioningConfig> getPcm(String sender) {

@@ -113,7 +113,8 @@ public class AgentMessageController {
                 payload.put("agentId", agentId);
                 payload.put("text", userText);
                 dispatcherService.dispatchEvent(agentId, payload)
-                        .doOnSubscribe(sub -> log.debug("Dispatching USER_MESSAGE agentId={} msisdn={}", agentId, msisdn))
+                        .doOnSubscribe(sub ->
+                                log.debug("Dispatching USER_MESSAGE agentId={} msisdn={}", agentId, msisdn))
                         .subscribe();
             }
 
@@ -126,8 +127,9 @@ public class AgentMessageController {
                     case "IS_TYPING", "SUBSCRIBE", "UNSUBSCRIBE" -> null;
                     default -> messageId;
                 };
-                log.debug("Scheduling event type={} delay={}ms agentId={} msisdn={} messageId={}"
-                        , type, delay, agentId, msisdn, id);
+                log.debug(
+                        "Scheduling event type={} delay={}ms agentId={} msisdn={} messageId={}",
+                        type, delay, agentId, msisdn, id);
                 scheduleEvent(agentId, msisdn, type, delay, id);
             }
         });

@@ -29,7 +29,12 @@ public class PcmProvisioningController {
             @PathVariable String sender,
             @RequestBody PcmWebhookProvisioningRequest request
     ) {
-        var saved = provisioningService.upsertPcm(sender, request.deliveryReportUrl(), request.smsDeliverUrl(), request.username(), request.password());
+        var saved = provisioningService.upsertPcm(
+                sender,
+                request.deliveryReportUrl(),
+                request.smsDeliverUrl(),
+                request.username(),
+                request.password());
         return ResponseEntity.ok(toResponse(saved));
     }
 
@@ -47,7 +52,10 @@ public class PcmProvisioningController {
         return ResponseEntity.noContent().build();
     }
 
-    private PcmWebhookProvisioningResponse toResponse(win.agus4the.rbm.simulator.core.model.MaapProvisioningConfig config) {
-        return new PcmWebhookProvisioningResponse(config.key(), config.deliveryReportUrl(), config.inboundMessageUrl(), config.username());
+    private PcmWebhookProvisioningResponse toResponse(
+            win.agus4the.rbm.simulator.core.model.MaapProvisioningConfig config
+    ) {
+        return new PcmWebhookProvisioningResponse(
+                config.key(), config.deliveryReportUrl(), config.inboundMessageUrl(), config.username());
     }
 }

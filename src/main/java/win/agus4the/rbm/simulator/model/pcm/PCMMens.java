@@ -9,6 +9,14 @@ import java.util.List;
 
 /**
  * Represents a PCM submit request for text/binary MT messages.
+ *
+ * @param sender message sender
+ * @param recipients destination recipients
+ * @param smsText text payload
+ * @param smsBinary binary payload encoded as string
+ * @param deliveryReport delivery report mode
+ * @param deliveryReportURL callback URL for delivery reports
+ * @param expiryDate message expiration timestamp
  */
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"}, justification = "Record performs defensive copy")
 public record PCMMens(

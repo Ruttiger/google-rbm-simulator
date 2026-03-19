@@ -70,11 +70,15 @@ public class PCMMessageService {
         String callbackUrl = resolveDeliveryReportUrl(req);
         if (callbackUrl == null && maapSimulatorProperties.isStrictPcmDeliveryReportRouting()) {
             return Mono.just(ResponseEntity.badRequest()
-                    .body(buildErrorResponse(2000, "Client error", "deliveryReportURL unavailable and strict mode enabled")));
+                    .body(buildErrorResponse(
+                            2000,
+                            "Client error",
+                            "deliveryReportURL unavailable and strict mode enabled")));
         }
 
         String messageId = UUID.randomUUID().toString();
-        log.info("PCM message received sender={} recipients={} callbackConfigured={}",
+        log.info(
+                "PCM message received sender={} recipients={} callbackConfigured={}",
                 req.sender(), req.recipients().size(), callbackUrl != null);
 
         List<PCMEvent> events = req.smsText() == null ? List.of() : parser.parse(req.smsText());
