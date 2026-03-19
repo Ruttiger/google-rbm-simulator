@@ -21,6 +21,32 @@ Con el entorno activo:
 
 Estas plantillas permiten enviar mensajes de prueba y observar las respuestas del simulador sin necesidad de escribir manualmente las solicitudes.
 
+## Flujo recomendado para PCM
+
+Dentro de la carpeta **PCM** de la colección encontrarás un flujo completo:
+
+1. **Provision PCM webhook (PUT)**
+   - Configura por `sender` la URL de delivery report y las credenciales del callback.
+   - Body de ejemplo incluido:
+     - `deliveryReportUrl`
+     - `smsDeliverUrl`
+     - `username`
+     - `password`
+2. **Get PCM webhook provisioning (GET)**
+   - Verifica que la provisión quedó guardada.
+3. **smsTextSubmit — mensaje simple**
+   - Envía un mensaje MT de texto plano.
+4. **smsTextSubmit — comandos embebidos (REJECTED/EXPIRED)**
+   - Simula callbacks asíncronos con comandos en `smsText`.
+
+Variables de entorno útiles para PCM:
+- `PCM_SENDER`
+- `PCM_DELIVERY_REPORT_URL`
+- `PCM_SMS_DELIVER_URL`
+- `PCM_WEBHOOK_USERNAME`
+- `PCM_WEBHOOK_PASSWORD`
+- `pcm_basic_auth` (`base64(username:password)` para autenticación Basic)
+
 ## Triggers de eventos
 
 Los mensajes pueden incluir triggers especiales para simular eventos:
@@ -32,3 +58,15 @@ Los mensajes pueden incluir triggers especiales para simular eventos:
 Cada trigger admite un parámetro `delay` para diferir su envío usando la sintaxis `#EVENT(delay=ms)`, donde `ms` se expresa en milisegundos.
 
 Ejemplo: `Hola #READ(delay=500)`
+
+### Comandos embebidos específicos de PCM
+
+Para `smsTextSubmit` el parser PCM soporta:
+
+- `#DELIVERED`
+- `#REJECTED`
+- `#EXPIRED`
+
+Todos admiten `delay` opcional. Ejemplo:
+
+`Prueba PCM #REJECTED(delay=400) #EXPIRED(delay=1200)`
