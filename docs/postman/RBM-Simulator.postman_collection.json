@@ -2,7 +2,7 @@
   "info": {
     "name": "RBM Simulator - Full Suite",
     "_postman_id": "2b4deab7-4f21-44fd-9fc1-9f9585b8698b",
-    "description": "Colecci\u00f3n completa para probar el simulador de RBM Business Communications (brands, agents, integrations, regions, auth).",
+    "description": "Colección completa para probar el simulador de RBM Business Communications (brands, agents, integrations, regions, auth).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -387,7 +387,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"displayName\": \"Agente Demo\",\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripci\u00f3n corta\",\n    \"logoUri\": \"https://example.com/logo.png\",\n    \"heroUri\": \"https://example.com/hero.jpg\",\n    \"privacy\": {\n      \"uri\": \"https://example.com/privacy\",\n      \"label\": \"Privacidad\"\n    },\n    \"termsConditions\": {\n      \"uri\": \"https://example.com/terms\",\n      \"label\": \"T\u00e9rminos\"\n    },\n    \"color\": \"#3366FF\"\n  }\n}"
+              "raw": "{\n  \"displayName\": \"Agente Demo\",\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripción corta\",\n    \"logoUri\": \"https://example.com/logo.png\",\n    \"heroUri\": \"https://example.com/hero.jpg\",\n    \"privacy\": {\n      \"uri\": \"https://example.com/privacy\",\n      \"label\": \"Privacidad\"\n    },\n    \"termsConditions\": {\n      \"uri\": \"https://example.com/terms\",\n      \"label\": \"Términos\"\n    },\n    \"color\": \"#3366FF\"\n  }\n}"
             }
           },
           "response": [],
@@ -481,7 +481,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripci\u00f3n editada\"\n  }\n}"
+              "raw": "{\n  \"rcsBusinessMessagingAgent\": {\n    \"description\": \"Descripción editada\"\n  }\n}"
             }
           },
           "response": [],
@@ -1555,6 +1555,41 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "PCM",
+      "item": [
+        {
+          "name": "smsTextSubmit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{pcm_basic_auth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/restadpt_generico1/smsTextSubmit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "restadpt_generico1",
+                "smsTextSubmit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"sender\":\"bot1\",\"recipients\":[{\"to\":\"+34600000001\"}],\"smsText\":\"hola\"}"
+            }
+          }
         }
       ]
     }
