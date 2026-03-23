@@ -30,27 +30,57 @@ public class Integration {
     }
 
     public DialogflowEsIntegration getDialogflowEsIntegration() {
-        return dialogflowEsIntegration;
+        return copyDialogflowEs(dialogflowEsIntegration);
     }
 
     public void setDialogflowEsIntegration(DialogflowEsIntegration dialogflowEsIntegration) {
-        this.dialogflowEsIntegration = dialogflowEsIntegration;
+        this.dialogflowEsIntegration = copyDialogflowEs(dialogflowEsIntegration);
     }
 
     public DialogflowCxIntegration getDialogflowCxIntegration() {
-        return dialogflowCxIntegration;
+        return copyDialogflowCx(dialogflowCxIntegration);
     }
 
     public void setDialogflowCxIntegration(DialogflowCxIntegration dialogflowCxIntegration) {
-        this.dialogflowCxIntegration = dialogflowCxIntegration;
+        this.dialogflowCxIntegration = copyDialogflowCx(dialogflowCxIntegration);
     }
 
     public AgentWebhookIntegration getAgentWebhookIntegration() {
-        return agentWebhookIntegration;
+        return copyAgentWebhook(agentWebhookIntegration);
     }
 
     public void setAgentWebhookIntegration(AgentWebhookIntegration agentWebhookIntegration) {
-        this.agentWebhookIntegration = agentWebhookIntegration;
+        this.agentWebhookIntegration = copyAgentWebhook(agentWebhookIntegration);
+    }
+
+    private static DialogflowEsIntegration copyDialogflowEs(DialogflowEsIntegration source) {
+        if (source == null) {
+            return null;
+        }
+        DialogflowEsIntegration copy = new DialogflowEsIntegration();
+        copy.setDialogflowProjectId(source.getDialogflowProjectId());
+        copy.setAutoResponseStatus(source.getAutoResponseStatus());
+        return copy;
+    }
+
+    private static DialogflowCxIntegration copyDialogflowCx(DialogflowCxIntegration source) {
+        if (source == null) {
+            return null;
+        }
+        DialogflowCxIntegration copy = new DialogflowCxIntegration();
+        copy.setDialogflowCxProjectId(source.getDialogflowCxProjectId());
+        return copy;
+    }
+
+    private static AgentWebhookIntegration copyAgentWebhook(AgentWebhookIntegration source) {
+        if (source == null) {
+            return null;
+        }
+        AgentWebhookIntegration copy = new AgentWebhookIntegration();
+        copy.setWebhookUri(source.getWebhookUri());
+        copy.setUsername(source.getUsername());
+        copy.setPassword(source.getPassword());
+        return copy;
     }
 
     /** Integration based on Dialogflow ES. */

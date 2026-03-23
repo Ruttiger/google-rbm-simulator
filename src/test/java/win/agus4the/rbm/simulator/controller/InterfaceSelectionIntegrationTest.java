@@ -52,3 +52,47 @@ class InterfaceSelectionAllIntegrationTest {
                 .exchange().expectStatus().is4xxClientError();
     }
 }
+
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+        "maap.simulator.enabled-interfaces=OSP"
+})
+@AutoConfigureWebTestClient
+class InterfaceSelectionOspOnlyIntegrationTest {
+    @Autowired
+    WebTestClient webTestClient;
+
+    @Test
+    void hidesRbmAndPcmEndpointsWhenOnlyOspEnabled() {
+        webTestClient.post().uri("/v1/phones/111/agentMessages?agentId=a&messageId=b")
+                .exchange().expectStatus().isNotFound();
+        webTestClient.post().uri("/restadpt_generico1/smsTextSubmit")
+                .exchange().expectStatus().isNotFound();
+    }
+
+    @Test
+    void keepsOspEndpointsEnabled() {
+        webTestClient.post().uri("/v3/auth/")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .bodyValue("grant_type=client_credentials")
+                .exchange().expectStatus().isUnauthorized();
+    }
+}
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+        "maap.simulator.enabled-interfaces=RBM,PCM"
+})
+@AutoConfigureWebTestClient
+class InterfaceSelectionWithoutOspIntegrationTest {
+    @Autowired
+    WebTestClient webTestClient;
+
+    @Test
+    void hidesOspEndpointsWhenDisabled() {
+        webTestClient.post().uri("/v3/auth/")
+                .exchange().expectStatus().isNotFound();
+        webTestClient.post().uri("/webhook/orange/bot-1/uuid-1")
+                .bodyValue("{}")
+                .exchange().expectStatus().isNotFound();
+    }
+}

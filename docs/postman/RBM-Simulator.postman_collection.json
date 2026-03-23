@@ -1674,6 +1674,117 @@
           }
         }
       ]
+    },
+    {
+      "name": "OSP",
+      "item": [
+        {
+          "name": "OSP Auth Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{OSP_BASIC_AUTH}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "osp.send",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v3/auth/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "auth",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "OSP Send MT Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{OSP_ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": {\n    \"text\": \"Hola OSP\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v3/bot/v1/{{OSP_BOT_ID}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "bot",
+                "v1",
+                "{{OSP_BOT_ID}}",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "OSP Webhook TextMessage",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": {\n    \"type\": \"TextMessage\",\n    \"text\": \"Hola\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/webhook/orange/{{OSP_BOT_ID}}/{{OSP_WEBHOOK_UUID}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhook",
+                "orange",
+                "{{OSP_BOT_ID}}",
+                "{{OSP_WEBHOOK_UUID}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
@@ -1720,6 +1831,30 @@
     {
       "key": "PCM_WEBHOOK_PASSWORD",
       "value": "pcm-pass"
+    },
+    {
+      "key": "OSP_CLIENT_ID",
+      "value": "osp-client"
+    },
+    {
+      "key": "OSP_CLIENT_SECRET",
+      "value": "osp-secret"
+    },
+    {
+      "key": "OSP_ACCESS_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "OSP_BOT_ID",
+      "value": "orange-bot"
+    },
+    {
+      "key": "OSP_WEBHOOK_UUID",
+      "value": "uuid-123"
+    },
+    {
+      "key": "OSP_BASIC_AUTH",
+      "value": "b3NwLWNsaWVudDpvc3Atc2VjcmV0"
     }
   ]
 }

@@ -47,6 +47,26 @@ Variables de entorno útiles para PCM:
 - `PCM_WEBHOOK_PASSWORD`
 - `pcm_basic_auth` (`base64(username:password)` para autenticación Basic)
 
+
+## Flujo recomendado para OSP
+
+Dentro de la carpeta **OSP** de la colección encontrarás requests para:
+
+1. **OSP Auth Token**
+   - Solicita token con `grant_type=client_credentials` usando Basic Auth.
+2. **OSP Send MT Message**
+   - Envía un MT a `/v3/bot/v1/{orange_chatbot_id}/messages` con `Bearer`.
+3. **OSP Webhook TextMessage**
+   - Simula callback de Orange en `/webhook/orange/{botId}/{uuid}`.
+
+Variables de entorno útiles para OSP:
+- `OSP_CLIENT_ID`
+- `OSP_CLIENT_SECRET`
+- `OSP_BASIC_AUTH` (`base64(client_id:client_secret)`)
+- `OSP_ACCESS_TOKEN`
+- `OSP_BOT_ID`
+- `OSP_WEBHOOK_UUID`
+
 ## Triggers de eventos
 
 Los mensajes pueden incluir triggers especiales para simular eventos:

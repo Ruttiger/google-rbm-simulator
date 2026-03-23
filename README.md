@@ -8,10 +8,32 @@ Google RBM Simulator es una aplicación **Spring Boot 3** basada en **WebFlux** 
 Este proyecto evoluciona a un simulador **MaaP multi-interfaz**. Actualmente soporta:
 - RBM
 - PCM
+- OSP
 
 La activación de interfaces se controla con:
 ```bash
-./mvnw spring-boot:run -Dspring-boot.run.arguments="--maap.simulator.enabled-interfaces=RBM,PCM"
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--maap.simulator.enabled-interfaces=RBM,PCM,OSP"
+```
+
+
+Ejemplos rápidos OSP:
+```bash
+# solicitar token OSP (OAuth2 client_credentials + Basic Auth)
+curl -X POST http://localhost:8080/v3/auth/ \
+  -H "Authorization: Basic $(printf 'osp-client:osp-secret' | base64)" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&scope=osp.send"
+
+# envío MT OSP
+curl -X POST http://localhost:8080/v3/bot/v1/orange-bot/messages \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"message":{"text":"Hola OSP"}}'
+
+# webhook OSP (notificaciones message/response/messageStatus)
+curl -X POST http://localhost:8080/webhook/orange/orange-bot/uuid-123 \
+  -H "Content-Type: application/json" \
+  -d '{"messageStatus":{"status":"Delivered"}}'
 ```
 
 Ejemplos rápidos PCM:

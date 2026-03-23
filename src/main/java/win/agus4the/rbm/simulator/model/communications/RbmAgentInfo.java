@@ -54,19 +54,19 @@ public class RbmAgentInfo {
     }
 
     public Info getPrivacy() {
-        return privacy;
+        return copyInfo(privacy);
     }
 
     public void setPrivacy(Info privacy) {
-        this.privacy = privacy;
+        this.privacy = copyInfo(privacy);
     }
 
     public Info getTermsConditions() {
-        return termsConditions;
+        return copyInfo(termsConditions);
     }
 
     public void setTermsConditions(Info termsConditions) {
-        this.termsConditions = termsConditions;
+        this.termsConditions = copyInfo(termsConditions);
     }
 
     public String getColor() {
@@ -75,6 +75,16 @@ public class RbmAgentInfo {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    private static Info copyInfo(Info source) {
+        if (source == null) {
+            return null;
+        }
+        Info copy = new Info();
+        copy.setUri(source.getUri());
+        copy.setLabel(source.getLabel());
+        return copy;
     }
 
     /**

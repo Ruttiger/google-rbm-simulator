@@ -34,6 +34,11 @@ public class InterfaceSelectionWebFilter implements WebFilter {
             exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
             return exchange.getResponse().setComplete();
         }
+        if ((path.startsWith("/v3/auth/") || path.startsWith("/v3/bot/") || path.startsWith("/webhook/orange/"))
+                && !interfaceActivationService.isEnabled(MaapChannel.OSP)) {
+            exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
+            return exchange.getResponse().setComplete();
+        }
         return chain.filter(exchange);
     }
 }

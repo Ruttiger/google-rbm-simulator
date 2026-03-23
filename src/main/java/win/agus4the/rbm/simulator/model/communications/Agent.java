@@ -49,27 +49,27 @@ public class Agent {
     }
 
     public RbmAgentInfo getRcsBusinessMessagingAgent() {
-        return rcsBusinessMessagingAgent;
+        return copyRbmAgentInfo(rcsBusinessMessagingAgent);
     }
 
     public void setRcsBusinessMessagingAgent(RbmAgentInfo rcsBusinessMessagingAgent) {
-        this.rcsBusinessMessagingAgent = rcsBusinessMessagingAgent;
+        this.rcsBusinessMessagingAgent = copyRbmAgentInfo(rcsBusinessMessagingAgent);
     }
 
     public AgentVerification getVerification() {
-        return verification;
+        return copyVerification(verification);
     }
 
     public void setVerification(AgentVerification verification) {
-        this.verification = verification;
+        this.verification = copyVerification(verification);
     }
 
     public AgentLaunch getLaunch() {
-        return launch;
+        return copyLaunch(launch);
     }
 
     public void setLaunch(AgentLaunch launch) {
-        this.launch = launch;
+        this.launch = copyLaunch(launch);
     }
 
     public boolean isVerified() {
@@ -86,5 +86,45 @@ public class Agent {
 
     public void setLaunched(boolean launched) {
         this.launched = launched;
+    }
+
+    private static AgentVerification copyVerification(AgentVerification source) {
+        if (source == null) {
+            return null;
+        }
+        AgentVerification copy = new AgentVerification();
+        copy.setName(source.getName());
+        copy.setState(source.getState());
+        copy.setCreateTime(source.getCreateTime());
+        copy.setUpdateTime(source.getUpdateTime());
+        copy.setComment(source.getComment());
+        return copy;
+    }
+
+    private static AgentLaunch copyLaunch(AgentLaunch source) {
+        if (source == null) {
+            return null;
+        }
+        AgentLaunch copy = new AgentLaunch();
+        copy.setName(source.getName());
+        copy.setState(source.getState());
+        copy.setCreateTime(source.getCreateTime());
+        copy.setUpdateTime(source.getUpdateTime());
+        copy.setComment(source.getComment());
+        return copy;
+    }
+
+    private static RbmAgentInfo copyRbmAgentInfo(RbmAgentInfo source) {
+        if (source == null) {
+            return null;
+        }
+        RbmAgentInfo copy = new RbmAgentInfo();
+        copy.setDescription(source.getDescription());
+        copy.setLogoUri(source.getLogoUri());
+        copy.setHeroUri(source.getHeroUri());
+        copy.setPrivacy(source.getPrivacy());
+        copy.setTermsConditions(source.getTermsConditions());
+        copy.setColor(source.getColor());
+        return copy;
     }
 }
