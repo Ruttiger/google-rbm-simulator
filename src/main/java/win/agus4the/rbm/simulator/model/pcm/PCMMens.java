@@ -1,6 +1,5 @@
 package win.agus4the.rbm.simulator.model.pcm;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,7 +17,6 @@ import java.util.List;
  * @param deliveryReportURL callback URL for delivery reports
  * @param expiryDate message expiration timestamp
  */
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"}, justification = "Record performs defensive copy")
 public record PCMMens(
         @NotBlank String sender,
         @NotEmpty List<@Valid Recipient> recipients,

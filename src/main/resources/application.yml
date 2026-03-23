@@ -54,3 +54,8 @@ sim:
   pcm:
     username: pcm-user
     password: pcm-pass
+  osp:
+    client-id: osp-client
+    client-secret: osp-secret
+    token-ttl-seconds: 3600
+    default-scope: osp.bot.messages
